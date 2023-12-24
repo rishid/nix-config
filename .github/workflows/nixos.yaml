@@ -1,0 +1,32 @@
+name: Configure Server
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  schedule:
+    - cron: '01 13 * * *'
+
+env:
+  SSH_KEY_GITHUB_ACTIONS: ${{ secrets.SSH_KEY_GITHUB_ACTIONS }}
+  VPS_DEPLOY_USER: ${{ secrets.VPS_DEPLOY_USER }}
+  VPS_DEPLOY_HOST: ${{ secrets.VPS_DEPLOY_HOST }}
+
+jobs:
+  playbook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Connect to Tailnet
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          version: 1.54.1
