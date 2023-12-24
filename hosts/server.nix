@@ -1,0 +1,15 @@
+
+systemd.services = {
+  realtek-aspm = {
+        enable =
+          lib.versionAtLeast config.boot.kernelPackages.kernel.version "5.5";
+        description =
+          "Enable power-saving states for Realtek NIC";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig.Type = "oneshot";
+        # the device ID and states that need to be enabled may change per device
+        script = ''
+          echo 1 | tee /sys/bus/pci/drivers/mwifiex_pcie/0000:01:00.0/link/l1_2_aspm
+        '';
+  };
+};
