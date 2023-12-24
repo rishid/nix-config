@@ -9,7 +9,7 @@ systemd.services = {
         serviceConfig.Type = "oneshot";
         # the device ID and states that need to be enabled may change per device
         script = ''
-          echo 1 | tee /sys/bus/pci/drivers/mwifiex_pcie/0000:01:00.0/link/l1_2_aspm
+          echo 1 | tee /sys/bus/pci/drivers/r8169/0000\:02\:00.0/link/l1_2_aspm
         '';
   };
 };
