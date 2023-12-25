@@ -34,7 +34,7 @@ jobs:
       # time nixos-rebuild switch --show-trace
       - name: Switch to latest generation
         run: |
-          ssh -o "StrictHostKeychecking no" rishi@nixos "
+          ssh -o "StrictHostKeyChecking no" rishi@nixos "
             cd ~/${{ github.event.repository.name }}/
             git fetch && git reset --hard $(git rev-parse HEAD)
             time nixos-rebuild build --show-trace
