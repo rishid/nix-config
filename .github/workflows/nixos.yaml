@@ -30,3 +30,13 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
           version: 1.54.1
+
+      # time nixos-rebuild switch --show-trace
+      - name: Switch to latest generation
+        run: |
+          ssh -o "StrictHostKeychecking no" rishi@nixos "
+            cd ~/${{ github.event.repository.name }}/
+            git fetch && git reset --hard $(git rev-parse HEAD)
+            time nixos-rebuild build --show-trace
+            "
+      
