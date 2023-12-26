@@ -31,10 +31,19 @@ jobs:
           tags: tag:ci
           version: 1.54.1
 
+      # TODO: switch to tailscale ssh
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          chmod 0700 ~/.ssh
+          eval $(ssh-agent -s)
+          ssh-add <(echo "$SSH_KEY_GITHUB_ACTIONS")
+
       # time nixos-rebuild switch --show-trace
+      # ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
       - name: Switch to latest generation
         run: |
-          ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
+          tailscale ssh rishi@100.115.162.66 "
             cd ~/${{ github.event.repository.name }}/
             git fetch && git reset --hard $(git rev-parse HEAD)
             time nixos-rebuild build --show-trace
