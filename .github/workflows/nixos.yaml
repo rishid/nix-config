@@ -9,7 +9,7 @@ on:
     - cron: '01 13 * * *'
 
 env:
-  SSH_KEY_GITHUB_ACTIONS: ${{ secrets.SSH_KEY_GITHUB_ACTIONS }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   VPS_DEPLOY_USER: ${{ secrets.VPS_DEPLOY_USER }}
   VPS_DEPLOY_HOST: ${{ secrets.VPS_DEPLOY_HOST }}
 
@@ -37,13 +37,13 @@ jobs:
           mkdir -p ~/.ssh/
           chmod 0700 ~/.ssh
           eval $(ssh-agent -s)
-          ssh-add <(echo "$SSH_KEY_GITHUB_ACTIONS")
+          ssh-add <(echo "$SSH_PRIVATE_KEY")
 
       # time nixos-rebuild switch --show-trace
       # ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
       - name: Switch to latest generation
         run: |
-          tailscale ssh rishi@100.115.162.66 "
+          tailscale ssh rishi@nixos "
             cd ~/${{ github.event.repository.name }}/
             git fetch && git reset --hard $(git rev-parse HEAD)
             time nixos-rebuild build --show-trace
