@@ -43,7 +43,7 @@ jobs:
       # ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
       - name: Switch to latest generation
         run: |
-          ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
+          ssh -vv -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
             cd ~/${{ github.event.repository.name }}/
             git fetch && git reset --hard $(git rev-parse HEAD)
             time nixos-rebuild build --show-trace
