@@ -39,7 +39,7 @@ jobs:
           chmod 0700 ~/.ssh
           eval $(ssh-agent -s)
           ssh-add - <<< "${SSH_PRIVATE_KEY}"
-          ssh -vv -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
+          ssh -o "StrictHostKeyChecking no" rishi@100.115.162.66 "
             cd ~/${{ github.event.repository.name }}/
             git fetch && git reset --hard $(git rev-parse HEAD)
             time nixos-rebuild build --show-trace
