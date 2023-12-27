@@ -50,7 +50,7 @@ jobs:
               git init /var/lib/nixos-self-deploy/repo
             fi
 
-            git -C /var/lib/nixos-self-deploy/repo fetch 'git@github.com:${{ GITHUB_REPOSITORY }}.git' '${{ GITHUB_REF_NAME }}'
+            git -C /var/lib/nixos-self-deploy/repo fetch 'git@github.com:$GITHUB_REPOSITORY.git' '$GITHUB_REF_NAME'
             git -C /var/lib/nixos-self-deploy/repo checkout FETCH_HEAD
             nix-build '--attr' 'system' '--out-link' '/var/lib/nixos-self-deploy/system' '/var/lib/nixos-self-deploy/repo/nix/backup.nix'
             nix-env --profile /nix/var/nix/profiles/system --set /var/lib/nixos-self-deploy/system
