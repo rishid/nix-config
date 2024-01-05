@@ -9,6 +9,7 @@
   nixpkgs.config.allowUnfree = true;
 
   nix = {
+    package = pkgs.nixFlakes;
     # Be sure to run nix-collect-garbage one time per week
     gc = {
       automatic = true;
