@@ -29,10 +29,11 @@
   boot.loader.systemd-boot.enable = true; 
   boot.loader.efi.canTouchEfiVariables = true;
 
+  powerManagement.powertop.enable = true;
+
   programs.fish.enable = true;
   programs.nix-ld.enable = true;
-
-  powerManagement.powertop.enable = true;
+  programs.ssh.startAgent = true;
 
   services.openssh.enable = true;
   services.tailscale.enable = true;
