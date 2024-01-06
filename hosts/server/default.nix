@@ -1,14 +1,22 @@
-{ config, lib, pkgs, ... }: {
+{ options, config, inputs, lib, pkgs, ... }:
+
+with builtins;
+with lib;
+with lib.my;
+let 
+  inherit (inputs) disko;
+in {
   imports = [
+    disko.nixosModules.disko
     ../common.nix
     ./hardware-configuration.nix
     ./disko-config.nix	
   ];
 
-  nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowUnfree = true;
 
   nix = {
-    package = pkgs.nixFlakes;
+    # package = pkgs.nixFlakes;
     # Be sure to run nix-collect-garbage one time per week
     gc = {
       automatic = true;
@@ -39,6 +47,14 @@
   services.tailscale.enable = true;
   services.tailscale.extraUpFlags = ["--ssh" ];
 
+  # Modules
+  modules.hardware = {
+    fs = {
+      enable = true;
+      ssd.enable = true;
+    };
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -55,6 +71,7 @@
     nix-index
     patchelf
     pciutils
+    powertop
     rsync
     silver-searcher
     stdenv
@@ -118,6 +135,6 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "23.11"; # Did you read the comment?
+  # system.stateVersion = "23.11"; # Did you read the comment?
 
 }

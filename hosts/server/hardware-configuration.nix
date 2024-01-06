@@ -2,7 +2,6 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
-
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
@@ -20,14 +19,6 @@
   #    "mitigations=off"
   #  ];
   };
-
-  # Modules
-  # modules.hardware = {
-  #   fs = {
-  #     enable = true;
-  #     ssd.enable = true;
-  #   };
-  # };
 
   # CPU
   # nix.settings.max-jobs = lib.mkDefault 16;
