@@ -1,8 +1,7 @@
 { config, lib, pkgs, ... }: {
   imports = [
     ../common.nix
-    ./hardware-configuration.nix    
-    "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
+    ./hardware-configuration.nix
     ./disko-config.nix	
   ];
 
@@ -64,7 +63,7 @@
     unrar
     unzip
     usbutils
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     wget
     wget
   ];
@@ -82,11 +81,9 @@
       partOf = [ "clear-log.service" ];
       timerConfig.OnCalendar = "weekly UTC";
     };
-  };
-
-  # force enable ASPM. Newer kernels do not enable by default.
-  systemd.services = {
-    realtek-aspm = {
+ 
+    # force enable ASPM. Newer kernels do not enable by default.
+    services.realtek-aspm = {
       enable =
         lib.versionAtLeast config.boot.kernelPackages.kernel.version "5.5";
       description =
@@ -103,7 +100,7 @@
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

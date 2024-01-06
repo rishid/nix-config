@@ -15,16 +15,22 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, ... }@inputs: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, disko, ... }@inputs: {
 
-    nixosConfigurations.server = nixpkgs.lib.nixosSystem {
+    nixosConfigurations."nixos" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules =
-        [ 
-          ./machines/server.nix
+        [
+          disko.nixosModules.disko
+          ./hosts/server/server.nix
           ./users/rishi/nixos.nix
         ];
     };
