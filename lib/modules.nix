@@ -3,8 +3,8 @@
   self,
   ...
 }: let
-  inherit (builtins) attrValues readDir pathExists concatLists;
-  inherit (lib.attrsets) mapAttrsToList filterAttrs nameValuePair;
+  inherit (builtins) attrValues filter match readDir pathExists concatLists;
+  inherit (lib.attrsets) mapAttrsToList filterAttrs nameValuePair listToAttrs;
   inherit (lib.strings) hasPrefix hasSuffix removeSuffix;
   inherit (lib.trivial) id;
   inherit (self.attrs) mapFilterAttrs;
@@ -40,4 +40,15 @@ in rec {
     paths = files ++ concatLists (map (d: mapModulesRec' d id) dirs);
   in
     map fn paths;
+
+  # src: https://github.com/peel/dotfiles/blob/main/flake.nix#L20
+  mapModulesX = path: fn:
+    let apply = fn: path: n: fn (path + ("/" + n));
+        attrsIn = path: lib.attrNames (readDir path);
+        isModuleIn = path: n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"));
+        named = n: x: nameValuePair ((removeSuffix ".nix") n) x;
+    in
+      listToAttrs (map
+        (n: named n (apply fn path n))
+        (filter (isModuleIn path) (attrsIn path)));
 }

@@ -33,6 +33,25 @@
 
     nixos-hardware.url = "github:nixos/nixos-hardware";
     treefmt-nix.url = github:numtide/treefmt-nix;
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # my private secrets, it's a private repository, you need to replace it with your own.
+    # use ssh protocol to authenticate via ssh-agent/ssh-key, and shallow clone to save time
+    # mysecrets = {
+    #   url = "git+ssh://git@github.com/ryan4yin/nix-secrets.git?shallow=1";
+    #   flake = false;
+    # };
+
+    # add git hooks to format nix code before commit
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # `outputs` are all the build result of the flake.
@@ -50,9 +69,15 @@
     nixpkgs,
     nixpkgs-unstable,
     disko,
+    pre-commit-hooks,
     ...
   }: let
-    inherit (lib.my) mapModules mapModulesRec mapHosts;
+    inherit (lib.my) mapModulesX;
+    inherit (builtins) attrNames hasAttr filter getAttr readDir;
+    inherit (nixpkgs.lib)
+      nixosSystem attrValues traceValSeqN
+      concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
+      mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
 
     system = "x86_64-linux";
 
@@ -65,6 +90,44 @@
     pkgs = mkPkgs nixpkgs [self.overlays.default];
     pkgs-unstable = mkPkgs nixpkgs-unstable [];
 
+    # mkSystem = import ./mksystem.nix {
+    #   inherit nixpkgs inputs;
+    # };
+
+    mkSystem =
+      { hostname
+      , user ? "rishi"
+      , system ? "x86_64-linux"
+      , extraModules ? []
+      #, homeModules ? import ./modules/common/setup/home.nix
+      , ...}:
+        let
+          # linuxOr = a: b: if (hasInfix "linux" system) then a else b;
+          # systemFn = linuxOr nixosSystem darwinSystem;
+          # overlayModules = [{ nixpkgs.overlays = [ emacs-overlay.overlay ] ++ (attrValues self.overlays); }];
+          # systemModules = traceValSeqN 3 (attrValues (linuxOr self.nixosModules self.darwinModules));
+          # FIXME load with systemModules
+          # configModules = traceValSeqN 2 (linuxOr [ ./modules/nixos/setup ] [ ./modules/darwin/setup ]);
+          # homeManagerModules = linuxOr home-manager.nixosModules.home-manager home-manager.darwinModules.home-manager;
+        in nixosSystem {
+          inherit system;
+          modules = [
+            { networking.hostName = hostname; }
+            (./hosts/${hostname})
+            (./users/${user}/nixos.nix)
+            # homeManagerModules {
+            #   home-manager.useGlobalPkgs = true;
+            #   home-manager.useUserPackages = true;
+            #   home-manager.users.${user} = homeModules;
+            # }
+          # ] ++ overlayModules ++ systemModules ++ configModules ++ extraModules;
+          ] ++ extraModules;
+        };
+
+    # lib = nixpkgs:
+    #     nixpkgs.lib.extend
+    #     (final: prev: (import ./lib final));
+
     lib = nixpkgs.lib.extend (final: prev: {
       my = import ./lib {
         inherit pkgs inputs;
@@ -72,19 +135,70 @@
       };
     });
 
+    pre-commit-check = pre-commit-hooks.lib.${system}.run {
+      src = self.outPath;
+      hooks = {
+        alejandra.enable = true;
+        deadnix.enable = true;
+        statix.enable = true;
+      };
+    };
+
   in {
 
-    lib = lib.my;
+    # below block is sample from nix forum
+    # getNixFilesInDir = dir: builtins.filter (file: lib.hasSuffix ".nix" file && file != "default.nix") (builtins.attrNames (builtins.readDir dir));
+    #   genKey = str: lib.replaceStrings [ ".nix" ] [ "" ] str;
+    #   genValue = dir: str: { config }: { imports = [ "/${dir}${str}" ]; };
+    #   moduleFrom = dir: str: { "${genKey str}" = genValue dir str; };
+    #   modulesFromDir = dir: builtins.foldl' (x: y: x // (moduleFrom dir y)) { } (getNixFilesInDir dir);
+    # nixosModules = modulesFromDir ./modules;
+
+    # checks = {inherit pre-commit-check;};
+
+    # lib = lib.my;
 
     # packages."${system}" = mapModules ./packages (p: pkgs.callPackage p {});
 
-    nixosModules =
-      {
-        snowflake = import ./.;
-      }
-      // mapModulesRec ./modules import;
+    # nixosModules =
+    #   {
+    #     snowflake = import ./.;
+    #     # agenix.nixosModules.default;
+    #   }
+    #   // mapModulesRec ./modules import;
 
-    nixosConfigurations = mapHosts ./hosts {};
+    # nixosModules = (mapModules ./modules/nixos import) // (mapModules ./modules/common import);
+    nixosModules = (mapModulesX ./modules import);
+
+    # nixosConfigurations = mapHosts ./hosts {};
+
+    # nixosConfigurations = {
+    #   "server" = nixpkgs.lib.nixosSystem {
+    #     system = "x86_64-linux";
+
+    #     modules =
+    #     [
+    #       disko.nixosModules.disko
+    #       ./hosts/server
+    #       ./users/rishi/nixos.nix
+    #     ];
+    #   };
+    # };
+
+    # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
+    nixosConfigurations = {
+      server = mkSystem {
+        hostname = "server";
+        system = "x86_64-linux";
+        extraModules = [
+          disko.nixosModules.disko
+          ./hosts/server
+          ./users/rishi/nixos.nix
+          # ./modules/nixos/setup
+          # ./modules/common/setup/hassio.nix
+        ];
+      };
+    };
 
     # By default, NixOS will try to refer the nixosConfiguration with
     # its hostname, so the system named `nixos-test` will use this one.

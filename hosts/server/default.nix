@@ -8,6 +8,7 @@ let
 in {
   imports = [
     disko.nixosModules.disko
+    ../../users/rishi/nixos.nix
     ../common.nix
     ./hardware-configuration.nix
     ./disko-config.nix	
