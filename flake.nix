@@ -72,6 +72,9 @@
     pre-commit-hooks,
     ...
   }: let
+    # FIXME nixpkgs.lib.extend
+    myLib = (import ./lib {inherit (nixpkgs) lib targetSystem;});
+
     inherit (lib.my) mapModulesX;
     inherit (builtins) attrNames hasAttr filter getAttr readDir;
     inherit (nixpkgs.lib)
@@ -81,14 +84,18 @@
 
     system = "x86_64-linux";
 
-    mkPkgs = pkgs: extraOverlays:
-      import pkgs {
+    # mkPkgs = pkgs: extraOverlays:
+    #   import pkgs {
+    #     inherit system;
+    #     config.allowUnfree = true;
+    #     # overlays = extraOverlays ++ (lib.attrValues self.overlays);
+    #   };
+    # pkgs = mkPkgs nixpkgs [self.overlays.default];
+    # pkgs-unstable = mkPkgs nixpkgs-unstable [];
+    pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        # overlays = extraOverlays ++ (lib.attrValues self.overlays);
-      };
-    pkgs = mkPkgs nixpkgs [self.overlays.default];
-    pkgs-unstable = mkPkgs nixpkgs-unstable [];
+    };
 
     # mkSystem = import ./mksystem.nix {
     #   inherit nixpkgs inputs;
@@ -102,10 +109,9 @@
       #, homeModules ? import ./modules/common/setup/home.nix
       , ...}:
         let
-          # linuxOr = a: b: if (hasInfix "linux" system) then a else b;
-          # systemFn = linuxOr nixosSystem darwinSystem;
           # overlayModules = [{ nixpkgs.overlays = [ emacs-overlay.overlay ] ++ (attrValues self.overlays); }];
           # systemModules = traceValSeqN 3 (attrValues (linuxOr self.nixosModules self.darwinModules));
+          systemModules = attrValues self.nixosModules;
           # FIXME load with systemModules
           # configModules = traceValSeqN 2 (linuxOr [ ./modules/nixos/setup ] [ ./modules/darwin/setup ]);
           # homeManagerModules = linuxOr home-manager.nixosModules.home-manager home-manager.darwinModules.home-manager;
@@ -120,8 +126,8 @@
             #   home-manager.useUserPackages = true;
             #   home-manager.users.${user} = homeModules;
             # }
-          # ] ++ overlayModules ++ systemModules ++ configModules ++ extraModules;
-          ] ++ extraModules;
+          # ] ++ overlayModules ++ systemModules ++ configModules ++ extraModules;          
+          ] ++ systemModules ++ extraModules;
         };
 
     # lib = nixpkgs:
@@ -135,14 +141,14 @@
       };
     });
 
-    pre-commit-check = pre-commit-hooks.lib.${system}.run {
-      src = self.outPath;
-      hooks = {
-        alejandra.enable = true;
-        deadnix.enable = true;
-        statix.enable = true;
-      };
-    };
+    # pre-commit-check = pre-commit-hooks.lib.${system}.run {
+    #   src = self.outPath;
+    #   hooks = {
+    #     alejandra.enable = true;
+    #     deadnix.enable = true;
+    #     statix.enable = true;
+    #   };
+    # };
 
   in {
 
@@ -153,6 +159,7 @@
     #   moduleFrom = dir: str: { "${genKey str}" = genValue dir str; };
     #   modulesFromDir = dir: builtins.foldl' (x: y: x // (moduleFrom dir y)) { } (getNixFilesInDir dir);
     # nixosModules = modulesFromDir ./modules;
+    # end block
 
     # checks = {inherit pre-commit-check;};
 
@@ -172,10 +179,24 @@
 
     # nixosConfigurations = mapHosts ./hosts {};
 
+    # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
+    nixosConfigurations = {
+      "server" = mkSystem {
+        hostname = "server";
+        system = "x86_64-linux";
+        extraModules = [
+          disko.nixosModules.disko
+          ./hosts/server
+          ./users/rishi/nixos.nix
+        #   # ./modules/nixos/setup
+        #   # ./modules/common/setup/hassio.nix
+        ];
+      };
+    };
+
     # nixosConfigurations = {
     #   "server" = nixpkgs.lib.nixosSystem {
     #     system = "x86_64-linux";
-
     #     modules =
     #     [
     #       disko.nixosModules.disko
@@ -184,21 +205,6 @@
     #     ];
     #   };
     # };
-
-    # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
-    nixosConfigurations = {
-      server = mkSystem {
-        hostname = "server";
-        system = "x86_64-linux";
-        extraModules = [
-          disko.nixosModules.disko
-          ./hosts/server
-          ./users/rishi/nixos.nix
-          # ./modules/nixos/setup
-          # ./modules/common/setup/hassio.nix
-        ];
-      };
-    };
 
     # By default, NixOS will try to refer the nixosConfiguration with
     # its hostname, so the system named `nixos-test` will use this one.

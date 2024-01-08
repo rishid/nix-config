@@ -7,14 +7,14 @@ let
   inherit (inputs) disko;
 in {
   imports = [
-    disko.nixosModules.disko
-    ../../users/rishi/nixos.nix
+    # disko.nixosModules.disko
+    # ../../users/rishi/nixos.nix
     ../common.nix
     ./hardware-configuration.nix
     ./disko-config.nix	
   ];
 
-  # nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true;
 
   nix = {
     # package = pkgs.nixFlakes;
@@ -49,12 +49,12 @@ in {
   services.tailscale.extraUpFlags = ["--ssh" ];
 
   # Modules
-  modules.hardware = {
-    fs = {
-      enable = true;
-      ssd.enable = true;
-    };
-  };
+  # modules.hardware = {
+  #   fs = {
+  #     enable = true;
+  #     ssd.enable = true;
+  #   };
+  # };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -136,6 +136,6 @@ in {
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  # system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
 
 }
