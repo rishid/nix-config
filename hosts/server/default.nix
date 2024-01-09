@@ -14,6 +14,7 @@
     # Be sure to run nix-collect-garbage one time per week
     gc = {
       automatic = true;
+      persistent = true;
       dates = "weekly";
       options = "--delete-older-than 90d";
     };
