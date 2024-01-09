@@ -1,14 +1,7 @@
 { options, config, inputs, lib, pkgs, ... }:
 
-with builtins;
-with lib;
-# with lib.my;
-let 
-  inherit (inputs) disko;
-in {
+{
   imports = [
-    # disko.nixosModules.disko
-    # ../../users/rishi/nixos.nix
     ../common.nix
     ./hardware-configuration.nix
     ./disko-config.nix	
@@ -47,6 +40,8 @@ in {
   services.openssh.enable = true;
   services.tailscale.enable = true;
   services.tailscale.extraUpFlags = ["--ssh" ];
+
+  modules.services.docker.enable = true;
 
   # Modules
   # modules.hardware = {

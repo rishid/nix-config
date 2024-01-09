@@ -74,35 +74,21 @@
   }: let
     # FIXME nixpkgs.lib.extend
     myLib = (import ./lib {inherit (nixpkgs) lib targetSystem;});
+    inherit (myLib) mapModules;
 
-    inherit (lib.my) mapModulesX;
     inherit (builtins) listToAttrs attrNames hasAttr filter getAttr readDir;
     inherit (nixpkgs.lib)
       nixosSystem attrValues traceValSeqN
       concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
       mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
-    # inherit (inputs.nixpkgs) lib;
     inherit (inputs.nixpkgs.lib.filesystem) listFilesRecursive;
-    # inherit (lib) mapAttrsToList hasSuffix;
 
     system = "x86_64-linux";
-
-    # mkPkgs = pkgs: extraOverlays:
-    #   import pkgs {
-    #     inherit system;
-    #     config.allowUnfree = true;
-    #     # overlays = extraOverlays ++ (lib.attrValues self.overlays);
-    #   };
-    # pkgs = mkPkgs nixpkgs [self.overlays.default];
-    # pkgs-unstable = mkPkgs nixpkgs-unstable [];
+  
     pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
     };
-
-    # mkSystem = import ./mksystem.nix {
-    #   inherit nixpkgs inputs;
-    # };
 
     mkSystem =
       { hostname
@@ -114,13 +100,12 @@
           systemModules = (attrValues (self.nixosModules));
         in nixosSystem {
           inherit system;
-          specialArgs = { inherit lib inputs system; };
+          specialArgs = { inherit myLib inputs system; };
           modules = [
             { networking.hostName = hostname; }
             (./hosts/${hostname})
             (./users/${user}/nixos.nix)
-            ./.   # /default.nix
-          # ] ++ overlayModules ++ systemModules ++ configModules ++ extraModules;          
+            ./.   # /default.nix        
           ] ++ systemModules ++ extraModules;
         };
 
@@ -128,33 +113,12 @@
     #     nixpkgs.lib.extend
     #     (final: prev: (import ./lib final));
 
-    lib = nixpkgs.lib.extend (final: prev: {
-      my = import ./lib {
-        inherit pkgs inputs;
-        lib = final;
-      };
-    });
-
-    # Get Nix files in a directory, excluding "default.nix"
-    # getNixFilesInDir = dir: builtins.filter (f: lib.hasSuffix ".nix" f && f != "default.nix") (builtins.attrNames (builtins.readDir dir));
-
-    # # Whether a path exists and is a directory.
-    # pathIsDirectory = path:
-    #   builtins.pathExists path && builtins.readFileType path == "directory";
-
-    # # Generate a module for a Nix file
-    # moduleForFile = dir: file: { config }: {
-    #   imports = [ "/${dir}${file}" ];
-    # };
-
-    # # Collect modules recursively from a directory
-    # collectModulesRecursive = dir:
-    #   let
-    #     modules = builtins.mapAttrs (n: f: moduleForFile dir f) (getNixFilesInDir dir);
-    #     subdirModules = builtins.mapAttrs (n: d: collectModulesRecursive d) (builtins.filter pathIsDirectory (builtins.attrValues (builtins.readDir dir)));
-    #   in
-    #     builtins.foldl' (x: y: x // y) modules subdirModules;
-
+    # lib = nixpkgs.lib.extend (final: prev: {
+    #   my = import ./lib {
+    #     inherit pkgs inputs;
+    #     lib = final;
+    #   };
+    # });
 
     # pre-commit-check = pre-commit-hooks.lib.${system}.run {
     #   src = self.outPath;
@@ -167,34 +131,9 @@
 
   in {
 
-    # below block is sample from nix forum
-    # getNixFilesInDir = dir: builtins.filter (file: lib.hasSuffix ".nix" file && file != "default.nix") (builtins.attrNames (builtins.readDir dir));
-    #   genKey = str: lib.replaceStrings [ ".nix" ] [ "" ] str;
-    #   genValue = dir: str: { config }: { imports = [ "/${dir}${str}" ]; };
-    #   moduleFrom = dir: str: { "${genKey str}" = genValue dir str; };
-    #   modulesFromDir = dir: builtins.foldl' (x: y: x // (moduleFrom dir y)) { } (getNixFilesInDir dir);
-    # nixosModules = modulesFromDir ./modules;
-    # end block
-
     # checks = {inherit pre-commit-check;};
 
-    # lib = lib.my;
-
-    # packages."${system}" = mapModules ./packages (p: pkgs.callPackage p {});
-
-    # nixosModules =
-    #   {
-    #     snowflake = import ./.;
-    #     # agenix.nixosModules.default;
-    #   }
-    #   // mapModulesRec ./modules import;
-
-    # nixosModules = (mapModules ./modules/nixos import) // (mapModules ./modules/common import);
-    nixosModules = (mapModulesX ./modules import);
-    # nixosModules = collectModulesRecursive ./modules;
-    # builtins.trace self.nixosModules: self.nixosModules;
-    # foo = builtins.trace ''${self.nixosModules}'' (mapModulesX ./modules import);
-    # nixosConfigurations = mapHosts ./hosts {};
+    nixosModules = (mapModules ./modules import);
 
     # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
     nixosConfigurations = {
@@ -205,10 +144,9 @@
           disko.nixosModules.disko
           ./hosts/server
           ./users/rishi/nixos.nix
-        #   # ./modules/nixos/setup
-        #   # ./modules/common/setup/hassio.nix
         ];
       };
+
     };
 
     # nixosConfigurations = {
