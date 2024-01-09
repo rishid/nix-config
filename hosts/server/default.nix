@@ -2,7 +2,7 @@
 
 with builtins;
 with lib;
-with lib.my;
+# with lib.my;
 let 
   inherit (inputs) disko;
 in {

@@ -1,30 +1,26 @@
 {
-  inputs,
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   inherit (builtins) toString;
   inherit (lib.attrsets) attrValues filterAttrs mapAttrs mapAttrsToList;
   inherit (lib.modules) mkAliasOptionModule mkDefault mkIf;
-  inherit (lib.my) mapModulesRec';
+  # inherit (lib.my) mapModulesRec';
 in {
-  imports =
-    [    
-    ]
-    ++ (mapModulesRec' (toString ./modules) import);
+  # imports =
+  #   [    
+  #   ]
+  #   ++ (mapModulesRec' (toString ./modules) import);
 
   # Common config for all nixos machines;
   environment.variables = {
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
-  nix = let
-    filteredInputs = filterAttrs (n: _: n != "self") inputs;
-    nixPathInputs = mapAttrsToList (n: v: "${n}=${v}") filteredInputs;
-    registryInputs = mapAttrs (_: v: {flake = v;}) filteredInputs;
-  in {
+  nix = {
     package = pkgs.nixFlakes;
     extraOptions = "experimental-features = nix-command flakes";
 

@@ -51,4 +51,23 @@ in rec {
       listToAttrs (map
         (n: named n (apply fn path n))
         (filter (isModuleIn path) (attrsIn path)));
+
+  # mapModulesX = path: fn:
+  # let
+  #   apply = fn: path: n: fn (path + ("/" + n));
+  #   attrsIn = path: lib.attrNames (readDir path);
+  #   isModuleIn = path: n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"));
+  #   named = n: x: nameValuePair ((removeSuffix ".nix") n) x;
+
+  #   recurseIntoDir = dirPath:
+  #     let
+  #       dirAttrs = attrsIn dirPath;
+  #       moduleAttrs = filter (n: isModuleIn dirPath n) dirAttrs;
+  #       nestedDirs = filter (n: pathExists (dirPath + "/" + n) && builtins.isAttrs (readDir (dirPath + "/" + n))) dirAttrs;
+  #       nestedResults = map (n: recurseIntoDir (dirPath + "/" + n)) nestedDirs;
+  #     in
+  #       listToAttrs (map (n: named n (apply fn dirPath n)) (moduleAttrs ++ nestedResults));
+
+  # in recurseIntoDir path;
+
 }

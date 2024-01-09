@@ -76,11 +76,14 @@
     myLib = (import ./lib {inherit (nixpkgs) lib targetSystem;});
 
     inherit (lib.my) mapModulesX;
-    inherit (builtins) attrNames hasAttr filter getAttr readDir;
+    inherit (builtins) listToAttrs attrNames hasAttr filter getAttr readDir;
     inherit (nixpkgs.lib)
       nixosSystem attrValues traceValSeqN
       concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
       mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
+    # inherit (inputs.nixpkgs) lib;
+    inherit (inputs.nixpkgs.lib.filesystem) listFilesRecursive;
+    # inherit (lib) mapAttrsToList hasSuffix;
 
     system = "x86_64-linux";
 
@@ -92,7 +95,7 @@
     #   };
     # pkgs = mkPkgs nixpkgs [self.overlays.default];
     # pkgs-unstable = mkPkgs nixpkgs-unstable [];
-    pkgs = import nixpkgs {
+    pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
     };
@@ -106,26 +109,17 @@
       , user ? "rishi"
       , system ? "x86_64-linux"
       , extraModules ? []
-      #, homeModules ? import ./modules/common/setup/home.nix
       , ...}:
         let
-          # overlayModules = [{ nixpkgs.overlays = [ emacs-overlay.overlay ] ++ (attrValues self.overlays); }];
-          # systemModules = traceValSeqN 3 (attrValues (linuxOr self.nixosModules self.darwinModules));
-          systemModules = attrValues self.nixosModules;
-          # FIXME load with systemModules
-          # configModules = traceValSeqN 2 (linuxOr [ ./modules/nixos/setup ] [ ./modules/darwin/setup ]);
-          # homeManagerModules = linuxOr home-manager.nixosModules.home-manager home-manager.darwinModules.home-manager;
+          systemModules = (attrValues (self.nixosModules));
         in nixosSystem {
           inherit system;
+          specialArgs = { inherit lib inputs system; };
           modules = [
             { networking.hostName = hostname; }
             (./hosts/${hostname})
             (./users/${user}/nixos.nix)
-            # homeManagerModules {
-            #   home-manager.useGlobalPkgs = true;
-            #   home-manager.useUserPackages = true;
-            #   home-manager.users.${user} = homeModules;
-            # }
+            ./.   # /default.nix
           # ] ++ overlayModules ++ systemModules ++ configModules ++ extraModules;          
           ] ++ systemModules ++ extraModules;
         };
@@ -140,6 +134,27 @@
         lib = final;
       };
     });
+
+    # Get Nix files in a directory, excluding "default.nix"
+    # getNixFilesInDir = dir: builtins.filter (f: lib.hasSuffix ".nix" f && f != "default.nix") (builtins.attrNames (builtins.readDir dir));
+
+    # # Whether a path exists and is a directory.
+    # pathIsDirectory = path:
+    #   builtins.pathExists path && builtins.readFileType path == "directory";
+
+    # # Generate a module for a Nix file
+    # moduleForFile = dir: file: { config }: {
+    #   imports = [ "/${dir}${file}" ];
+    # };
+
+    # # Collect modules recursively from a directory
+    # collectModulesRecursive = dir:
+    #   let
+    #     modules = builtins.mapAttrs (n: f: moduleForFile dir f) (getNixFilesInDir dir);
+    #     subdirModules = builtins.mapAttrs (n: d: collectModulesRecursive d) (builtins.filter pathIsDirectory (builtins.attrValues (builtins.readDir dir)));
+    #   in
+    #     builtins.foldl' (x: y: x // y) modules subdirModules;
+
 
     # pre-commit-check = pre-commit-hooks.lib.${system}.run {
     #   src = self.outPath;
@@ -176,7 +191,9 @@
 
     # nixosModules = (mapModules ./modules/nixos import) // (mapModules ./modules/common import);
     nixosModules = (mapModulesX ./modules import);
-
+    # nixosModules = collectModulesRecursive ./modules;
+    # builtins.trace self.nixosModules: self.nixosModules;
+    # foo = builtins.trace ''${self.nixosModules}'' (mapModulesX ./modules import);
     # nixosConfigurations = mapHosts ./hosts {};
 
     # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix

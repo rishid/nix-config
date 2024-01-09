@@ -25,7 +25,7 @@ in rec {
             mkDefault (removeSuffix ".nix" (baseNameOf path));
         }
         (filterAttrs (n: v: !elem n ["system"]) attrs)
-        ../. # /default.nix
+        # ../. # /default.nix
         (import path)
       ];
     };

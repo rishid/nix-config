@@ -1,13 +1,13 @@
 { config, options, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+# with lib.my;
 let cfg = config.modules.hardware.fs;
 in {
   options.modules.hardware.fs = {
-    enable = mkBoolOpt false;
-    zfs.enable = mkBoolOpt false;
-    ssd.enable = mkBoolOpt false;
+    enable = mkEnableOption "Enable file system features";
+    zfs.enable = mkEnableOption "Enable zfs features";
+    ssd.enable = mkEnableOption "Enable SSD features";
     # TODO automount.enable = mkBoolOpt false;
   };
 
