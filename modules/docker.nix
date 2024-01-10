@@ -25,6 +25,9 @@ in {
         autoPrune.enable = true;
         autoPrune.dates = "quarterly";
         # listenOptions = [];
+        #daemon.settings = {
+          #dns = ["1.1.1.1" "8.8.4.4"];
+    #};
       };
     };
   };
