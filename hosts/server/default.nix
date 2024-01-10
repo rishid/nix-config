@@ -28,6 +28,22 @@
     };
   };
 
+  #networking = {
+    #useDHCP = true;
+    #networkmanager.enable = false;
+    #useNetworkd = true;
+    #firewall.allowedTCPPorts = [ 22 ];
+    #wireless = {
+    #  enable = true;
+    #  userControlled.enable = true;
+    #};
+  #};
+
+  
+  #services.printing.drivers = [ pkgs.brgenml1cupswrapper ];
+  #services.printing.enable = true;
+
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true; 
   boot.loader.efi.canTouchEfiVariables = true;
