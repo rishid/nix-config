@@ -1,5 +1,5 @@
 {
-  description = "NixOS systems and tools";
+  description = "NixOS systems configurations";
 
   # This is the standard format for flake.nix.
   # `inputs` are the dependencies of the flake,
@@ -8,49 +8,47 @@
   # the `outputs` function after being pulled and built.
 
   inputs = {
-    # Pin our primary nixpkgs repository. This is the main nixpkgs repository
-    # we'll use for our configurations. Be very careful changing this because
-    # it'll impact your entire system.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    # <https://search.nixos.org/packages>
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # We use the unstable nixpkgs repo for some packages.
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-
-    # home-manager, used for managing user configuration
-    # home-manager = {
-    #   url = "github:nix-community/home-manager/release-23.11";
-    #   # The `follows` keyword in inputs is used for inheritance.
-    #   # Here, `inputs.nixpkgs` of home-manager is kept consistent with
-    #   # the `inputs.nixpkgs` of the current flake,
-    #   # to avoid problems caused by different versions of nixpkgs.
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    # Home Manager
+    # <https://mipmip.github.io/home-manager-option-search>
+    home-manager.url = "github:nix-community/home-manager/release-23.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager-unstable.url = "github:nix-community/home-manager";
 
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware.url = "github:nixos/nixos-hardware";
+    # NixOS profiles for different hardware
+    # <https://github.com/NixOS/nixos-hardware>
+    hardware.url = "github:NixOS/nixos-hardware";
+
     treefmt-nix.url = github:numtide/treefmt-nix;
 
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # NixOS Secrets
+    # <https://github.com/ryantm/agenix>
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    agenix.inputs.home-manager.follows = "home-manager";
 
-    # my private secrets, it's a private repository, you need to replace it with your own.
-    # use ssh protocol to authenticate via ssh-agent/ssh-key, and shallow clone to save time
-    # mysecrets = {
-    #   url = "git+ssh://git@github.com/ryan4yin/nix-secrets.git?shallow=1";
-    #   flake = false;
-    # };
+    # Home Manager Secrets
+    # <https://github.com/jordanisaacs/homeage>
+    homeage.url = "github:jordanisaacs/homeage";
+    homeage.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Nix User Repository
+    # <https://nur.nix-community.org>
+    nur.url = "github:nix-community/NUR";   
 
     # add git hooks to format nix code before commit
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # pre-commit-hooks = {
+    #   url = "github:cachix/pre-commit-hooks.nix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
   };
 
@@ -66,48 +64,123 @@
   # inputs's parameter, making it convenient to use inside the function.
   outputs = inputs @ {
     self,
-    nixpkgs,
-    nixpkgs-unstable,
-    disko,
-    pre-commit-hooks,
     ...
   }: let
-    # FIXME nixpkgs.lib.extend
-    myLib = (import ./lib {inherit (nixpkgs) lib targetSystem;});
-    inherit (myLib) mapModules;
+    inherit (self) outputs inputs; 
+    inherit (builtins) length;
+    inherit (this.lib) mkAttrs mkUsers mkAdmins mkModules mapModules;
 
-    inherit (builtins) listToAttrs attrNames hasAttr filter getAttr readDir;
-    inherit (nixpkgs.lib)
-      nixosSystem attrValues traceValSeqN
-      concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
-      mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
-    inherit (inputs.nixpkgs.lib.filesystem) listFilesRecursive;
+    # Initialize this configuration with inputs and binary caches
+    this = import ./lib { inherit inputs; };
 
-    system = "x86_64-linux";
-  
-    pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
+    # Get configured pkgs for a given system with overlays, nur and unstable baked in
+    mkPkgs = this: import inputs.nixpkgs rec {
+
+      # System & other options is set in default.nix
+      system = this.system;
+
+      # Accept agreements for unfree software
+      config.allowUnfree = true;
+      # config.nvidia.acceptLicense = true;
+      # config.joypixels.acceptLicense = true;
+
+      # Add to-be-updated packages blocking builds (none right now)
+      config.permittedInsecurePackages = [];
+
+      # Modify pkgs with this, scripts, packages, nur and unstable
+      overlays = [ 
+
+        # this and personal library
+        (final: prev: { inherit this; })
+        (final: prev: { this = import ./overlays/lib { inherit final prev; }; })
+
+      #   # Personal scripts
+      #   (final: prev: import ./overlays/bin { inherit final prev; } )
+      #   (final: prev: mkAttrs ./overlays/bin ( name: prev.callPackage ./overlays/bin/${name} {} ))
+
+      #   # Additional packages
+      #   (final: prev: import ./overlays/pkgs { inherit final prev; } )
+      #   (final: prev: mkAttrs ./overlays/pkgs ( name: prev.callPackage ./overlays/pkgs/${name} {} ))
+
+        # Nix User Repositories 
+        (final: prev: { nur = import inputs.nur { pkgs = final; nurpkgs = final; }; })
+
+        # Unstable nixpkgs channel
+        (final: prev: { unstable = import inputs.nixpkgs-unstable { inherit system config; }; })
+
+      ];
+
     };
 
-    mkSystem =
-      { hostname
-      , user ? "rishi"
-      , system ? "x86_64-linux"
-      , extraModules ? []
-      , ...}:
-        let
-          systemModules = (attrValues (self.nixosModules));
-        in nixosSystem {
-          inherit system;
-          specialArgs = { inherit myLib inputs system; };
-          modules = [
-            { networking.hostName = hostname; }
-            (./hosts/${hostname})
-            (./users/${user}/nixos.nix)
-            ./.   # /default.nix        
-          ] ++ systemModules ++ extraModules;
-        };
+    # Make a NixOS system configuration 
+    mkConfiguration = this: inputs.nixpkgs.lib.nixosSystem rec {
+
+      # Make nixpkgs for this system (with overlays)
+      pkgs = mkPkgs this;
+      system = pkgs.this.system;
+      specialArgs = { inherit inputs outputs; this = pkgs.this; };
+
+      # Include NixOS configurations, modules, secrets and caches
+      modules = this.modules.root ++ (if (length this.users < 1) then [] else [
+
+        # Include Home Manager module (if there are any users besides root)
+        inputs.home-manager.nixosModules.home-manager { 
+          home-manager = {
+
+            # Inherit NixOS packages
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = { inherit inputs outputs; this = pkgs.this; };
+
+            # Include Home Manager configuration, modules, secrets and caches
+            users = mkAttrs this.users ( 
+              user: ( ({ imports }: { inherit imports; }) { 
+                imports = this.modules."${user}";
+              } )
+            ); 
+
+          }; 
+        } 
+
+      ]);
+    };
+
+    # FIXME nixpkgs.lib.extend
+    # myLib = (import ./lib {inherit (nixpkgs) inputs lib targetSystem;});
+    # inherit (myLib) mapModules;
+
+    # inherit (builtins) listToAttrs attrNames hasAttr filter getAttr readDir;
+    # inherit (nixpkgs.lib)
+    #   nixosSystem attrValues traceValSeqN
+    #   concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
+    #   mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
+    # inherit (inputs.nixpkgs.lib.filesystem) listFilesRecursive;
+
+    # system = "x86_64-linux";
+  
+    # pkgs = import inputs.nixpkgs {
+    #     inherit system;
+    #     config.allowUnfree = true;
+    # };
+
+    # mkSystem =
+    #   { hostname
+    #   , user ? "rishi"
+    #   , system ? "x86_64-linux"
+    #   , extraModules ? []
+    #   , ...}:
+    #     let
+    #       systemModules = (attrValues (self.nixosModules));
+    #     in nixosSystem {
+    #       inherit system;
+    #       specialArgs = { inherit myLib inputs system; };
+    #       modules = [
+    #         { networking.hostName = hostname; }
+    #         (./hosts/${hostname})
+    #         (./users/${user}/nixos.nix)
+    #         ./.   # /default.nix        
+    #       ] ++ systemModules ++ extraModules;
+    #     };
 
     # lib = nixpkgs:
     #     nixpkgs.lib.extend
@@ -129,25 +202,44 @@
     #   };
     # };
 
+    # Flake outputs
   in {
+
+    # NixOS configurations found in configurations directory
+    nixosConfigurations = mkAttrs ./hosts (
+
+      # Make configuration for each subdirectory 
+      host: mkConfiguration (this // import ./hosts/${host} // { 
+        users = mkUsers host;
+        admins = mkUsers host;
+        # Once you add secret manageing, can go back to using this method
+        # admins = mkAdmins host;
+        modules = mkModules host;
+      })
+
+    );
+
+  };
+
+}
 
     # checks = {inherit pre-commit-check;};
 
-    nixosModules = (mapModules ./modules import);
+    # nixosModules = (mapModules ./modules import);
 
-    # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
-    nixosConfigurations = {
-      "server" = mkSystem {
-        hostname = "server";
-        system = "x86_64-linux";
-        extraModules = [
-          disko.nixosModules.disko
-          ./hosts/server
-          ./users/rishi/nixos.nix
-        ];
-      };
+    # # mkSystem: https://github.com/peel/dotfiles/blob/main/flake.nix
+    # nixosConfigurations = {
+    #   "server" = mkSystem {
+    #     hostname = "server";
+    #     system = "x86_64-linux";
+    #     extraModules = [
+    #       disko.nixosModules.disko
+    #       ./hosts/server
+    #       ./users/rishi/nixos.nix
+    #     ];
+    #   };
 
-    };
+    # };
 
     # nixosConfigurations = {
     #   "server" = nixpkgs.lib.nixosSystem {
@@ -222,6 +314,6 @@
       # };
     # };
 
-  };
+#   };
 
-}
+# }
