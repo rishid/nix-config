@@ -3,19 +3,66 @@
 {
   imports = [
     # disko.nixosModules.disko
-    # ../common.nix
     ./hardware-configuration.nix
     ./disko-config.nix	
   ];
 
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true; 
+  boot.loader.efi.canTouchEfiVariables = true;
+
   # Use freshest kernel
   # boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Memory management
+  modules.earlyoom.enable = true;
+
+  # powerManagement.powertop.enable = true;
+
+  programs.nix-ld.enable = true;
 
   # Network
   modules.tailscale.enable = true;
   # modules.ddns.enable = true;
   # modules.whoami.enable = true;
-  networking.extraHosts = "";
+  networking.extraHosts = ''
+    192.168.1.1   router.home
+  '';
+ 
+  # modules.cockpit.enable = true;
+
+  # modules.plex.enable = true;
+  # modules.tautulli.enable = true;
+  # modules.jellyfin.enable = true;
+
+  # modules.silverbullet.enable = true;
+
+  # modules.lunasea.enable = true;
+  # modules.sabnzbd.enable = true;
+  # modules.radarr.enable = true;
+  # modules.sonarr.enable = true;
+  # modules.lidarr.enable = true;
+  # modules.ombi.enable = true;
+
+  # modules.nextcloud.enable = false;
+  # modules.ocis.enable = true;
+  # modules.gitea.enable = true;
+  # modules.tiddlywiki.enable = true;
+  # modules.wallabag.enable = false;
+
+  # modules.freshrss.enable = true;
+  modules.tandoor-recipes.enable = false;  
+
+  # modules.immich = {
+  #   enable = true;
+  #   photosDir = "/data/photos/immich";
+  #   externalDir = "/data/photos/collections";
+  # };
+
+  # modules.photoprism = {
+  #   enable = false;
+  #   photosDir = "/data/photos";
+  # };
 
   # nixpkgs.config.allowUnfree = true;
 
@@ -38,16 +85,9 @@
   #   };
   # };
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true; 
-  boot.loader.efi.canTouchEfiVariables = true;
+  
 
-  # Memory management
-  modules.earlyoom.enable = true;
-
-  powerManagement.powertop.enable = true;
-
-  programs.nix-ld.enable = true;
+  
   # programs.ssh.startAgent = true;
 
   services.openssh.enable = true;
@@ -56,13 +96,7 @@
 
   # modules.services.docker.enable = true;
 
-  # # Modules
-  # # modules.hardware = {
-  # #   fs = {
-  # #     enable = true;
-  # #     ssd.enable = true;
-  # #   };
-  # # };
+
 
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget

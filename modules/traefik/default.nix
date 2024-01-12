@@ -77,7 +77,7 @@ in {
         http.middlewares = {
 
           # Basic Authentication is available. User/passwords are encrypted by agenix.
-          login.basicAuth.usersFile = secrets.basic-auth.path;
+          # login.basicAuth.usersFile = secrets.basic-auth.path;
 
           # Whitelist local network and VPN addresses
           local.ipWhiteList.sourceRange = [ 

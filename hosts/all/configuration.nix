@@ -5,6 +5,8 @@ let
   inherit (lib) optionalAttrs recursiveUpdate;
   inherit (this.lib) ls;
 
+  # blocklist = fetchurl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts;
+
 in {
 
   # Import all *.nix files in this directory
@@ -18,7 +20,9 @@ in {
   config = optionalAttrs (this ? config) (recursiveUpdate this.config {
 
     # Set your time zone.
-    time.timeZone = "America/Edmonton";
+    time.timeZone = lib.mkDefault "America/New_York";
+
+    i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
 
     # This value determines the NixOS release from which the default
     # settings for stateful data, like file locations and database versions
