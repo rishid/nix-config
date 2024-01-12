@@ -145,54 +145,6 @@
       ]);
     };
 
-    # FIXME nixpkgs.lib.extend
-    # myLib = (import ./lib {inherit (nixpkgs) inputs lib targetSystem;});
-    # inherit (myLib) mapModules;
-
-    # inherit (builtins) listToAttrs attrNames hasAttr filter getAttr readDir;
-    # inherit (nixpkgs.lib)
-    #   nixosSystem attrValues traceValSeqN
-    #   concatMap filterAttrs foldr getAttrFromPath hasSuffix mapAttrs'
-    #   mapAttrsToList nameValuePair recursiveUpdate removeSuffix unique;
-    # inherit (inputs.nixpkgs.lib.filesystem) listFilesRecursive;
-
-    # system = "x86_64-linux";
-  
-    # pkgs = import inputs.nixpkgs {
-    #     inherit system;
-    #     config.allowUnfree = true;
-    # };
-
-    # mkSystem =
-    #   { hostname
-    #   , user ? "rishi"
-    #   , system ? "x86_64-linux"
-    #   , extraModules ? []
-    #   , ...}:
-    #     let
-    #       systemModules = (attrValues (self.nixosModules));
-    #     in nixosSystem {
-    #       inherit system;
-    #       specialArgs = { inherit myLib inputs system; };
-    #       modules = [
-    #         { networking.hostName = hostname; }
-    #         (./hosts/${hostname})
-    #         (./users/${user}/nixos.nix)
-    #         ./.   # /default.nix        
-    #       ] ++ systemModules ++ extraModules;
-    #     };
-
-    # lib = nixpkgs:
-    #     nixpkgs.lib.extend
-    #     (final: prev: (import ./lib final));
-
-    # lib = nixpkgs.lib.extend (final: prev: {
-    #   my = import ./lib {
-    #     inherit pkgs inputs;
-    #     lib = final;
-    #   };
-    # });
-
     # pre-commit-check = pre-commit-hooks.lib.${system}.run {
     #   src = self.outPath;
     #   hooks = {
@@ -212,7 +164,7 @@
       host: mkConfiguration (this // import ./hosts/${host} // { 
         users = mkUsers host;
         admins = mkUsers host;
-        # Once you add secret manageing, can go back to using this method
+        # Once secret management is added, can go back to using this method
         # admins = mkAdmins host;
         modules = mkModules host;
       })
