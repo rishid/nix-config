@@ -5,7 +5,7 @@ let
   inherit (lib) mkIf;
 
   # public keys from the secrets dir
-  keys = config.modules.secrets.keys.users.all;
+  # keys = config.modules.secrets.keys.users.all;
 
   # agenix secrets combined secrets toggle
   secrets = config.age.secrets // { inherit (config.modules.secrets) enable; };
@@ -20,7 +20,7 @@ in {
     # shell = pkgs.zsh;
     # hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
     # password = mkIf (!secrets.enable) "root";
-    openssh.authorizedKeys.keys = keys;
+    # openssh.authorizedKeys.keys = keys;
   };
 
   # Default shell

@@ -43,14 +43,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Memory management
-  # modules.earlyoom.enable = true;
+  modules.earlyoom.enable = true;
 
-  # powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = true;
 
-  # programs.nix-ld.enable = true;
+  programs.nix-ld.enable = true;
   # programs.ssh.startAgent = true;
 
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
   # services.tailscale.enable = true;
   # services.tailscale.extraUpFlags = ["--ssh" ];
 
@@ -66,33 +66,33 @@
 
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
-  # environment.systemPackages = with pkgs; [
-  #   age
-  #   binutils # for strings and nm
-  #   cryptsetup
-  #   dig
-  #   dpkg
-  #   file
-  #   gitMinimal
-  #   htop
-  #   keychain
-  #   lm_sensors
-  #   nfs-utils
-  #   quickemu
-  #   patchelf
-  #   pciutils
-  #   powertop
-  #   rsync
-  #   silver-searcher
-  #   stdenv
-  #   stdenv.cc    
-  #   tailscale
-  #   unrar
-  #   unzip
-  #   usbutils
-  #   vim
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    age
+    binutils # for strings and nm
+    cryptsetup
+    dig
+    dpkg
+    file
+    gitMinimal
+    htop
+    keychain
+    lm_sensors
+    nfs-utils
+    quickemu
+    patchelf
+    pciutils
+    powertop
+    rsync
+    silver-searcher
+    stdenv
+    stdenv.cc    
+    tailscale
+    unrar
+    unzip
+    usbutils
+    vim
+    wget
+  ];
 
   # systemd = {
   #   services.clear-log = {

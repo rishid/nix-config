@@ -30,7 +30,8 @@ in {
     hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
     password = mkIf (!secrets.enable) "${user}";
     extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "docker" "media" "photos" ]);
-    openssh.authorizedKeys.keys = keys;
+    # openssh.authorizedKeys.keys = keys;
+    openssh.authorizedKeys.keys = config.modules.secrets.keys.users."${user}";
   }); 
 
 

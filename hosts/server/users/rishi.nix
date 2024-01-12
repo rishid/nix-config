@@ -7,11 +7,11 @@
     # firefox-wayland
   ];
 
-  programs = {
-    git.enable = true;
-    tmux.enable = true;
-    zsh.enable = true;
-  };
+  # programs = {
+    # git.enable = true;
+    # tmux.enable = true;
+    # zsh.enable = true;
+  # };
 
   # terminal du jour
   # modules.kitty.enable = true;

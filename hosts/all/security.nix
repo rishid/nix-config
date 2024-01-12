@@ -33,7 +33,8 @@ in {
 
     # Harden
     settings.PasswordAuthentication = false;
-    settings.PermitRootLogin = "yes";
+    settings.KbdInteractiveAuthentication = false;
+    # settings.PermitRootLogin = "yes";
 
     # Automatically remove stale sockets
     extraConfig = ''
