@@ -1,10 +1,6 @@
 # self: pkgs:
-# { inputs, lib, targetSystem, caches ? [], ...}:
 { inputs, caches ? [], ...}:
 let
-  # inherit (lib) attrNames listToAttrs filter removeSuffix nameValuePair hasInfix nixosSystem mapAttrsToList filterAttrs strings lists foldl' trace traceVal;
-  # inherit (builtins) readDir match pathExists attrValues;
-
   inherit (lib) ls mkAttrs mkHomeAttrs mkList mkUsers;
 
   # Personal lib
@@ -167,18 +163,6 @@ let
           ;
         };
 
-    # mapModules = path: fn: ( let 
-    #   inherit (builtins) listToAttrs; 
-    #   apply = fn: path: n: fn (path + ("/" + n));
-    #   attrsIn = path: lib.attrNames (readDir path);
-    #   isModuleIn = path: n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"));
-    #   named = n: x: nameValuePair ((removeSuffix ".nix") n) x;
-    # in
-    #   listToAttrs (map
-    #     (n: named n (apply fn path n))
-    #     (filter (isModuleIn path) (attrsIn path)))
-    # );
-
   };
 
 in {
@@ -221,18 +205,6 @@ in {
   # stdenv.targetSystem = {
   #   isDarwinArm64 = targetSystem.isDarwin && targetSystem.darwinArch == "arm64";
   # };
-
-  # mapModules = path: fn:
-  #   let 
-  #     inherit (builtins) listToAttrs; 
-  #     apply = fn: path: n: fn (path + ("/" + n));
-  #     attrsIn = path: lib.attrNames (readDir path);
-  #     isModuleIn = path: n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"));
-  #     named = n: x: nameValuePair ((removeSuffix ".nix") n) x;
-  #   in
-  #     listToAttrs (map
-  #       (n: named n (apply fn path n))
-  #       (filter (isModuleIn path) (attrsIn path)));
 
   # inputs + lib accessible from this
   inherit inputs lib;

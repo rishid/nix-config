@@ -1,4 +1,4 @@
-name: nix flake check
+name: Nix Flake check and build configurations
 
 on:
   pull_request:
@@ -61,4 +61,4 @@ jobs:
           run: nix flake check
 
         - name: Build ${{ matrix.packages }}.pdf
-          run: nix build .#${{ matrix.packages }}
+          run: nix build .#nixosConfigurations.${{ matrix.packages }}.config.system.build.toplevel

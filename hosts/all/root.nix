@@ -17,7 +17,7 @@ in {
 
   # Configure root user
   users.users.root = {
-    shell = pkgs.zsh;
+    # shell = pkgs.zsh;
     hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
     password = mkIf (!secrets.enable) "root";
     openssh.authorizedKeys.keys = keys;

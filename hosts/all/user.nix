@@ -20,17 +20,20 @@ let
 
 in {
 
+  # Since we're using fish as our shell
+  programs.fish.enable = true;
+
   # Add all users found in configurations/*/home/*
   users.users = mkAttrs this.users (user: { 
     isNormalUser = true;
-    shell = pkgs.zsh;
-    home = "/home/${user}";
-    description = user;
+    shell = pkgs.fish;
     hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
     password = mkIf (!secrets.enable) "${user}";
     extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "docker" "media" "photos" ]);
     openssh.authorizedKeys.keys = keys;
   }); 
+
+
 
   # GIDs 900-909 are custom shared groups in my flake                                                                                                                                   
   # UID/GIDs 910-999 are custom system users/groups in my flake                                                                                                                         
