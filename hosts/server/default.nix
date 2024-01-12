@@ -1,6 +1,6 @@
 {
   host = "server"; 
-  # config.modules.secrets.enable = true;
+  config.modules.secrets.enable = true;
   # config = {
   #   modules.tandoor-recipes.enable = true;
     # modules.secrets.enable = true;

@@ -18,13 +18,13 @@ in {
   # Configure root user
   users.users.root = {
     # shell = pkgs.zsh;
-    hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
-    password = mkIf (!secrets.enable) "root";
+    # hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
+    # password = mkIf (!secrets.enable) "root";
     openssh.authorizedKeys.keys = keys;
   };
 
   # Default shell
-  programs.zsh.enable = true;
+  # programs.zsh.enable = true;
 
   # Allow root to work with git on the /etc/nixos directory
   system.activationScripts.root.text = ''
