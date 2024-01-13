@@ -30,9 +30,24 @@ in {
       # Static configuration
       staticConfigOptions = {
 
-        api.insecure = false;
-        api.dashboard = true;
+        global = {
+          checkNewVersion = false;
+          sendAnonymousUsage = false;
+        };
+
+        api = {
+          dashboard = true;
+          debug = true;
+          insecure = true;
+        };
         pilot.dashboard = false;
+
+        accessLog = {
+          filePath = "/var/log/traefik/access.json";
+          format = "json";
+          fields.headers.defaultMode = "keep";
+          bufferingSize = 100;
+        };
 
         # Allow backend services to have self-signed certs
         serversTransport.insecureSkipVerify = true;
@@ -57,18 +72,27 @@ in {
           address = ":443";
         };
 
+        entryPoints = {
+          jellyfin = {
+            address = ":8096/tcp";
+          };
+          jellyfin-tls = {
+            address = ":8920/tcp";
+          };
+          transmission-dht-tcp = {
+            address = ":51413/tcp";
+          };
+          transmission-dht-udp = {
+            address = ":51413/udp";
+          };
+        };
+
         # Let's Encrypt will check CloudFlare's DNS
         certificatesResolvers.resolver-dns.acme = {
           dnsChallenge.provider = "cloudflare";
           storage = "/var/lib/traefik/cert.json";
           email = "${hostName}@${domain}";
         };
-
-        global = {
-          checkNewVersion = false;
-          sendAnonymousUsage = false;
-        };
-
       };
 
       # Dynamic configuration
@@ -108,6 +132,18 @@ in {
 
       };
     };
+
+    #services.logrotate = {
+    #  enable = true;
+    #  paths.traefik = {
+    #    enable = true;
+    #    path = "/var/log/traefik/access.*";
+    #    user = config.systemd.services.traefik.serviceConfig.User;
+    #    group = config.systemd.services.traefik.serviceConfig.Group;
+    #    frequency = "daily";
+    #    keep = 16;
+    #  };
+    #};
 
     # Enable Docker and set to backend (over podman default)
     virtualisation = {
