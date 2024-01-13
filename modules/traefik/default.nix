@@ -42,6 +42,8 @@ in {
         };
         pilot.dashboard = false;
 
+        log.level = "DEBUG";
+
         accessLog = {
           filePath = "/var/log/traefik/access.json";
           format = "json";
