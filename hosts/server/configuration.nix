@@ -17,14 +17,14 @@
   # Memory management
   modules.earlyoom.enable = true;
 
-  # powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = true;
 
   programs.nix-ld.enable = true;
 
   # Network
   modules.tailscale.enable = true;
   # modules.ddns.enable = true;
-  # modules.whoami.enable = true;
+  modules.whoami.enable = true;
   networking.extraHosts = ''
     192.168.1.1   router.home
   '';
@@ -101,61 +101,45 @@
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
   environment.systemPackages = with pkgs; [
-    age
-    binutils # for strings and nm
-    cryptsetup
-    dig
-    dpkg
-    file
-    gitMinimal
-    htop
-    keychain
+    age    
     lm_sensors
     nfs-utils
     quickemu
-    patchelf
-    pciutils
-    powertop
-    rsync
-    silver-searcher
+    patchelf    
+    powertop    
     stdenv
     stdenv.cc    
-    tailscale
-    unrar
-    unzip
-    usbutils
-    vim
-    wget
+    tailscale    
   ];
 
-  # systemd = {
-  #   services.clear-log = {
-  #     description = "Clear >2 month-old logs every week";
-  #     serviceConfig = {
-  #       Type = "oneshot";
-  #       ExecStart = "${pkgs.systemd}/bin/journalctl --vacuum-time=60d";
-  #     };
-  #   };
-  #   timers.clear-log = {
-  #     wantedBy = [ "timers.target" ];
-  #     partOf = [ "clear-log.service" ];
-  #     timerConfig.OnCalendar = "weekly UTC";
-  #   };
+  systemd = {
+    services.clear-log = {
+      description = "Clear >2 month-old logs every week";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.systemd}/bin/journalctl --vacuum-time=60d";
+      };
+    };
+    timers.clear-log = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "clear-log.service" ];
+      timerConfig.OnCalendar = "weekly UTC";
+    };
  
-  #   # force enable ASPM. Newer kernels do not enable by default.
-  #   services.realtek-aspm = {
-  #     enable =
-  #       lib.versionAtLeast config.boot.kernelPackages.kernel.version "5.5";
-  #     description =
-  #       "Enable power-saving states for Realtek NIC";
-  #     wantedBy = [ "multi-user.target" ];
-  #     serviceConfig.Type = "oneshot";
-  #     # the device ID and states that need to be enabled may change per device
-  #     script = ''
-  #       echo 1 | tee /sys/bus/pci/drivers/r8169/0000\:02\:00.0/link/l1_2_aspm
-  #     '';
-  #   };
-  # };
+    # force enable ASPM. Newer kernels do not enable by default.
+    services.realtek-aspm = {
+      # enable =
+      #   lib.versionAtLeast config.boot.kernelPackages.kernel.version "5.5";
+      description =
+        "Enable power-saving states for Realtek NIC";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig.Type = "oneshot";
+      # the device ID and states that need to be enabled may change per device
+      script = ''
+        echo 1 | tee /sys/bus/pci/drivers/r8169/0000\:02\:00.0/link/l1_2_aspm
+      '';
+    };
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
