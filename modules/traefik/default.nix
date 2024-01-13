@@ -45,7 +45,7 @@ in {
         log.level = "DEBUG";
 
         accessLog = {
-          filePath = "/var/log/traefik/access.json";
+          filePath = "/var/lib/traefik/access.json";
           format = "json";
           fields.headers.defaultMode = "keep";
           bufferingSize = 100;
