@@ -101,13 +101,15 @@
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
   environment.systemPackages = with pkgs; [
-    age    
+    age
+    fio  
     lm_sensors
     nfs-utils
     quickemu
+    parted
     patchelf    
     powertop    
-    stdenv
+    stdenv    
     stdenv.cc    
     tailscale    
   ];
@@ -124,6 +126,20 @@
       wantedBy = [ "timers.target" ];
       partOf = [ "clear-log.service" ];
       timerConfig.OnCalendar = "weekly UTC";
+    };
+
+    # Turn off power at night if I forget. Remove once running 24x7
+    services.sched-shutdown = {
+      description = "Scheduled shutdown";
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.systemd}/bin/systemctl --force poweroff";
+      };
+    };
+    timers.sched-shutdown = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "sched-shutdown.service" ];
+      timerConfig.OnCalendar = "*-*-* 22:00:00";
     };
  
     # force enable ASPM. Newer kernels do not enable by default.
