@@ -35,12 +35,7 @@ in {
           sendAnonymousUsage = false;
         };
 
-        api = {
-          dashboard = true;
-          debug = true;
-          insecure = true;
-        };
-        pilot.dashboard = false;
+        api.dashboard = true;
 
         log.level = "DEBUG";
 
@@ -62,7 +57,7 @@ in {
 
         # Listen on port 80 and redirect to port 443
         entryPoints.web = {
-          address = ":80";
+          address = ":81";
           http.redirections.entrypoint = {
             to = "websecure";
             scheme = "https";
@@ -71,23 +66,23 @@ in {
 
         # Run everything on 443
         entryPoints.websecure = {
-          address = ":443";
+          address = ":444";
         };
 
-        entryPoints = {
-          jellyfin = {
-            address = ":8096/tcp";
-          };
-          jellyfin-tls = {
-            address = ":8920/tcp";
-          };
-          transmission-dht-tcp = {
-            address = ":51413/tcp";
-          };
-          transmission-dht-udp = {
-            address = ":51413/udp";
-          };
-        };
+        # entryPoints = {
+        #   jellyfin = {
+        #     address = ":8096/tcp";
+        #   };
+        #   jellyfin-tls = {
+        #     address = ":8920/tcp";
+        #   };
+        #   transmission-dht-tcp = {
+        #     address = ":51413/tcp";
+        #   };
+        #   transmission-dht-udp = {
+        #     address = ":51413/udp";
+        #   };
+        # };
 
         # Let's Encrypt will check CloudFlare's DNS
         certificatesResolvers.resolver-dns.acme = {
@@ -100,21 +95,21 @@ in {
       # Dynamic configuration
       dynamicConfigOptions = {
 
-        http.middlewares = {
+        # http.middlewares = {
 
-          # Basic Authentication is available. User/passwords are encrypted by agenix.
-          # login.basicAuth.usersFile = secrets.basic-auth.path;
+        #   # Basic Authentication is available. User/passwords are encrypted by agenix.
+        #   # login.basicAuth.usersFile = secrets.basic-auth.path;
 
-          # Whitelist local network and VPN addresses
-          local.ipWhiteList.sourceRange = [ 
-            "127.0.0.1/32"   # local host
-            "192.168.0.0/16" # local network
-            "10.0.0.0/8"     # local network
-            "172.16.0.0/12"  # docker network
-            "100.64.0.0/10"  # vpn network
-          ];
+        #   # Whitelist local network and VPN addresses
+        #   local.ipWhiteList.sourceRange = [ 
+        #     "127.0.0.1/32"   # local host
+        #     "192.168.0.0/16" # local network
+        #     "10.0.0.0/8"     # local network
+        #     "172.16.0.0/12"  # docker network
+        #     "100.64.0.0/10"  # vpn network
+        #   ];
 
-        };
+        # };
 
         # Set up wildcard domain certificates for both *.hostname.domain and *.local.domain
         http.routers = {
@@ -126,7 +121,7 @@ in {
               main = "${hostName}.${domain}"; 
               sans = "*.${hostName}.${domain},local.${domain},*.local.${domain}"; 
             }];
-            middlewares = "local@file";
+            # middlewares = "local@file";
             service = "api@internal";
           };
           
@@ -157,7 +152,7 @@ in {
     };
 
     # Open up the firewall for http and https
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
+    networking.firewall.allowedTCPPorts = [ 80 81 443 444 ];
 
   };
 

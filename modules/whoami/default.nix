@@ -21,7 +21,7 @@ in {
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.whoami.rule=Host(`whoami.${hostName}.${domain}`) || Host(`whoami.local.${domain}`)"
         "--label=traefik.http.routers.whoami.tls.certresolver=resolver-dns"
-        "--label=traefik.http.routers.whoami.middlewares=local@file"
+        # "--label=traefik.http.routers.whoami.middlewares=local@file"
       ];
       environmentFiles = [ secrets.traefik-env.path ];
       environment = {
