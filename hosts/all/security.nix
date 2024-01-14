@@ -59,9 +59,9 @@ in {
   };
 
   # MOTD
+  # settings: https://github.com/rust-motd/rust-motd/blob/main/README.md#configuration
   programs.rust-motd = {
     enable = true;
-    # enableMotdInSSHD = true;
     settings = {
       global = {};
       banner = {
