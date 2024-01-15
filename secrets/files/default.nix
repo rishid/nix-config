@@ -5,5 +5,5 @@
 
   traefik-env = ./traefik-env.age;
 
-  transmission-ovpn = ./tranmission-ovpn.age
+  transmission-ovpn = ./transmission-ovpn.age;
 }

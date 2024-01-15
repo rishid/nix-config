@@ -53,7 +53,7 @@ in {
           group = "transmission";
           description = "transmission daemon user";
           home = cfg.dataDir;
-          uid = config.ids.uids.transmission;
+          uid = config.ids.uids.tranmission;
         };
 
       # Add admins to the transmission group
@@ -61,7 +61,7 @@ in {
 
       # Create group
       groups.transmission = {
-        gid = config.ids.gids.transmission;
+        gid = config.ids.gids.tranmission;
       };
 
     };
@@ -69,8 +69,8 @@ in {
     # Ensure data directory exists
     file."${cfg.dataDir}" = {
       type = "dir"; mode = 775; 
-      user = config.users.users.transmission.uid; 
-      group = config.users.groups.transmission.gid;
+      user = config.ids.uids.transmission; 
+      group = config.ids.gids.transmission;
     };
 
     # Enable reverse proxy
@@ -81,83 +81,85 @@ in {
       hostname = "transmission-ovpn";
 
       # Run as transmission user
-      user = with config.ids; "${toString uids.transmission}:${toString gids.transmission}";
+      # user = with config.ids; "${toString uids.transmission}:${toString gids.transmission}";
 
       environmentFiles = [ secrets.transmission-ovpn.path ];
 
       environment = {
-        OPENVPN_PROVIDER=PIA
-        OPENVPN_CONFIG=switzerland
+        PUID = "${toString config.ids.uids.transmission}";
+        PGID = "${toString config.ids.gids.transmission}";
+        OPENVPN_PROVIDER= "PIA";
+        OPENVPN_CONFIG= "switzerland";
         # Set in secrets env file
         # OPENVPN_USERNAME=
         # OPENVPN_PASSWORD=
-        OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 30 
-        OVERRIDE_DNS_1=1.1.1.1
-        OVERRIDE_DNS_2=8.8.8.8      
-        LOCAL_NETWORK=192.168.1.0/24
+        OPENVPN_OPTS= "--inactive 3600 --ping 10 --ping-exit 30";
+        OVERRIDE_DNS_1= "1.1.1.1";
+        OVERRIDE_DNS_2= "8.8.8.8";
+        LOCAL_NETWORK= "192.168.1.0/24";
         CREATE_TUN_DEVICE = "false";
-        LOG_TO_STDOUT=true
+        LOG_TO_STDOUT= "true";
 
-        #TRANSMISSION_BIND_ADDRESS_IPV4=0.0.0.0
-        #TRANSMISSION_BIND_ADDRESS_IPV6=::
-        #TRANSMISSION_BLOCKLIST_ENABLED=false
-        #TRANSMISSION_BLOCKLIST_URL=http://www.example.com/blocklist
-        #TRANSMISSION_CACHE_SIZE_MB=4
-        #TRANSMISSION_DHT_ENABLED=true
-        #TRANSMISSION_DOWNLOAD_DIR=/data/completed
-        TRANSMISSION_DOWNLOAD_QUEUE_ENABLED=true
-        TRANSMISSION_DOWNLOAD_QUEUE_SIZE=5
-        #TRANSMISSION_ENCRYPTION=1
-        TRANSMISSION_IDLE_SEEDING_LIMIT=360
-        TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=false
-        #TRANSMISSION_INCOMPLETE_DIR=/data/incomplete
-        #TRANSMISSION_INCOMPLETE_DIR_ENABLED=true
-        #TRANSMISSION_LPD_ENABLED=false
-        #TRANSMISSION_MESSAGE_LEVEL=2
+        #TRANSMISSION_BIND_ADDRESS_IPV4= "0.0.0.0";
+        #TRANSMISSION_BIND_ADDRESS_IPV6= "::"
+        #TRANSMISSION_BLOCKLIST_ENABLED= "false";
+        #TRANSMISSION_BLOCKLIST_URL= "http://www.example.com/blocklist";
+        #TRANSMISSION_CACHE_SIZE_MB= "4";
+        #TRANSMISSION_DHT_ENABLED= "true";
+        #TRANSMISSION_DOWNLOAD_DIR= "/data/completed";
+        TRANSMISSION_DOWNLOAD_QUEUE_ENABLED= "true";
+        TRANSMISSION_DOWNLOAD_QUEUE_SIZE= "5";
+        #TRANSMISSION_ENCRYPTION= "1";
+        TRANSMISSION_IDLE_SEEDING_LIMIT= "360";
+        TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED= "false";
+        #TRANSMISSION_INCOMPLETE_DIR= "/data/incomplete";
+        #TRANSMISSION_INCOMPLETE_DIR_ENABLED= "true";
+        #TRANSMISSION_LPD_ENABLED= "false";
+        #TRANSMISSION_MESSAGE_LEVEL= "2";
         #TRANSMISSION_PEER_CONGESTION_ALGORITHM=
-        #TRANSMISSION_PEER_ID_TTL_HOURS=6
-        TRANSMISSION_PEER_LIMIT_GLOBAL=1000
-        TRANSMISSION_PEER_LIMIT_PER_TORRENT=300
-        #TRANSMISSION_PEER_PORT=51413
-        #TRANSMISSION_PEER_PORT_RANDOM_HIGH=65535
-        #TRANSMISSION_PEER_PORT_RANDOM_LOW=49152
-        #TRANSMISSION_PEER_PORT_RANDOM_ON_START=false
-        #TRANSMISSION_PEER_SOCKET_TOS=default
-        #TRANSMISSION_PEX_ENABLED=true
-        #TRANSMISSION_PORT_FORWARDING_ENABLED=false
-        #TRANSMISSION_PREALLOCATION=1
-        #TRANSMISSION_PREFETCH_ENABLED=1
-        #TRANSMISSION_QUEUE_STALLED_ENABLED=true
-        #TRANSMISSION_QUEUE_STALLED_MINUTES=30
-        TRANSMISSION_RATIO_LIMIT=2
-        TRANSMISSION_RATIO_LIMIT_ENABLED=true
-        #TRANSMISSION_RENAME_PARTIAL_FILES=true
-        #TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=false
-        #TRANSMISSION_RPC_BIND_ADDRESS=0.0.0.0
-        #TRANSMISSION_RPC_ENABLED=true
-        TRANSMISSION_RPC_PASSWORD=password
-        #TRANSMISSION_RPC_PORT=9091
-        TRANSMISSION_RPC_URL=/transmission/
-        #TRANSMISSION_RPC_USERNAME=username
-        #TRANSMISSION_RPC_WHITELIST=127.0.0.1
-        #TRANSMISSION_RPC_WHITELIST_ENABLED=false
-        #TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED=true
-        #TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true
-        #TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/etc/transmission_unrar.sh
-        TRANSMISSION_SEED_QUEUE_ENABLED=true
-        TRANSMISSION_SEED_QUEUE_SIZE=20
-        #TRANSMISSION_SPEED_LIMIT_DOWN=100
-        #TRANSMISSION_SPEED_LIMIT_DOWN_ENABLED=false
-        #TRANSMISSION_SPEED_LIMIT_UP=500
-        TRANSMISSION_SPEED_LIMIT_UP_ENABLED=false
-        #TRANSMISSION_START_ADDED_TORRENTS=true
-        TRANSMISSION_TRASH_ORIGINAL_TORRENT_FILES=true
-        #TRANSMISSION_UMASK=2
-        TRANSMISSION_UPLOAD_SLOTS_PER_TORRENT=50
-        #TRANSMISSION_UTP_ENABLED=true
-        TRANSMISSION_WATCH_DIR=/data/watch
-        TRANSMISSION_WATCH_DIR_ENABLED=true
-        #TRANSMISSION_HOME=/data/transmission-home
+        #TRANSMISSION_PEER_ID_TTL_HOURS= "6";
+        TRANSMISSION_PEER_LIMIT_GLOBAL= "1000";
+        TRANSMISSION_PEER_LIMIT_PER_TORRENT= "300";
+        #TRANSMISSION_PEER_PORT= "51413";
+        #TRANSMISSION_PEER_PORT_RANDOM_HIGH= "65535";
+        #TRANSMISSION_PEER_PORT_RANDOM_LOW= "49152";
+        #TRANSMISSION_PEER_PORT_RANDOM_ON_START= "false";
+        #TRANSMISSION_PEER_SOCKET_TOS= "default";
+        #TRANSMISSION_PEX_ENABLED= "true";
+        #TRANSMISSION_PORT_FORWARDING_ENABLED= "false";
+        #TRANSMISSION_PREALLOCATION= "1";
+        #TRANSMISSION_PREFETCH_ENABLED= "1";
+        #TRANSMISSION_QUEUE_STALLED_ENABLED= "true";
+        #TRANSMISSION_QUEUE_STALLED_MINUTES= "30";
+        TRANSMISSION_RATIO_LIMIT= "2";
+        TRANSMISSION_RATIO_LIMIT_ENABLED= "true";
+        #TRANSMISSION_RENAME_PARTIAL_FILES= "true";
+        #TRANSMISSION_RPC_AUTHENTICATION_REQUIRED= "false";
+        #TRANSMISSION_RPC_BIND_ADDRESS= "0.0.0.0";
+        #TRANSMISSION_RPC_ENABLED= "true";
+        TRANSMISSION_RPC_PASSWORD= "password";
+        #TRANSMISSION_RPC_PORT= "9091";
+        TRANSMISSION_RPC_URL= "/transmission/";
+        #TRANSMISSION_RPC_USERNAME= "username";
+        #TRANSMISSION_RPC_WHITELIST= "127.0.0.1";
+        #TRANSMISSION_RPC_WHITELIST_ENABLED= "false";
+        #TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED= "true";
+        #TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED= "true";
+        #TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME= "/etc/transmission_unrar.sh";
+        TRANSMISSION_SEED_QUEUE_ENABLED= "true";
+        TRANSMISSION_SEED_QUEUE_SIZE= "20";
+        #TRANSMISSION_SPEED_LIMIT_DOWN= "100";
+        #TRANSMISSION_SPEED_LIMIT_DOWN_ENABLED= "false";
+        #TRANSMISSION_SPEED_LIMIT_UP= "500";
+        TRANSMISSION_SPEED_LIMIT_UP_ENABLED= "false";
+        #TRANSMISSION_START_ADDED_TORRENTS= "true";
+        TRANSMISSION_TRASH_ORIGINAL_TORRENT_FILES= "true";
+        #TRANSMISSION_UMASK= "2";
+        TRANSMISSION_UPLOAD_SLOTS_PER_TORRENT= "50";
+        #TRANSMISSION_UTP_ENABLED= "true";
+        TRANSMISSION_WATCH_DIR= "/data/watch";
+        TRANSMISSION_WATCH_DIR_ENABLED= "true";
+        #TRANSMISSION_HOME= "/data/transmission-home";
       };
 
       volumes = [
