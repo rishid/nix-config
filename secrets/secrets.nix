@@ -33,5 +33,12 @@ with (import ./keys); {
   # CF_DNS_API_TOKEN=xxxxxx
   # ---------------------------------------------------------------------------
   "files/cloudflare-env.age".publicKeys = all;
+
+  # CloudFlare DNS API Token used by Traefik & Let's Encrypt
+  # ---------------------------------------------------------------------------
+  # OPENVPN_USERNAME=xxxxxx
+  # OPENVPN_PASSWORD=xxxxxx
+  # ---------------------------------------------------------------------------
+  "files/transmission-ovpn.age".publicKeys = all;
   
 }
