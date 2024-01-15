@@ -165,6 +165,7 @@ in {
       ensureDatabases = [ "immich" ];
 
       # Allow connections from any docker IP addresses
+      # format: type database DBuser origin-address auth-method
       authentication = mkBefore "host immich immich 172.16.0.0/12 md5";
 
       # Postgres extension pgvecto.rs required since Immich 1.91.0
