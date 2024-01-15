@@ -99,8 +99,8 @@
       #   (final: prev: mkAttrs ./overlays/bin ( name: prev.callPackage ./overlays/bin/${name} {} ))
 
       #   # Additional packages
-      #   (final: prev: import ./overlays/pkgs { inherit final prev; } )
-      #   (final: prev: mkAttrs ./overlays/pkgs ( name: prev.callPackage ./overlays/pkgs/${name} {} ))
+        (final: prev: import ./overlays/pkgs { inherit final prev; } )
+        (final: prev: mkAttrs ./overlays/pkgs ( name: prev.callPackage ./overlays/pkgs/${name} {} ))
 
         # Nix User Repositories 
         (final: prev: { nur = import inputs.nur { pkgs = final; nurpkgs = final; }; })

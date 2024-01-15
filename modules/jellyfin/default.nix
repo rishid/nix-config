@@ -33,6 +33,13 @@ in {
 
     users.groups.media.members = [ config.services.jellyfin.user ];
 
+    # for hardware acceleration
+    users.users.${config.services.jellyfin.user}.extraGroups =
+      [ "video" "render" ];
+    systemd.services.jellyfin.serviceConfig = {
+      DeviceAllow = lib.mkForce [ "/dev/dri/renderD128" ];
+    };
+
     # Enable reverse proxy
     modules.traefik.enable = true;
 
@@ -41,7 +48,7 @@ in {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
         tls.certresolver = "resolver-dns";
-        middlewares = "local@file";
+        # middlewares = "local@file";
         service = "jellyfin";
       };
       services.jellyfin.loadBalancer.servers = [{ url = "http://127.0.0.1:${port}"; }];

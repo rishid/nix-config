@@ -13,6 +13,47 @@ let
   inherit (lib.strings) toInt;
   inherit (this.lib) extraGroups ls;
 
+  dbuser = "immich";
+  dbname = "immich";
+  dbPasswordFile = config.age.secrets.immich-db-password.path;
+  containersHost = "localhost";
+
+  inherit (config.users.users.immich) uid;
+  inherit (config.users.groups.immich) gid;
+
+  immichBase = {
+    user = "${toString uid}:${toString gid}";
+    environment = {
+      PUID = toString uid;
+      PGID = toString gid;
+      NODE_ENV = "production";
+      DB_HOSTNAME = containersHost;
+      DB_PORT = toString config.services.postgresql.port;
+      DB_USERNAME = dbuser;
+      DB_DATABASE_NAME = dbname;
+      REDIS_HOSTNAME = containersHost;
+      REDIS_PORT = toString config.services.redis.servers.immich.port;
+      TYPESENSE_HOST = "immich-typesense";
+    };
+    # only secrets need to be included, e.g. DB_PASSWORD, JWT_SECRET, MAPBOX_KEY
+    environmentFiles = [
+      config.age.secrets.immich-env.path
+      config.age.secrets.immich-typesense-env.path
+    ];
+    extraOptions = [
+      "--uidmap=0:65534:1"
+      "--gidmap=0:65534:1"
+      "--uidmap=${toString uid}:${toString uid}:1"
+      "--gidmap=${toString gid}:${toString gid}:1"
+      "--network=host"
+      "--add-host=immich-server:127.0.0.1"
+      "--add-host=immich-microservices:127.0.0.1"
+      "--add-host=immich-machine-learning:127.0.0.1"
+      "--add-host=immich-typesense:127.0.0.1"
+      "--label=io.containers.autoupdate=registry"
+    ];
+  };
+
 in {
 
   # Service order reference:
@@ -71,8 +112,8 @@ in {
 
     # Unused uid/gid snagged from this list:
     # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/misc/ids.nix
-    ids.uids.immich = 911;
-    ids.gids.immich = 911;
+    ids.uids.immich = 918;
+    ids.gids.immich = 918;
 
     users = {
       users = {

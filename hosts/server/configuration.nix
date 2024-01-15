@@ -43,14 +43,14 @@
   modules.bazarr.enable = true;
   modules.prowlarr.enable = true;
   # modules.unpackerr.enable = true
-  # modules.immich = {
-  #   enable = true;
-  #   photosDir = "/data/photos/immich";
-  #   externalDir = "/data/photos/collections";
-  # };
+  modules.immich = {
+    enable = true;
+    photosDir = "/data/photos/immich";
+    externalDir = "/data/photos/collections";
+  };
   
   # TODO:
-  # oauth
+  # oauth/authelia
   # file manager
   # usb backup
   # camera auto download
