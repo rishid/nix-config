@@ -21,27 +21,46 @@
 
   programs.nix-ld.enable = true;
 
-  # Network
-  modules.tailscale.enable = true;
-  # modules.ddns.enable = true;
-  modules.whoami.enable = true;
   networking.extraHosts = ''
     192.168.1.1   router.home
   '';
- 
-  # modules.cockpit.enable = true;
 
-  # modules.plex.enable = true;
+  # Network
+  modules.tailscale.enable = true;
+  # modules.ddns.enable = true; # if doesn't work, another option is to use  ddns-go
+
+  modules.whoami.enable = true;
+  
+  modules.plex.enable = true;
+
+  modules.transmission-ovpn.enable = true;
+  modules.radarr.enable = true;
+  modules.sonarr.enable = true;
+  modules.overseerr = {
+    enable = true;
+    hostName = "requests.${config.networking.fqdn}";
+  };
+  # modules.bazarr.enable = true;
+  # modules.prowlarr.enable = true;
+  # modules.unpackerr.enable = true
+  # modules.immich = {
+  #   enable = true;
+  #   photosDir = "/data/photos/immich";
+  #   externalDir = "/data/photos/collections";
+  # };
+  
+  # TODO:
+  # oauth
+  # file manager
+  # usb backup
+  # camera auto download
+
+
   # modules.tautulli.enable = true;
-  # modules.jellyfin.enable = true;
-
   # modules.silverbullet.enable = true;
-
+  # modules.tandoor-recipes.enable = false; 
   # modules.lunasea.enable = true;
   # modules.sabnzbd.enable = true;
-  # modules.radarr.enable = true;
-  # modules.sonarr.enable = true;
-  # modules.lidarr.enable = true;
   # modules.ombi.enable = true;
 
   # modules.nextcloud.enable = false;
@@ -51,13 +70,14 @@
   # modules.wallabag.enable = false;
 
   # modules.freshrss.enable = true;
-  modules.tandoor-recipes.enable = false;  
+ 
+  # modules.cockpit.enable = true;
 
-  # modules.immich = {
+  # modules.auto-index = {
   #   enable = true;
-  #   photosDir = "/data/photos/immich";
-  #   externalDir = "/data/photos/collections";
-  # };
+  #   indexDir = "/data";
+  #   hostname = "index";
+  # }
 
   # modules.photoprism = {
   #   enable = false;

@@ -40,7 +40,7 @@ in {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
         tls.certresolver = "resolver-dns";
-        middlewares = "local@file";
+        # middlewares = "local@file";
         service = "plex";
       };
       services.plex.loadBalancer.servers = [{ url = "http://127.0.0.1:${port}"; }];
@@ -48,9 +48,9 @@ in {
 
     # https://www.plex.tv/claim/
     # sudo plex-claim-server claim-xxxxxxxxxxxxxxxxxxxx
-    environment.systemPackages = [
-      ( pkgs.writeShellScriptBin "plex-claim-server" (builtins.readFile ./plex-claim-server.sh) )
-    ];
+    # environment.systemPackages = [
+    #   ( pkgs.writeShellScriptBin "plex-claim-server" (builtins.readFile ./plex-claim-server.sh) )
+    # ];
 
     # Add admins to the plex group
     users.users = extraGroups this.admins [ "plex" ];

@@ -15,7 +15,7 @@ in {
     services.traefik.dynamicConfigOptions.http = {
       routers.unifi-gateway = {
         rule = "Host(`${hostName}`)";
-        middlewares = "local@file";
+        # middlewares = "local@file";
         tls.certresolver = "resolver-dns";
         service = "unifi-gateway";
       };

@@ -6,8 +6,6 @@ let
   cfg = config.modules.tandoor-recipes;
   secrets = config.age.secrets;
 
-  isPublic = if cfg.public == "" then false else true;
-  hostName = if isPublic then cfg.public else cfg.hostName;
   port = "8096";
 
   mediaDir = "/var/lib/private/tandoor-recipes/recipes";
@@ -25,13 +23,13 @@ in {
     hostName = mkOption {
       type = types.str;
       default = "tandoor.${config.networking.fqdn}";
-      description = "FQDN for the FreshRSS instance";
-    };
+      description = "FQDN for the Tandoor instance";
+    };   
 
-    public = mkOption { 
-      type = types.str; 
-      default = ""; 
-    };
+    port = mkOption {
+      type = types.port;
+      default = 8096; 
+    }; 
 
     package = mkOption {
       type = types.package;
@@ -50,10 +48,11 @@ in {
     # traefik proxy serving nginx proxy
     services.traefik.dynamicConfigOptions.http = {
       routers.tandoor = {
-        rule = "Host(`${hostName}`)";
+        entrypoints = "websecure";
+        rule = "Host(`${cfg.hostName}`)";
         tls.certresolver = "resolver-dns";
-        tls.domains = mkIf (isPublic) [{ main = "${hostName}"; sans = "*.${hostName}"; }];
-        middlewares = [ "tandoor@file" ] ++ ( if isPublic then [] else [ "local@file" ] );
+        # tls.domains = mkIf (isPublic) [{ main = "${cfg.hostName}"; sans = "*.${cfg.hostName}"; }];
+        # middlewares = [ "tandoor@file" ] ++ ( if isPublic then [] else [ "local@file" ] );
         service = "tandoor";
       };
       middlewares.tandoor = {
@@ -72,7 +71,7 @@ in {
       location / {
         proxy_pass http://127.0.0.1:${port};
         proxy_set_header X-Forwarded-Proto https;
-        proxy_set_header Host ${hostName};
+        proxy_set_header Host ${cfg.hostName};
       }
     '';
 
@@ -109,7 +108,7 @@ in {
     systemd.services.tandoor-recipes = {
 
       # Secret environment variables (SMTP credentials)
-      serviceConfig.EnvironmentFile = secrets.smtp-env.path; 
+      # serviceConfig.EnvironmentFile = secrets.smtp-env.path; 
 
       # Ensure media directory exists (important for nginx's bind mount)
       preStart = mkBefore "mkdir -p ${mediaDir}"; 

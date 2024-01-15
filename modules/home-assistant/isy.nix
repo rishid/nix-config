@@ -15,7 +15,7 @@ in {
       };
       routers.isy = {
         rule = "Host(`${cfg.isyHostName}`)";
-        middlewares = [ "local@file" "isy@file" ];
+        # middlewares = [ "local@file" "isy@file" ];
         tls.certresolver = "resolver-dns";
         service = "isy";
       };

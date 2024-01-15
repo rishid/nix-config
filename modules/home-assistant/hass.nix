@@ -21,7 +21,7 @@ in {
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.hass.rule=Host(`${cfg.hostName}`)"
         "--label=traefik.http.routers.hass.tls.certresolver=resolver-dns"
-        "--label=traefik.http.routers.hass.middlewares=local@file"
+        # "--label=traefik.http.routers.hass.middlewares=local@file"
         "--label=traefik.http.services.hass.loadbalancer.server.port=8123"
         "--label=traefik.http.services.hass.loadbalancer.server.scheme=http"
 

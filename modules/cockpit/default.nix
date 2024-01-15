@@ -51,7 +51,7 @@ in {
       routers.cockpit = {
         rule = "Host(`${cfg.hostName}`)";
         tls.certresolver = "resolver-dns";
-        middlewares = [ "local@file" ];
+        # middlewares = [ "local@file" ];
         service = "cockpit";
       };
       services.cockpit.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString cfg.port}"; }];
