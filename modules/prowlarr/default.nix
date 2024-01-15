@@ -2,9 +2,9 @@
 { config, lib, pkgs, this, ... }:
 
 let
-
-  image = "lscr.io/linuxserver/prowlarr";      
-  version = "develop";
+   
+  image = "ghcr.io/onedr0p/prowlarr-develop";
+  version = "rolling";
 
   cfg = config.modules.prowlarr;
   inherit (lib) mkIf mkOption options types;
@@ -72,6 +72,7 @@ in {
     # NixOS prowlarr does not support changing settings
     virtualisation.oci-containers.containers.prowlarr = {
       image = "${image}:${version}";
+      user = "${toString config.ids.uids.prowlarr}:${toString config.ids.gids.prowlarr}";
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
