@@ -33,6 +33,7 @@ documentation](https://github.com/ryantm/agenix#reference).
 ## Adding a new or editing an existing secret
 1. Add a new line to secrets.nix with the new file name
 2. Using this directory as your PWD, run `nix run github:ryantm/agenix -- -e <NewSecret.age>`
+3. Add a new line to files/default.nix
 
 ## Re-keying all secrets if a new host or user ssh key is added
 TODO
