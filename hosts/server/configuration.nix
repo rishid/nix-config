@@ -41,7 +41,7 @@
     hostName = "requests.${config.networking.fqdn}";
   };
   # modules.bazarr.enable = true;
-  # modules.prowlarr.enable = true;
+  modules.prowlarr.enable = true;
   # modules.unpackerr.enable = true
   # modules.immich = {
   #   enable = true;

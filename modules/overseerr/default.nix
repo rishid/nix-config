@@ -86,8 +86,7 @@ in {
         "--label=traefik.http.routers.overseerr.rule=Host(`${cfg.hostName}`)"
         "--label=traefik.http.routers.overseerr.tls.certresolver=resolver-dns"
         # "--label=traefik.http.routers.overseerr.middlewares=local@file"
-        "--label=traefik.http.routers.overseerr-rtr.service=overseerr-svc"
-        "--label=traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
+        "--label=traefik.http.services.overseerr.loadbalancer.server.port=5055"
       ];
 
       volumes = [ "${cfg.dataDir}:/app/config" ];

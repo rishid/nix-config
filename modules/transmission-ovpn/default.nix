@@ -6,6 +6,7 @@ let
   # https://github.com/haugene/docker-transmission-openvpn
   image = "docker.io/haugene/transmission-openvpn";      
   version = "latest";
+  port = 9091;
 
   cfg = config.modules.transmission-ovpn;
   secrets = config.age.secrets;
@@ -13,7 +14,6 @@ let
   inherit (lib) mkIf mkOption options types strings mkBefore;
   inherit (builtins) toString;
   inherit (this.lib) extraGroups;
-
 
 in {
 
@@ -41,8 +41,8 @@ in {
 
     # Unused uid/gid snagged from this list:
     # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/misc/ids.nix
-    ids.uids.tranmission = 914;
-    ids.gids.tranmission = 914;
+    ids.uids.transmission = lib.mkForce 914;
+    ids.gids.transmission = lib.mkForce 914;
 
     users = {
       users = {
@@ -53,7 +53,7 @@ in {
           group = "transmission";
           description = "transmission daemon user";
           home = cfg.dataDir;
-          uid = config.ids.uids.tranmission;
+          uid = config.ids.uids.transmission;
         };
 
       # Add admins to the transmission group
@@ -61,7 +61,7 @@ in {
 
       # Create group
       groups.transmission = {
-        gid = config.ids.gids.tranmission;
+        gid = config.ids.gids.transmission;
       };
 
     };
@@ -181,7 +181,7 @@ in {
         "traefik.http.routers.transmission.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.transmission.middlewares" = "chain-authelia@file";        
         "traefik.http.routers.transmission.tls.certresolver" = "resolver-dns";
-        "traefik.http.services.transmission.loadbalancer.server.port" = "9091";
+        "traefik.http.services.transmission.loadbalancer.server.port" = "${toString port}";
       };
 
       # Traefik labels
@@ -190,12 +190,6 @@ in {
       # https://github.com/nikitawootten/infra/blob/c56abade2ee7edfe96e8b50ed5d963bc6f43e928/hosts/hades/lab/infra/traefik.nix#L95
       extraOptions = [
         "--pull=always"
-        # "--label=traefik.enable=true"
-        # "--label=traefik.http.routers.transmission-ovpn.rule=Host(`${cfg.hostName}`)"
-        # "--label=traefik.http.routers.transmission-ovpn.tls.certresolver=resolver-dns"
-        # "--label=traefik.http.routers.transmission-ovpn.middlewares=local@file"
-        # "--label=traefik.http.routers.transmission-vpn-rtr.service=transmission-vpn-svc"
-        # "--label=traefik.http.services.transmission-vpn-svc.loadbalancer.server.port=9091"
         "--cap-add=NET_ADMIN"
         "--device=/dev/net/tun:/dev/net/tun"
         "--dns=1.1.1.1"
