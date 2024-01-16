@@ -15,7 +15,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "lunasea.${config.networking.fqdn}";
+      default = "lunasea.${config.networking.domain}";
       description = "FQDN for the LunaSea instance";
     };
 

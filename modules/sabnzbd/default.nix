@@ -13,7 +13,7 @@ in {
     enable = options.mkEnableOption "sabnzbd"; 
     hostName = mkOption {
       type = types.str;
-      default = "sab.${config.networking.fqdn}";
+      default = "sab.${config.networking.domain}";
       description = "FQDN for the sabnzd instance";
     };
     port = mkOption {

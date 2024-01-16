@@ -23,7 +23,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "trans.${config.networking.fqdn}";
+      default = "trans.${config.networking.domain}";
       description = "FQDN for the Transmission instance";
     };
 

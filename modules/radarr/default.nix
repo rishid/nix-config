@@ -17,7 +17,7 @@ in {
     enable = options.mkEnableOption "radarr"; 
     hostName = mkOption {
       type = types.str; 
-      default = "radarr.${config.networking.fqdn}";
+      default = "radarr.${config.networking.domain}";
     };
     port = mkOption {
       type = types.port;

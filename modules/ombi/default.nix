@@ -13,7 +13,7 @@ in {
     enable = options.mkEnableOption "ombi"; 
     hostName = mkOption {
       type = types.str; 
-      default = "ombi.${config.networking.fqdn}";
+      default = "ombi.${config.networking.domain}";
     };
     port = mkOption {
       type = types.port;

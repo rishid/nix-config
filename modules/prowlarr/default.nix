@@ -17,7 +17,7 @@ in {
     enable = options.mkEnableOption "prowlarr"; 
     hostName = mkOption {
       type = types.str; 
-      default = "prowlarr.${config.networking.fqdn}";
+      default = "prowlarr.${config.networking.domain}";
       description = "FQDN for the Prowlarr instance";
     };
     port = mkOption {

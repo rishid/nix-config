@@ -38,7 +38,7 @@
   modules.sonarr.enable = true;
   modules.overseerr = {
     enable = true;
-    hostName = "requests.${config.networking.fqdn}";
+    hostName = "requests.${config.networking.domain}";
   };
   modules.bazarr.enable = true;
   modules.prowlarr.enable = true;

@@ -22,7 +22,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "tandoor.${config.networking.fqdn}";
+      default = "tandoor.${config.networking.domain}";
       description = "FQDN for the Tandoor instance";
     };   
 

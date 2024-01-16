@@ -16,7 +16,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "jellyfin.${config.networking.fqdn}";
+      default = "jellyfin.${config.networking.domain}";
       description = "FQDN for the Jellyfin instance";
     };
 

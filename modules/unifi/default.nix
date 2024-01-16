@@ -20,7 +20,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "unifi.${config.networking.fqdn}";
+      default = "unifi.${config.networking.domain}";
       description = "FQDN for the Unifi Controller instance";
     };
 

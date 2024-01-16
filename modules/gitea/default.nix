@@ -16,7 +16,7 @@ in {
     enable = lib.options.mkEnableOption "gitea"; 
     hostName = mkOption {
       type = types.str;
-      default = "git.${config.networking.fqdn}";
+      default = "git.${config.networking.domain}";
     };
     port = mkOption {
       type = types.port;

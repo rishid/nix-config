@@ -15,7 +15,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "tautulli.${config.networking.fqdn}";
+      default = "tautulli.${config.networking.domain}";
       description = "FQDN for the Tautulli instance";
     };
 

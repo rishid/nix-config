@@ -13,7 +13,7 @@ in {
     enable = lib.options.mkEnableOption "nextcloud"; 
     hostName = mkOption {
       type = types.str;
-      default = "nextcloud.${config.networking.fqdn}";
+      default = "nextcloud.${config.networking.domain}";
     };
     dataDir = mkOption {
       type = types.path;

@@ -21,7 +21,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "silverbullet.${config.networking.fqdn}";
+      default = "silverbullet.${config.networking.domain}";
       description = "FQDN for the SilverBullet instance";
     };
 

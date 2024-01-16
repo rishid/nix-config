@@ -17,7 +17,7 @@ in {
     enable = options.mkEnableOption "bazarr"; 
     hostName = mkOption {
       type = types.str; 
-      default = "bazarr.${config.networking.fqdn}";
+      default = "bazarr.${config.networking.domain}";
       description = "FQDN for the bazarr instance";
     };
     port = mkOption {

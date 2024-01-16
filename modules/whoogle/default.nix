@@ -17,7 +17,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "whoogle.${config.networking.fqdn}";
+      default = "whoogle.${config.networking.domain}";
       description = "FQDN for the Whoogle instance";
     };
 

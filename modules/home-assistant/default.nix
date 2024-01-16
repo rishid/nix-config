@@ -34,7 +34,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "hass.${config.networking.fqdn}";
+      default = "hass.${config.networking.domain}";
       description = "FQDN for the Home Assistant instance";
     };
 
@@ -66,7 +66,7 @@ in {
 
     zwaveHostName = mkOption {
       type = types.str;
-      default = "zwave.${config.networking.fqdn}";
+      default = "zwave.${config.networking.domain}";
       description = "FQDN for the Z-Wave UI instance";
     };
 
@@ -84,7 +84,7 @@ in {
 
     isyHostName = mkOption {
       type = types.str;
-      default = "isy.${config.networking.fqdn}";
+      default = "isy.${config.networking.domain}";
       description = "FQDN for the ISY device";
     };
 

@@ -17,7 +17,7 @@ in {
     enable = options.mkEnableOption "sonarr"; 
     hostName = mkOption {
       type = types.str; 
-      default = "sonarr.${config.networking.fqdn}";
+      default = "sonarr.${config.networking.domain}";
       description = "FQDN for the sonarr instance";
     };
     port = mkOption {

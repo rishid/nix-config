@@ -16,7 +16,7 @@ in {
     enable = lib.options.mkEnableOption "cockpit"; 
     hostName = mkOption {
       type = types.str;
-      default = "cockpit.${config.networking.fqdn}";
+      default = "cockpit.${config.networking.domain}";
     };
     port = mkOption {
       type = types.port;

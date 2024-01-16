@@ -16,7 +16,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "wiki.${config.networking.fqdn}";
+      default = "wiki.${config.networking.domain}";
       description = "FQDN for the Tiddlywiki instance";
     };
 

@@ -13,7 +13,7 @@ in {
     enable = options.mkEnableOption "lidarr"; 
     hostName = mkOption {
       type = types.str; 
-      default = "lidarr.${config.networking.fqdn}";
+      default = "lidarr.${config.networking.domain}";
     };
     port = mkOption {
       type = types.port;

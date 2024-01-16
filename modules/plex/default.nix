@@ -14,7 +14,7 @@ in {
     enable = lib.options.mkEnableOption "plex"; 
     hostName = mkOption {
       type = types.str;
-      default = "plex.${config.networking.fqdn}";
+      default = "plex.${config.networking.domain}";
       description = "FQDN for the Plex instance";
     };
   };

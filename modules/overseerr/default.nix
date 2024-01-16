@@ -22,7 +22,7 @@ in {
 
     hostName = mkOption {
       type = types.str;
-      default = "overseerr.${config.networking.fqdn}";
+      default = "overseerr.${config.networking.domain}";
       description = "FQDN for the overseerr instance";
     };
 

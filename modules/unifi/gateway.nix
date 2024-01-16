@@ -4,7 +4,7 @@ let
 
   cfg = config.modules.unifi;
   ip = "192.168.1.1";
-  hostName = "gateway.${config.networking.fqdn}";
+  hostName = "gateway.${config.networking.domain}";
   inherit (lib) mkIf;
 
 in {

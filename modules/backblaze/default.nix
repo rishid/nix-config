@@ -19,7 +19,7 @@ in {
     enable = lib.options.mkEnableOption "backblaze"; 
     hostName = mkOption {
       type = types.str;
-      default = "backblaze.${config.networking.fqdn}";
+      default = "backblaze.${config.networking.domain}";
     };
     dataDir = mkOption {
       type = types.path;

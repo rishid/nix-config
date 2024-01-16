@@ -73,7 +73,7 @@ in {
     hostName = mkOption {
       description = "FQDN for the Immich instance";
       type = types.str;
-      default = "immich.${config.networking.fqdn}";
+      default = "immich.${config.networking.domain}";
     };
 
     dataDir = mkOption {
