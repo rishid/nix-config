@@ -18,7 +18,7 @@ in {
       type = types.str; 
       default = "whoami.${config.networking.domain}";
       description = "FQDN for the whoami instance";
-    };
+    }; 
   };
 
   config = mkIf cfg.enable {
