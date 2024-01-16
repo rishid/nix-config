@@ -2,30 +2,37 @@
 { inputs, config, pkgs, lib, ... }:
   
 let 
+  image = "traefik/whoami";
+  version = "latest";
+
   cfg = config.modules.whoami;
-  secrets = config.age.secrets;
-  inherit (lib) mkIf;
+  
+  inherit (lib) mkIf mkOption options types;
 
 in {
 
   options.modules.whoami = {
     enable = lib.options.mkEnableOption "whoami"; 
+
+    hostName = mkOption {
+      type = types.str; 
+      default = "whoami.${config.networking.domain}";
+      description = "FQDN for the whoami instance";
+    };
   };
 
   config = mkIf cfg.enable {
 
     # service
     virtualisation.oci-containers.containers."whoami" = with config.networking; {
-      image = "traefik/whoami";
-      extraOptions = [
-        "--label=traefik.enable=true"
-        "--label=traefik.http.routers.whoami.rule=Host(`whoami.${hostName}.${domain}`) || Host(`whoami.local.${domain}`)"
-        "--label=traefik.http.routers.whoami.tls.certresolver=resolver-dns"
-        # "--label=traefik.http.routers.whoami.middlewares=local@file"
-      ];
-      environmentFiles = [ secrets.traefik-env.path ];
-      environment = {
-        FOO = "BAR";
+      image = "${image}:${version}";
+
+      labels = {
+        "autoheal" = "true";
+        "traefik.enable" = "true";
+        "traefik.http.routers.whoami.rule" = "Host(`${cfg.hostName}`)";
+        # "traefik.http.routers.whoami.middlewares" = "chain-authelia@file";        
+        "traefik.http.routers.whoami.tls.certresolver" = "resolver-dns";
       };
     };
 
