@@ -24,7 +24,7 @@ in {
       type = types.port;
       default = 6767; 
     };
-    dataDir = mkOption {
+    configDir = mkOption {
       type = types.path;
       default = "/var/lib/bazarr";
     };
@@ -45,7 +45,7 @@ in {
           isSystemUser = true;
           group = "bazarr";
           description = "bazarr daemon user";
-          home = cfg.dataDir;
+          home = cfg.configDir;
           uid = config.ids.uids.bazarr;
         };
 
@@ -60,7 +60,7 @@ in {
     };
 
     # Ensure data directory exists
-    file."${cfg.dataDir}" = {
+    file."${cfg.configDir}" = {
       type = "dir"; mode = 0755; 
       user = config.ids.uids.bazarr; 
       group = config.ids.gids.bazarr;
@@ -76,7 +76,7 @@ in {
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
-        "${cfg.dataDir}:/config"
+        "${cfg.configDir}:/config"
         #"${cfg.mediaDir}:/data"
       ];
 

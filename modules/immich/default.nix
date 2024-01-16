@@ -108,6 +108,19 @@ in {
 
   };
 
+  # LIBRARY_LOCATION=/mnt/user/Immich/
+  # THUMBS_LOCATION=/mnt/apps/Immich-Cache/thumbs/
+  # UPLOAD_LOCATION=/mnt/apps/Immich-Cache/upload/
+  # PROFILE_LOCATION=/mnt/apps/Immich-Cache/profile/
+  # VIDEO_LOCATION=/mnt/apps/Immich-Cache/encoded-video/
+
+  # volumes:
+  #     - ${LIBRARY_LOCATION}:/usr/src/app/upload/library
+  #     - ${UPLOAD_LOCATION}:/usr/src/app/upload/upload
+  #     - ${THUMBS_LOCATION}:/usr/src/app/upload/thumbs
+  #     - ${PROFILE_LOCATION}:/usr/src/app/upload/profile
+  #     - ${VIDEO_LOCATION}:/usr/src/app/upload/encoded-video
+
   config = mkIf cfg.enable {
 
     # Unused uid/gid snagged from this list:
@@ -210,6 +223,13 @@ in {
         docker network create immich 2>/dev/null || true
       '';
     };
+
+  # https://immich.app/docs/administration/backup-and-restore
+  # modules.services.restic.paths = [
+  #   "${photosLocation}/library"
+  #   "${photosLocation}/upload"
+  #   "${photosLocation}/profile"
+  # ];
 
 
   }; }

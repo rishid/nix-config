@@ -84,8 +84,6 @@
   #   photosDir = "/data/photos";
   # };
 
-  # nixpkgs.config.allowUnfree = true;
-
   # nix = {
   #   # package = pkgs.nixFlakes;
   #   # Be sure to run nix-collect-garbage one time per week
@@ -104,19 +102,13 @@
   #     trusted-users = [ "root" "@wheel" ];
   #   };
   # };
-
   
-
-  
-  # programs.ssh.startAgent = true;
+  programs.ssh.startAgent = true;
 
   services.openssh.enable = true;
-  # services.tailscale.enable = true;
   # services.tailscale.extraUpFlags = ["--ssh" ];
 
   # modules.services.docker.enable = true;
-
-
 
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
@@ -131,7 +123,6 @@
     powertop    
     stdenv    
     stdenv.cc    
-    tailscale    
   ];
 
   systemd = {
