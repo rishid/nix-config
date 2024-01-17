@@ -20,6 +20,12 @@
   #  ];
   };
 
+  #fileSystems."/" = {
+  #  device = "none";
+  #  fsType = "tmpfs";
+  #  options = ["defaults" "size=2G" "mode=755"];
+  #};
+
   # CPU
   # nix.settings.max-jobs = lib.mkDefault 16;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
