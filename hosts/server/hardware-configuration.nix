@@ -20,14 +20,23 @@
   #  ];
   };
 
-  #fileSystems."/" = {
-  #  device = "none";
+  #fileSystems."/tmp" = {
   #  fsType = "tmpfs";
-  #  options = ["defaults" "size=2G" "mode=755"];
+  #  options = ["noatime" "mode=755"];
   #};
 
+  # Define on which hard drive you want to install Grub.
+  #boot.loader.grub.device = "/dev/disk/by-id/wwn-0x500a07510338a9bf";
+
+  # Add filesystem entries for each partition that you want to see
+  # mounted at boot time.  This should include at least the root
+  # filesystem.
+  #fileSystems."/".device = "/dev/mapper/vgroup-root";
+  #fileSystems."/boot".device = "/dev/disk/by-id/wwn-0x500a07510338a9bf-part1";
+  f#ileSystems."/tmp" = { device = "tmpfs"; fsType = "tmpfs"; };
+
   # CPU
-  # nix.settings.max-jobs = lib.mkDefault 16;
+  nix.settings.max-jobs = lib.mkDefault 4;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
