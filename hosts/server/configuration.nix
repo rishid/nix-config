@@ -20,6 +20,38 @@
   powerManagement.powertop.enable = true;
 
   programs.nix-ld.enable = true;
+  modules.samba = {
+    enable = true;
+    # shares = {
+    #   Backup = {
+    #       path = "/tank/Backup";
+    #       "read only" = "no";
+    #     };
+    #   Docs = {
+    #     path = "/tank/Docs";
+    #     "read only" = "no";
+    #   };
+    #   Media = {
+    #     path = "/tank/Media";
+    #     "read only" = "no";
+    #   };
+    #   Paperless = {
+    #     path = "/tank/Apps/paperless/incoming";
+    #     "read only" = "no";
+    #   };
+    #   Software = {
+    #     path = "/tank/Software";
+    #     "read only" = "no";
+    #   };
+    #   TimeMachineBackup = {
+    #     "vfs objects" = "acl_xattr catia fruit streams_xattr";
+    #     "fruit:time machine" = "yes";
+    #     "comment" = "Time Machine Backups";
+    #     "path" = "/tank/Backup/TimeMachine";
+    #     "read only" = "no";
+    #   };
+    # };
+  };
 
   networking.extraHosts = ''
     192.168.1.1   router.home
@@ -82,25 +114,6 @@
   # modules.photoprism = {
   #   enable = false;
   #   photosDir = "/data/photos";
-  # };
-
-  # nix = {
-  #   # package = pkgs.nixFlakes;
-  #   # Be sure to run nix-collect-garbage one time per week
-  #   gc = {
-  #     automatic = true;
-  #     persistent = true;
-  #     dates = "weekly";
-  #     options = "--delete-older-than 90d";
-  #   };
-  #   settings = {
-  #     # Replace identical files in the nix store with hard links
-  #     auto-optimise-store = true;
-  #     # Unify many different Nix package manager utilities
-  #     # https://nixos.org/manual/nix/stable/command-ref/experimental-commands.html
-  #     experimental-features = [ "nix-command" "flakes" ];
-  #     trusted-users = [ "root" "@wheel" ];
-  #   };
   # };
   
   programs.ssh.startAgent = true;

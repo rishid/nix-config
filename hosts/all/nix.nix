@@ -8,42 +8,39 @@ let
 in {
 
   # Nix Settings
-  nix.settings = {
+  nix = {
+    settings = {
+      # Enable flakes and new 'nix' command
+      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
 
-    # Enable flakes and new 'nix' command
-    experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      # Deduplicate and optimize nix store
+      auto-optimise-store = true;
 
-    # Deduplicate and optimize nix store
-    auto-optimise-store = true;
+      # Root and sudo users
+      trusted-users = [ "root" "@wheel" ];
 
-    # Root and sudo users
-    trusted-users = [ "root" "@wheel" ];
+      # Supress annoying warning
+      warn-dirty = false;
 
-    # Supress annoying warning
-    warn-dirty = false;
+      # builders = 
 
-    # builders = 
+      # Speed up remote builds
+      builders-use-substitutes = true;
+    };
 
-    # Speed up remote builds
-    builders-use-substitutes = true;
+    # Automatic garbage collection
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 90d";
+    };
+
+    # Add each flake input as a registry
+    # To make nix3 commands consistent with the flake
+    registry = mapAttrs (_: value: { flake = value; }) inputs;
 
   };
 
-  nix.sshServe = {
-    enable = true;
-    keys = config.modules.secrets.keys.all;
-  };
-
-  # Automatic garbage collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
-
-  # Add each flake input as a registry
-  # To make nix3 commands consistent with the flake
-  nix.registry = mapAttrs (_: value: { flake = value; }) inputs;
 
   # Map registries to channels
   # Very useful when using legacy commands

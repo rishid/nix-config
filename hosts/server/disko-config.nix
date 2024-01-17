@@ -28,13 +28,13 @@
         };
       };
     };
-    nodev = {
-      "/tmp" = {
-        fsType = "tmpfs";
-        mountOptions = [
-          "size=2000M"
-        ];
-      };
-    };
+    # nodev = {
+    #   "/tmp" = {
+    #     fsType = "tmpfs";
+    #     mountOptions = [
+    #       "size=2000M"
+    #     ];
+    #   };
+    # };
   };
 }

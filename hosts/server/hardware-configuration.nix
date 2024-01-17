@@ -33,7 +33,20 @@
   # filesystem.
   #fileSystems."/".device = "/dev/mapper/vgroup-root";
   #fileSystems."/boot".device = "/dev/disk/by-id/wwn-0x500a07510338a9bf-part1";
-  f#ileSystems."/tmp" = { device = "tmpfs"; fsType = "tmpfs"; };
+  fileSystems."/tmp" = { device = "tmpfs"; fsType = "tmpfs"; };
+
+
+  # fileSystems."/" =
+  #   { device = "/dev/disk/by-uuid/5347c14e-1994-4afa-9edc-3649b828c7ff";
+  #     fsType = "ext4";
+  #   };
+
+  # fileSystems."/boot" =
+  #   { device = "/dev/disk/by-uuid/0405-57AB";
+  #     fsType = "vfat";
+  #   };
+
+  # swapDevices = [ ];
 
   # CPU
   nix.settings.max-jobs = lib.mkDefault 4;

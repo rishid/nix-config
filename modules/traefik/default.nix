@@ -36,8 +36,9 @@ in {
         };
 
         api.dashboard = true;
-
         log.level = "DEBUG";
+
+        experimental.http3 = true;
 
         accessLog = {
           filePath = "/var/lib/traefik/access.json";
@@ -58,15 +59,14 @@ in {
         # Listen on port 80 and redirect to port 443
         entryPoints.web = {
           address = ":81";
-          http.redirections.entrypoint = {
-            to = "websecure";
-            scheme = "https";
-          };
+          http.redirections.entrypoint.to = "websecure";
         };
 
         # Run everything on 443
         entryPoints.websecure = {
           address = ":444";
+          # http.tls.certresolver = "resolver-dns";
+          http3 = { };
         };
 
         # entryPoints = {
@@ -87,8 +87,9 @@ in {
         # Let's Encrypt will check CloudFlare's DNS
         certificatesResolvers.resolver-dns.acme = {
           dnsChallenge.provider = "cloudflare";
-          storage = "/var/lib/traefik/cert.json";
           email = "${hostName}@${domain}";
+          keyType = "EC256";
+          storage = "${config.services.traefik.dataDir}/acme.json";
         };
       };
 
@@ -110,6 +111,12 @@ in {
         #   ];
 
         # };
+
+        middlewares.compress.compress = { };
+        tls.options.default = {
+          minVersion = "VersionTLS12";
+          sniStrict = true;
+        };
 
         # Set up wildcard domain certificates for both *.hostname.domain and *.local.domain
         http.routers = {
