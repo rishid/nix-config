@@ -17,6 +17,8 @@
   # Memory management
   modules.earlyoom.enable = true;
 
+  services.fstrim.enable = true;
+
   powerManagement.powertop.enable = true;
 
   programs.nix-ld.enable = true;
