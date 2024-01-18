@@ -10,6 +10,8 @@ in {
   # Nix Settings
   nix = {
     settings = {
+      auto-allocate-uids = true;
+
       # Enable flakes and new 'nix' command
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
 
