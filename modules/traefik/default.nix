@@ -161,6 +161,8 @@ in {
     # Open up the firewall for http and https
     networking.firewall.allowedTCPPorts = [ 80 81 443 444 ];
 
+    services.fail2ban.enable = true;
+
   };
 
 }
