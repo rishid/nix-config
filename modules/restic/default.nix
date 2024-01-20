@@ -2,60 +2,59 @@
 { config, lib, pkgs, this, ... }:
 
 let
-  cfg = config.modules.restic;
-  cfgB = config.backup;
-
-  opTimeConfig = {
-    OnCalendar = lib.mkOption {
-      type = lib.types.str;
-      default = "daily";
-      description = ''
-        When to run the operation. See man systemd.timer for details.
-      '';
-    };
-    RandomizedDelaySec = lib.mkOption {
-      type = with lib.types; nullOr str;
-      default = null;
-      description = ''
-        Delay the operation by a randomly selected, evenly distributed
-        amount of time between 0 and the specified time value.
-      '';
-      example = "5h";
-    };
-  };
+  # cfg = config.modules.restic;
+  cfg = config.backup;
 
   inherit (config.networking) hostName;
   inherit (lib) mkEnableOption mkBefore mkOption options types mkIf optionalAttrs;
   inherit (lib.strings) optionalString;
   inherit (builtins) toString;
-  inherit (this.lib) extraGroups;
+  # inherit (this.lib) extraGroups;
 in {
-  imports = [
-    ./fs.nix
-  ];
-
-  options.modules.restic = {
-    enable = options.mkEnableOption "restic"; 
-    hostName = mkOption {
-      type = types.str; 
-      default = "restic.${config.networking.domain}";
-      description = "FQDN for the restic instance";
-    };
-    repositoryPath = mkOption {
-      type = types.str;
-      default = "./restic";
-      description = "Path to the restic repository";
-    };
+  
+  options.backup = {
+    localEnable = mkEnableOption "local restic backups";
+    remoteEnable = mkEnableOption "remote restic backups";
+    
     passwordFile = mkOption {
       type = types.path;
       description = "Read the repository password from a file.";
       example = "config.age.secrets.restic-password.path";
     };
+
     ntfyPathFile = mkOption {
       type = types.str;
       description = "Read the ntfy.sh url path from a file";
     };
-    timerConfig = opTimeConfig;
+
+    localRepositoryPath = mkOption {
+      type = types.str;
+      default = "./restic";
+      description = "Path to the local restic repository";
+    };
+
+    backup-paths-onsite = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      example = [ "/home/pinpox/Notes" ];
+      description = "Paths to backup to onsite storage";
+    };
+
+    backup-paths-offsite = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      example = [ "/home/pinpox/Notes" ];
+      description = "Paths to backup to offsite storage";
+    };
+
+    backup-paths-exclude = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      example = [ "/home/pinpox/cache" ];
+      description = "Paths to exclude from backup";
+    };
+  };  
+    # timerConfig = opTimeConfig;
 
     # timerConfig = mkOption {
     #   type = types.attrsOf unitOption;
@@ -66,26 +65,8 @@ in {
     #     RandomizedDelaySec = "5h";
     #   };
     # };
-    prune = {
-      options = lib.mkOption {
-        type = types.listOf types.str;
-        default = [];
-        description = ''
-          A list of options (--keep-* et al.) for 'restic forget
-          --prune', to automatically prune old snapshots.
-        '';
-        example = [
-          "--keep-daily 7"
-          "--keep-weekly 5"
-          "--keep-monthly 12"
-          "--keep-yearly 75"
-        ];
-      };
-      timerConfig = opTimeConfig;
-    };
-  };
 
-  config = mkIf cfg.enable (let
+  config = mkIf cfg.localEnable (let
     resticName = "systemBackup";
     pruneName = "restic-backups-prune";
     systemdServiceName = "restic-backups-${resticName}";
@@ -99,6 +80,26 @@ in {
         -d "Backup ${hostName} ${status}." \
         https://ntfy.snakepi.xyz/dev
     '';
+
+    script-post = host: site: ''
+      if [ $EXIT_STATUS -ne 0 ]; then
+        ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+        -H 'Title: Backup (${site}) on ${host} failed!' \
+        -H 'Tags: backup,borg,${host},${site}' \
+        -d "Restic (${site}) backup error on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+      else
+        ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+        -H 'Title: Backup (${site}) on ${host} successful!' \
+        -H 'Tags: backup,borg,${host},${site}' \
+        -d "Restic (${site}) backup success on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+      fi
+    '';
+
+    restic-ignore-file = pkgs.writeTextFile {
+      name = "restic-ignore-file";
+      text = builtins.concatStringsSep "\n" cfg.backup-paths-exclude;
+    };
+
   in {
     # sops.secrets = {
     #   "restic/rclone".sopsFile = ./secrets.yaml;
@@ -110,45 +111,74 @@ in {
     # lib.backup.extraOptions = [
     #   "sftp.command='${sftpCommand}'"
     # ];
-    lib.backup.timerConfig =
-      {
-        OnCalendar = cfg.timerConfig.OnCalendar;
-      }
-      // lib.optionalAttrs (cfg.timerConfig.RandomizedDelaySec != null) {
-        RandomizedDelaySec = cfg.timerConfig.RandomizedDelaySec;
-      };
+    # lib.backup.timerConfig =
+    #   {
+    #     OnCalendar = cfg.timerConfig.OnCalendar;
+    #   }
+    #   // lib.optionalAttrs (cfg.timerConfig.RandomizedDelaySec != null) {
+    #     RandomizedDelaySec = cfg.timerConfig.RandomizedDelaySec;
+    #   };
 
-    systemd.services."${pruneName}" = let
-      # extraOptions = lib.concatMapStrings (arg: " -o ${arg}") config.lib.backup.extraOptions;
-      # resticCmd = "${pkgs.restic}/bin/restic${extraOptions}";
-      resticCmd = "${pkgs.restic}/bin/restic";
-    in
-      lib.mkIf (builtins.length cfg.prune.options > 0) {
-        environment = {
-          RESTIC_PASSWORD_FILE = cfg.passwordFile;
-          RESTIC_REPOSITORY = cfg.repositoryPath;
+    services.restic.backups = 
+      let
+        restic-ignore-file = pkgs.writeTextFile {
+          name = "restic-ignore-file";
+          text = builtins.concatStringsSep "\n" cfg.backup-paths-exclude;
         };
-        # path = [pkgs.openssh];
-        restartIfChanged = false;
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = [
-            (resticCmd + " forget --prune " + (lib.concatStringsSep " " cfg.prune.options))
-            (resticCmd + " check")
+      in
+      {
+        local = {
+          repository = cfg.localRepositoryPath;
+          passwordFile = cfg.passwordFile;
+
+          paths = cfg.backup-paths-offsite;
+          
+          # environmentFile = "${config.lollypops.secrets.files."restic/backblaze-credentials".path}";
+          # passwordFile = "${config.lollypops.secrets.files."restic/repo-pw".path}";
+          backupCleanupCommand = script-post config.networking.hostName "backblaze";
+
+          extraBackupArgs = [
+            "--exclude-file=${restic-ignore-file}"
+            "--one-file-system"
+            # "--dry-run"
+            "-vv"
           ];
-          # ExecStartPost = "${checkRepoSpace}/bin/check-repo-space";
-          User = "root";
-          RuntimeDirectory = pruneName;
-          CacheDirectory = pruneName;
-          CacheDirectoryMode = "0700";
         };
       };
-    systemd.timers."${pruneName}" = lib.mkIf (builtins.length cfg.prune.options > 0) {
-      wantedBy = ["timers.target"];
-      timerConfig = cfg.prune.timerConfig;
-    };
   });
 }
+
+#     systemd.services."${pruneName}" = let
+#       # extraOptions = lib.concatMapStrings (arg: " -o ${arg}") config.lib.backup.extraOptions;
+#       # resticCmd = "${pkgs.restic}/bin/restic${extraOptions}";
+#       resticCmd = "${pkgs.restic}/bin/restic";
+#     in
+#       lib.mkIf (builtins.length cfg.prune.options > 0) {
+#         environment = {
+#           RESTIC_PASSWORD_FILE = cfg.passwordFile;
+#           RESTIC_REPOSITORY = cfg.repositoryPath;
+#         };
+#         # path = [pkgs.openssh];
+#         restartIfChanged = false;
+#         serviceConfig = {
+#           Type = "oneshot";
+#           ExecStart = [
+#             (resticCmd + " forget --prune " + (lib.concatStringsSep " " cfg.prune.options))
+#             (resticCmd + " check")
+#           ];
+#           # ExecStartPost = "${checkRepoSpace}/bin/check-repo-space";
+#           User = "root";
+#           RuntimeDirectory = pruneName;
+#           CacheDirectory = pruneName;
+#           CacheDirectoryMode = "0700";
+#         };
+#       };
+#     systemd.timers."${pruneName}" = lib.mkIf (builtins.length cfg.prune.options > 0) {
+#       wantedBy = ["timers.target"];
+#       timerConfig = cfg.prune.timerConfig;
+#     };
+#   });
+# }
 
 #     services.restic.backups.persist = {
 #       repository = "/media/External/backups/system";

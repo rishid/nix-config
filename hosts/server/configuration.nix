@@ -78,6 +78,37 @@
   #   };
   # };
 
+  backup = {
+    localEnable = true;
+    passwordFile = config.age.secrets.restic-password.path;
+    localRepositoryPath = "/root/restic-bk";
+    backup-paths-exclude = [
+      "*.pyc"
+      "*/.cache"
+      "*/.cargo"
+      "*/.container-diff"
+      "*/.go/pkg"
+      "*/.gvfs/"
+      "*/.local/share/Steam"
+      "*/.local/share/Trash"
+      "*/.local/share/virtualenv"
+      "*/.mozilla/firefox"
+      "*/.rustup"
+      "*/.vim"
+      "*/.vimtemp"
+    ];
+    # backup-paths-offsite = [ config.services.postgresqlBackup.location ];
+  };
+   
+
+  # # Backup Postgres, if it is running
+  # services.postgresqlBackup = {
+  #   enable = config.services.postgresql.enable;
+  #   startAt = "*-*-* 01:15:00";
+  #   location = "/var/backup/postgresql";
+  #   backupAll = true;
+  # };
+
   networking.extraHosts = ''
     192.168.1.1   router.home
   '';

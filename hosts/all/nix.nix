@@ -15,12 +15,12 @@ in {
         "nix-command" 
         "flakes" 
         "repl-flake" 
-        # "auto-allocate-uids"
+        "auto-allocate-uids"
         # Allow derivation builders to call Nix, and thus build derivations recursively.
         "recursive-nix"
       ];
 
-      # auto-allocate-uids = true; 
+      auto-allocate-uids = false; 
 
       # Deduplicate and optimize nix store
       auto-optimise-store = true;

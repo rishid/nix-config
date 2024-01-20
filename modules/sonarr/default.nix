@@ -91,11 +91,15 @@ in {
       };
     };
 
-    backup.fsBackups.arr = {
-      paths = [
-        "${cfg.configDir}"
-      ];
-    };
+    backup.backup-paths-onsite = [
+      "${cfg.configDir}"
+    ];
+
+    # backup.fsBackups.arr = {
+    #   paths = [
+    #     "${cfg.configDir}"
+    #   ];
+    # };
 
   };
 
