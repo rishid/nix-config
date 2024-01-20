@@ -91,7 +91,7 @@ in {
       };
     };
 
-    backup.backup-paths-onsite = [
+    backup.localPaths = [
       "${cfg.configDir}"
     ];
 

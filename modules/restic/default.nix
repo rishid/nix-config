@@ -24,11 +24,8 @@ let
   #   };
   # };
 
-  inherit (config.networking) hostName;
   inherit (lib) mkEnableOption mkBefore mkOption options types mkIf optionalAttrs;
-  inherit (lib.strings) optionalString;
-  inherit (builtins) toString;
-  # inherit (this.lib) extraGroups;
+  
 in {
   
   options.backup = {
@@ -52,7 +49,7 @@ in {
       description = "Path to the local restic repository";
     };
 
-    backup-paths-onsite = mkOption {
+    localPaths = mkOption {
       type = types.listOf types.str;
       default = [ ];
       example = [ "/home/pinpox/Notes" ];
@@ -96,21 +93,38 @@ in {
         -H "Priority: ${priority}" \
         -H "Tags: floppy_disk,${tag}" \
         -H "Icon: https://avatars.githubusercontent.com/u/10073512?s=200&v=4" \
-        -d "Backup ${hostName} ${status}." \
+        -d "Backup ${config.networking.hostName} ${status}." \
         https://ntfy.snakepi.xyz/dev
     '';
 
+    # script-post = host: site: ''
+    #   if [ $EXIT_STATUS -ne 0 ]; then
+    #     ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+    #     -H 'Title: Backup (${site}) on ${host} failed!' \
+    #     -H 'Tags: backup,borg,${host},${site}' \
+    #     -d "Restic (${site}) backup error on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+    #   else
+    #     ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+    #     -H 'Title: Backup (${site}) on ${host} successful!' \
+    #     -H 'Tags: backup,borg,${host},${site}' \
+    #     -d "Restic (${site}) backup success on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+    #   fi
+    # '';
     script-post = host: site: ''
       if [ $EXIT_STATUS -ne 0 ]; then
-        ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+        ${lib.getExe pkgs.curl} \
+        -H 'Priority: urgent' \
         -H 'Title: Backup (${site}) on ${host} failed!' \
-        -H 'Tags: backup,borg,${host},${site}' \
-        -d "Restic (${site}) backup error on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+        -H 'Tags: floppy_disk,backup,${host},${site}' \
+        -d "Restic (${site}) backup error on ${host}!" \
+        ntfy.sh/downtherabbithole
       else
-        ${lib.getExe pkgs.curl} -u $NTFY_USER:$NTFY_PASS \
+        ${lib.getExe pkgs.curl} \
+        -H 'Priority: default' \
         -H 'Title: Backup (${site}) on ${host} successful!' \
-        -H 'Tags: backup,borg,${host},${site}' \
-        -d "Restic (${site}) backup success on ${host}!" 'https://push.pablo.tools/pinpox_backups'
+        -H 'Tags: floppy_disk,backup,${host},${site}' \
+        -d "Restic (${site}) backup success on ${host}!" \
+        ntfy.sh/downtherabbithole
       fi
     '';
 
@@ -120,12 +134,6 @@ in {
     };
 
   in {
-    # sops.secrets = {
-    #   "restic/rclone".sopsFile = ./secrets.yaml;
-    #   "restic/password".sopsFile = ./secrets.yaml;
-    #   "restic/ntfy".sopsFile = ./secrets.yaml;
-    # };
-
     # lib.backup.repository = "${cfg.repository}";
     # lib.backup.extraOptions = [
     #   "sftp.command='${sftpCommand}'"
@@ -150,8 +158,9 @@ in {
           repository = cfg.localRepositoryPath;
           passwordFile = cfg.passwordFile;
           initialize = true;
+          createWrapper = true;
 
-          paths = cfg.backup-paths-onsite;
+          paths = cfg.localPaths;
 
           # timerConfig = {
           #   OnCalendar = "00:05";
@@ -159,12 +168,12 @@ in {
           # };
           
           # environmentFile = "${config.lollypops.secrets.files."restic/backblaze-credentials".path}";          
-          # backupCleanupCommand = script-post config.networking.hostName "backblaze";
+          backupCleanupCommand = script-post config.networking.hostName "local";
 
           extraBackupArgs = [
             "--exclude-file=${restic-ignore-file}"
             "--one-file-system"
-            "--dry-run"
+            # "--dry-run"
             "-vv"
           ];
         };
