@@ -91,6 +91,12 @@ in {
       };
     };
 
+    backup.fsBackups.arr = {
+      paths = [
+        "${cfg.configDir}"
+      ];
+    };
+
   };
 
 }

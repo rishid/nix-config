@@ -2,7 +2,7 @@
 { config, lib, pkgs, this, ... }:
 
 let
-  cfg = config.modules.ntfy;
+  cfg = config.modules.syncthing;
 in {
   # services.ntfy-sh = {
 #       enable = true;
