@@ -55,8 +55,7 @@ in {
       type = types.str;
       description = "Read the ntfy.sh url path from a file";
     };
-
-    # timerConfig = opTimeConfig;
+    timerConfig = opTimeConfig;
 
     # timerConfig = mkOption {
     #   type = types.attrsOf unitOption;
@@ -120,15 +119,16 @@ in {
       };
 
     systemd.services."${pruneName}" = let
-      extraOptions = lib.concatMapStrings (arg: " -o ${arg}") config.lib.backup.extraOptions;
-      resticCmd = "${pkgs.restic}/bin/restic${extraOptions}";
+      # extraOptions = lib.concatMapStrings (arg: " -o ${arg}") config.lib.backup.extraOptions;
+      # resticCmd = "${pkgs.restic}/bin/restic${extraOptions}";
+      resticCmd = "${pkgs.restic}/bin/restic";
     in
       lib.mkIf (builtins.length cfg.prune.options > 0) {
         environment = {
           RESTIC_PASSWORD_FILE = cfg.passwordFile;
-          RESTIC_REPOSITORY = config.lib.backup.repository;
+          RESTIC_REPOSITORY = cfg.repositoryPath;
         };
-        path = [pkgs.openssh];
+        # path = [pkgs.openssh];
         restartIfChanged = false;
         serviceConfig = {
           Type = "oneshot";

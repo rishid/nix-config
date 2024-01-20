@@ -55,28 +55,28 @@
     # };
   };
 
-  modules.restic = {
-    enable = true;
-    repositoryPath = "/restic";
-    passwordFile = config.age.secrets.restic-password.path;
-    # timerConfig = {
-    #   OnCalendar = "02:00";
-    #   RandomizedDelaySec = "1h";
-    # };
+  # modules.restic = {
+  #   enable = true;
+  #   repositoryPath = "/restic";
+  #   passwordFile = config.age.secrets.restic-password.path;
+  #   # timerConfig = {
+  #   #   OnCalendar = "02:00";
+  #   #   RandomizedDelaySec = "1h";
+  #   # };
 
-    prune = {
-      options = [
-        "--keep-daily 7"
-        "--keep-weekly 5"
-        "--keep-monthly 12"
-        "--keep-yearly 75"
-      ];
-      timerConfig = {
-        OnCalendar = "07:00";
-        RandomizedDelaySec = "2h";
-      };
-    };
-  };
+  #   prune = {
+  #     options = [
+  #       "--keep-daily 7"
+  #       "--keep-weekly 5"
+  #       "--keep-monthly 12"
+  #       "--keep-yearly 75"
+  #     ];
+  #     timerConfig = {
+  #       OnCalendar = "07:00";
+  #       RandomizedDelaySec = "2h";
+  #     };
+  #   };
+  # };
 
   networking.extraHosts = ''
     192.168.1.1   router.home

@@ -9,11 +9,18 @@ in {
 
   # Nix Settings
   nix = {
-    settings = {
-      auto-allocate-uids = true;
+    settings = {      
+      experimental-features = [ 
+        # Enable flakes and new 'nix' command
+        "nix-command" 
+        "flakes" 
+        "repl-flake" 
+        # "auto-allocate-uids"
+        # Allow derivation builders to call Nix, and thus build derivations recursively.
+        "recursive-nix"
+      ];
 
-      # Enable flakes and new 'nix' command
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      # auto-allocate-uids = true; 
 
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
@@ -27,7 +34,7 @@ in {
       # builders = 
 
       # Speed up remote builds
-      builders-use-substitutes = true;
+      # builders-use-substitutes = true;
     };
 
     # Automatic garbage collection
