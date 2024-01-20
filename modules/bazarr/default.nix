@@ -66,6 +66,10 @@ in {
       group = config.ids.gids.bazarr;
     };
 
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
+
     # Enable reverse proxy
     modules.traefik.enable = true;
 

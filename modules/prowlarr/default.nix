@@ -24,7 +24,7 @@ in {
       type = types.port;
       default = 9696; 
     };
-    dataDir = mkOption {
+    configDir = mkOption {
       type = types.path;
       default = "/var/lib/prowlarr";
     };
@@ -45,7 +45,7 @@ in {
           isSystemUser = true;
           group = "prowlarr";
           description = "prowlarr daemon user";
-          home = cfg.dataDir;
+          home = cfg.configDir;
           uid = config.ids.uids.prowlarr;
         };
 
@@ -60,11 +60,15 @@ in {
     };
 
     # Ensure data directory exists
-    file."${cfg.dataDir}" = {
+    file."${cfg.configDir}" = {
       type = "dir"; mode = 0755; 
       user = config.ids.uids.prowlarr; 
       group = config.ids.gids.prowlarr;
     };
+
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
 
     # Enable reverse proxy
     modules.traefik.enable = true;
@@ -76,7 +80,7 @@ in {
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
-        "${cfg.dataDir}:/config"
+        "${cfg.configDir}:/config"
       ];
 
       environment = {

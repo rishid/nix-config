@@ -67,6 +67,10 @@ in {
       group = config.ids.gids.sonarr;
     };
 
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
+
     # Enable reverse proxy
     modules.traefik.enable = true;
 
@@ -90,16 +94,6 @@ in {
         "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString cfg.port}";
       };
     };
-
-    backup.localPaths = [
-      "${cfg.configDir}"
-    ];
-
-    # backup.fsBackups.arr = {
-    #   paths = [
-    #     "${cfg.configDir}"
-    #   ];
-    # };
 
   };
 

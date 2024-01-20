@@ -26,7 +26,7 @@ in {
       description = "FQDN for the overseerr instance";
     };
 
-    dataDir = mkOption {
+    configDir = mkOption {
       type = types.path;
       default = "/var/lib/overseerr";
     };
@@ -48,7 +48,7 @@ in {
           isSystemUser = true;
           group = "overseerr";
           description = "overseerr daemon user";
-          home = cfg.dataDir;
+          home = cfg.configDir;
           uid = config.ids.uids.overseerr;
         };
 
@@ -63,11 +63,15 @@ in {
     };
 
     # Ensure data directory exists
-    file."${cfg.dataDir}" = {
+    file."${cfg.configDir}" = {
       type = "dir"; mode = 775; 
       user = config.users.users.overseerr.uid; 
       group = config.users.groups.overseerr.gid;
     };
+
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
 
     # Enable reverse proxy
     modules.traefik.enable = true;
@@ -89,7 +93,7 @@ in {
         "--label=traefik.http.services.overseerr.loadbalancer.server.port=5055"
       ];
 
-      volumes = [ "${cfg.dataDir}:/app/config" ];
+      volumes = [ "${cfg.configDir}:/app/config" ];
 
     };
 

@@ -66,6 +66,10 @@ in {
       group = config.ids.gids.radarr;
     };
 
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
+
     # Enable reverse proxy
     modules.traefik.enable = true;
 
