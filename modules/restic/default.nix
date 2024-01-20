@@ -5,6 +5,25 @@ let
   # cfg = config.modules.restic;
   cfg = config.backup;
 
+  # opTimeConfig = {
+  #   OnCalendar = lib.mkOption {
+  #     type = lib.types.str;
+  #     default = "daily";
+  #     description = ''
+  #       When to run the operation. See man systemd.timer for details.
+  #     '';
+  #   };
+  #   RandomizedDelaySec = lib.mkOption {
+  #     type = with lib.types; nullOr str;
+  #     default = null;
+  #     description = ''
+  #       Delay the operation by a randomly selected, evenly distributed
+  #       amount of time between 0 and the specified time value.
+  #     '';
+  #     example = "5h";
+  #   };
+  # };
+
   inherit (config.networking) hostName;
   inherit (lib) mkEnableOption mkBefore mkOption options types mkIf optionalAttrs;
   inherit (lib.strings) optionalString;
@@ -127,20 +146,25 @@ in {
         };
       in
       {
-        local = {
+        local = {          
           repository = cfg.localRepositoryPath;
           passwordFile = cfg.passwordFile;
+          initialize = true;
 
-          paths = cfg.backup-paths-offsite;
+          paths = cfg.backup-paths-onsite;
+
+          # timerConfig = {
+          #   OnCalendar = "00:05";
+          #   RandomizedDelaySec = "5h";
+          # };
           
-          # environmentFile = "${config.lollypops.secrets.files."restic/backblaze-credentials".path}";
-          # passwordFile = "${config.lollypops.secrets.files."restic/repo-pw".path}";
-          backupCleanupCommand = script-post config.networking.hostName "backblaze";
+          # environmentFile = "${config.lollypops.secrets.files."restic/backblaze-credentials".path}";          
+          # backupCleanupCommand = script-post config.networking.hostName "backblaze";
 
           extraBackupArgs = [
             "--exclude-file=${restic-ignore-file}"
             "--one-file-system"
-            # "--dry-run"
+            "--dry-run"
             "-vv"
           ];
         };
