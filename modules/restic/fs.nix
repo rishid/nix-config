@@ -54,6 +54,7 @@ in {
           lib.nameValuePair "fs-${name}" {
             repository = cfg.repositoryPath;
             passwordFile = cfg.passwordFile;
+            initialize = true;
             # extraOptions = config.lib.backup.extraOptions;
             extraBackupArgs = ["--exclude-caches"];
             paths = backup.paths;

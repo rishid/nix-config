@@ -49,7 +49,7 @@ in {
     passwordFile = mkOption {
       type = types.path;
       description = "Read the repository password from a file.";
-      example = "config.age.secrets.resticPassword.path";
+      example = "config.age.secrets.restic-password.path";
     };
     ntfyPathFile = mkOption {
       type = types.str;

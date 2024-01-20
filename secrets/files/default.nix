@@ -6,4 +6,6 @@
   traefik-env = ./traefik-env.age;
 
   transmission-ovpn = ./transmission-ovpn.age;
+
+  restic-password = ./restic-password.age;
 }

@@ -41,4 +41,7 @@ with (import ./keys); {
   # ---------------------------------------------------------------------------
   "files/transmission-ovpn.age".publicKeys = all;
   
+  # Restic password
+  # Plain text password generated using Bitwarden
+  "files/restic-password.age".publicKeys = all;
 }
