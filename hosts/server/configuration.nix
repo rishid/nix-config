@@ -130,6 +130,10 @@
   };
   modules.bazarr.enable = true;
   modules.prowlarr.enable = true;
+  modules.filebrowser = {
+    enable = true;
+    hostName = "files.${config.networking.domain}";
+  };
   # modules.unpackerr.enable = true
   modules.immich = {
     enable = true;

@@ -8,7 +8,6 @@ let
 
   cfg = config.modules.filebrowser;
   inherit (lib) mkIf mkBefore mkOption options types;
-  inherit (builtins) toString;
   inherit (this.lib) extraGroups;
 
 in {
@@ -20,10 +19,6 @@ in {
       default = "filebrowser.${config.networking.domain}";
       description = "FQDN for the filebrowser instance";
     };
-    port = mkOption {
-      type = types.port;
-      default = 80; 
-    };
     configDir= mkOption {
       type = types.str; 
       default = "/var/lib/filebrowser"; 
@@ -32,35 +27,37 @@ in {
 
   config = mkIf cfg.enable {
 
+    ids.uids.filebrowser = lib.mkForce 921;
+    ids.gids.filebrowser = lib.mkForce 921;
+
     users = {
       users = {
         filebrowser = {
           isSystemUser = true;
-          # group = "filebrowser";
+          group = "filebrowser";
           description = "filebrowser daemon user";
           home = cfg.configDir;
-          extraGroups = [ "filebrowser" ];
           createHome = true;
+          homeMode = "0755";
+          uid = config.ids.uids.filebrowser;
         };
 
       # Add admins to the filebrowser group
-      };# // extraGroups this.admins [ "filebrowser" ];
+      } // extraGroups this.admins [ "filebrowser" ];
 
       # Create group
-      # groups.filebrowser = {
-      #   gid = config.ids.gids.filebrowser;
-      # };
+      groups.filebrowser = {
+        gid = config.ids.gids.filebrowser;
+      };
 
     };
 
-    # users.groups.filebrowser = { name = "filebrowser"; };
-
-    # Ensure data directory exists
-    # file."${cfg.configDir}" = {
-    #   type = "dir"; mode = 0755; 
-    #   user = config.ids.uids.filebrowser; 
-    #   group = config.ids.gids.filebrowser;
-    # };
+    # Database has to exist before starting container
+    file."${cfg.configDir}/filebrowser.db" = {
+      type = "file"; mode = 0644; 
+      user = config.ids.uids.filebrowser; 
+      group = config.ids.gids.filebrowser;
+    };
 
     backup.localPaths = [
       "${cfg.configDir}"
@@ -69,15 +66,16 @@ in {
     # Enable reverse proxy
     modules.traefik.enable = true;
 
-    # NixOS filebrowser version is v3
     virtualisation.oci-containers.containers.filebrowser = {
       image = "${image}:${version}";
-      user = "${toString config.ids.uids.filebrowser}:${toString config.ids.gids.filebrowser}";
+      # user = "filebrowser:filebrowser";
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
-        "${cfg.configDir}:/config"
-        #"${cfg.mediaDir}:/data"
+        "${cfg.configDir}/filebrowser.db:/database.db"
+        # "${cfg.configDir}/.filebrowser.json:/.filebrowser.json"
+        "/root:/srv"
+        #"${cfg.mediaDir}:/srv"
       ];
       
       labels = {
@@ -86,7 +84,7 @@ in {
         "traefik.http.routers.filebrowser.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.filebrowser.middlewares" = "chain-authelia@file";        
         "traefik.http.routers.filebrowser.tls.certresolver" = "resolver-dns";
-        "traefik.http.services.filebrowser.loadbalancer.server.port" = "${toString cfg.port}";
+        "traefik.http.services.filebrowser.loadbalancer.server.port" = "80";
       };
     };
 

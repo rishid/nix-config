@@ -45,6 +45,8 @@ in {
           group = "sonarr";
           description = "sonarr daemon user";
           home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
           uid = config.ids.uids.sonarr;
         };
 
@@ -58,13 +60,6 @@ in {
 
       groups.media.members = [ "sonarr" ];
 
-    };
-
-    # Ensure data directory exists
-    file."${cfg.configDir}" = {
-      type = "dir"; mode = 0755; 
-      user = config.ids.uids.sonarr; 
-      group = config.ids.gids.sonarr;
     };
 
     backup.localPaths = [
