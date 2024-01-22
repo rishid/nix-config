@@ -199,6 +199,21 @@ in {
       # inherit (cfg) user;
     };
 
+    # Enable reverse proxy
+    modules.traefik.enable = true;
+
+    # Traefik proxy
+    services.traefik.dynamicConfigOptions.http = {
+      routers.authelia = {
+        entrypoints = "websecure";
+        rule = "Host(`${domain}`)";
+        tls.certresolver = "resolver-dns";
+        # middlewares = "local@file";
+        service = "authelia";
+      };
+      services.authelia.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString port}"; }];
+    };
+
     # services.nginx.virtualHosts.${domain} = {
     #   enableACME = true;
     #   forceSSL = true;

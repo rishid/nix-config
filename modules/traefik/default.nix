@@ -112,6 +112,36 @@ in {
 
         # };
 
+        http.middlewares = {
+            authelia = {
+              # Forward requests w/ middlewares=authelia@file to authelia.
+              forwardAuth = {
+                # address = cfg.autheliaUrl;
+                address = "http://localhost:9092/api/verify?rd=https://auth.dhupar.xyz:444/";
+              trustForwardHeader = true;
+                authResponseHeaders = [
+                  "Remote-User"
+                  "Remote-Name"
+                  "Remote-Email"
+                  "Remote-Groups"
+                ];
+              };
+            };
+            authelia-basic = {
+              # Forward requests w/ middlewares=authelia@file to authelia.
+              forwardAuth = {
+                address = "http://localhost:9092/api/verify?auth=basic";
+                trustForwardHeader = true;
+                authResponseHeaders = [
+                  "Remote-User"
+                  "Remote-Name"
+                  "Remote-Email"
+                  "Remote-Groups"
+                ];
+              };
+            };
+        };
+
         middlewares.compress.compress = { };
         tls.options.default = {
           minVersion = "VersionTLS12";
@@ -122,7 +152,7 @@ in {
         http.routers = {
           traefik = {
             entrypoints = "websecure";
-            rule = "Host(`${hostName}.${domain}`)";
+            rule = "Host(`${hostName}.${domain}`) || Host(`traefik.${domain}`)";
             tls.certresolver = "resolver-dns";
             tls.domains = [{
               main = "${hostName}.${domain}"; 
