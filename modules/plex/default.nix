@@ -31,6 +31,9 @@ in {
       package = pkgs.plex;
     };
 
+    # Add admins to the plex group
+    users.users = extraGroups this.admins [ "plex" ];
+
     # Enable reverse proxy
     modules.traefik.enable = true;
 
@@ -51,10 +54,6 @@ in {
     # environment.systemPackages = [
     #   ( pkgs.writeShellScriptBin "plex-claim-server" (builtins.readFile ./plex-claim-server.sh) )
     # ];
-
-    # Add admins to the plex group
-    users.users = extraGroups this.admins [ "plex" ];
-
   };
 
 }

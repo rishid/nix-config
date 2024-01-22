@@ -116,6 +116,11 @@
   # Network
   modules.tailscale.enable = true;
   # modules.ddns.enable = true; # if doesn't work, another option is to use  ddns-go
+  modules.vaultwarden = {
+    enable = true;
+    hostName = "pass.${config.networking.domain}";
+  };
+  # modules.authelia.enable = true;
 
   modules.whoami.enable = true;
   

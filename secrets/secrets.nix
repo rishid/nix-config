@@ -42,6 +42,13 @@ with (import ./keys); {
   "files/transmission-ovpn.age".publicKeys = all;
   
   # Restic password
-  # Plain text password generated using Bitwarden
+  # Plain text password generated using Restic
   "files/restic-password.age".publicKeys = all;
+
+  # Vaultwarden private environment variables
+  "files/vaultwarden-env.age".publicKeys = all;
+
+  # Authelia
+  "files/authelia-jwt.age".publicKeys = all;
+  "files/authelia-storage.age".publicKeys = all;
 }

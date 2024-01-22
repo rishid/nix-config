@@ -122,7 +122,7 @@ in {
         http.routers = {
           traefik = {
             entrypoints = "websecure";
-            rule = "Host(`${hostName}.${domain}`) || Host(`local.${domain}`)";
+            rule = "Host(`${hostName}.${domain}`)";
             tls.certresolver = "resolver-dns";
             tls.domains = [{
               main = "${hostName}.${domain}"; 

@@ -8,4 +8,9 @@
   transmission-ovpn = ./transmission-ovpn.age;
 
   restic-password = ./restic-password.age;
+
+  vaultwarden-env = ./vaultwarden-env.age;
+
+  authelia-jwt = ./authelia-jwt.age;
+  authelia-storage = ./authelia-storage.age;
 }
