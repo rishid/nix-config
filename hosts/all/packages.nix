@@ -10,7 +10,7 @@
       inetutils mtr sysstat gnumake gitMinimal # basics
       file curl htop tmux rsync vim jq
       usbutils pciutils zip unzip nmap arp-scan dig lsof 
-      cryptsetup binutils keychain rsync
+      cryptsetup binutils keychain rsync openssl
       silver-searcher wget
       # nix-zsh-completions zsh-completions 
       # nix-bash-completions bash-completion
