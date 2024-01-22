@@ -9,7 +9,7 @@ let
   inherit (this.lib) extraGroups ls;
   
   domain = "auth.dhupar.xyz";
-  port = 9091;
+  port = 9092; #default 9091 is being used by transmissions
   ldapHost = "localhost";
   ldapPort = config.services.lldap.settings.ldap_port;
   redis = config.services.redis.servers.authelia-main;
@@ -79,7 +79,7 @@ in {
       settings = {
         theme = "auto";
         server = {
-          host = "::1";
+          host = "0.0.0.0";
           inherit port;
         };
         default_2fa_method = "webauthn";
@@ -105,7 +105,7 @@ in {
             mail_attribute = "mail";
             display_name_attribute = "displayName";
             user = "uid=admin,ou=people,dc=dhupar,dc=xyz";
-            password = "REPLACE_ME";
+            password = "password";
           };
         };
         access_control = {
@@ -138,7 +138,7 @@ in {
         #   # password not used since it uses peer auth
         #   password = "dummy";
         # };
-        notifier.filesystem.filename = "/var/lib/authelia-main/notifications.tx";
+        notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
         # notifier.smtp = {
         #   inherit (smtpAccount) host port;
         #   username = smtpAccount.user;
