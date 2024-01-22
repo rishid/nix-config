@@ -120,7 +120,7 @@
     enable = true;
     hostName = "pass.${config.networking.domain}";
   };
-  # modules.authelia.enable = true;
+  modules.authelia.enable = true;
 
   modules.whoami.enable = true;
   
