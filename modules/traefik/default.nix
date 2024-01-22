@@ -152,11 +152,11 @@ in {
         http.routers = {
           traefik = {
             entrypoints = "websecure";
-            rule = "Host(`${hostName}.${domain}`) || Host(`traefik.${domain}`)";
+            rule = "Host(`traefik.${domain}`)";
             tls.certresolver = "resolver-dns";
             tls.domains = [{
-              main = "${hostName}.${domain}"; 
-              sans = "*.${hostName}.${domain},local.${domain},*.local.${domain}"; 
+              main = "${domain}"; 
+              sans = "*.${domain}"; 
             }];
             # middlewares = "local@file";
             service = "api@internal";
