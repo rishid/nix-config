@@ -13,7 +13,7 @@ in {
 
     # reference: https://github.com/lldap/lldap/blob/main/lldap_config.docker_template.toml
     services.lldap.settings = {
-      verbose = "true";
+      verbose = true;
 
       ldap_host = "127.0.0.1";
       ldap_port = 3890;

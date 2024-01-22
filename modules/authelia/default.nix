@@ -12,7 +12,7 @@ let
   port = 9091;
   ldapHost = "localhost";
   ldapPort = config.services.lldap.settings.ldap_port;
-  redis = config.services.redis.servers.authelia;
+  redis = config.services.redis.servers.authelia-main;
 
   # mkWebfinger = v:
   #   pkgs.writeTextDir (lib.escapeURL v.subject) (lib.generators.toJSON { } v);
@@ -67,7 +67,7 @@ in {
       secrets = {
         jwtSecretFile = config.age.secrets.authelia-jwt.path;
         storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
-        # sessionSecretFile = config.age.secrets.authelia-session.path;
+        sessionSecretFile = config.age.secrets.authelia-session.path;
         # oidcHmacSecretFile = config.age.secrets.authelia-oidc-hmac.path;
         # oidcIssuerPrivateKeyFile = config.age.secrets.authelia-oidc-issuer.path;
       };
@@ -175,10 +175,13 @@ in {
       };
     };
 
+    # Allow gitea user to read password file
+    users.users.authelia-main.extraGroups = [ "secrets" ]; 
+
     # systemd.services.authelia.requires = [ "postgresql.service" "lldap.service" ];
     # systemd.services.authelia.after = [ "postgresql.service" "lldap.service" ];
-    systemd.services.authelia.requires = [ "lldap.service" ];
-    systemd.services.authelia.after = [ "lldap.service" ];
+    systemd.services.authelia-main.requires = [ "lldap.service" ];
+    systemd.services.authelia-main.after = [ "lldap.service" ];
 
     # services.postgresql = {
     #   enable = true;
@@ -189,7 +192,7 @@ in {
     #   }];
     # };
 
-    services.redis.servers.authelia = {
+    services.redis.servers.authelia-main = {
       enable = true;
       port = 31641;
       user = "authelia-main";

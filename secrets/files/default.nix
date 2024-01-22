@@ -13,4 +13,5 @@
 
   authelia-jwt = ./authelia-jwt.age;
   authelia-storage = ./authelia-storage.age;
+  authelia-session = ./authelia-session.age;
 }

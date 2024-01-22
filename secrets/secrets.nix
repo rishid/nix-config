@@ -51,4 +51,5 @@ with (import ./keys); {
   # Authelia
   "files/authelia-jwt.age".publicKeys = all;
   "files/authelia-storage.age".publicKeys = all;
+  "files/authelia-session.age".publicKeys = all;
 }
