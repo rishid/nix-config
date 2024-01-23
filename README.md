@@ -19,6 +19,6 @@ TODO:
 [] Look into OIDC w/ Jellyfin
 [] Do we need to do basic-auth and forward anywhere?
 
-[] Docker socket proxy
-[] Jellyfin
+[x] Docker socket proxy
+[x] Jellyfin
 [] Fix server power light

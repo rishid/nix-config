@@ -126,6 +126,7 @@
   modules.whoami.enable = true;
   
   modules.plex.enable = true;
+  modules.jellyfin.enable = true;
 
   modules.transmission-ovpn.enable = true;
   modules.radarr.enable = true;
