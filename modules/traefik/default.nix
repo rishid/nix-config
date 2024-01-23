@@ -54,7 +54,8 @@ in {
 
         # Watch docker events and discover services
         providers.docker = {
-          endpoint = "unix:///var/run/docker.sock";
+          # endpoint = "unix:///var/run/docker.sock";
+          endpoint = "tcp://localhost:2375";
           exposedByDefault = false;
         };
 
