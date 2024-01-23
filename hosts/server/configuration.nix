@@ -122,6 +122,7 @@
   };
   modules.authelia.enable = true;
 
+  modules.homepage.enable = true;
   modules.whoami.enable = true;
   
   modules.plex.enable = true;

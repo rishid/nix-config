@@ -1,5 +1,5 @@
 # modules.traefik.enable = true;
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, this, ... }:
 
 let
   cfg = config.modules.traefik;
@@ -19,6 +19,8 @@ in {
     systemd.services.traefik = {
       serviceConfig.EnvironmentFile = [ secrets.traefik-env.path ];
     };
+
+    modules.virtualisation.enable = true;
 
     services.traefik = with config.networking; {
 
@@ -177,16 +179,7 @@ in {
     #    frequency = "daily";
     #    keep = 16;
     #  };
-    #};
-
-    # Enable Docker and set to backend (over podman default)
-    virtualisation = {
-      docker.enable = true;
-      docker.storageDriver = "overlay2";
-      docker.autoPrune.enable = true;
-      docker.autoPrune.dates = "quarterly";
-      oci-containers.backend = "docker";
-    };
+    #};    
 
     # Open up the firewall for http and https
     networking.firewall.allowedTCPPorts = [ 80 81 443 444 ];
