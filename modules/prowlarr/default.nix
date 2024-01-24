@@ -95,6 +95,12 @@ in {
         # "traefik.http.routers.prowlarr.middlewares" = "chain-authelia@file";        
         "traefik.http.routers.prowlarr.tls.certresolver" = "resolver-dns";
         "traefik.http.services.prowlarr.loadbalancer.server.port" = "${toString cfg.port}";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Prowlarr";
+        "homepage.icon" = "prowlarr.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Torrent indexer";
       };
     };
 

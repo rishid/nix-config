@@ -14,4 +14,8 @@
   authelia-jwt = ./authelia-jwt.age;
   authelia-storage = ./authelia-storage.age;
   authelia-session = ./authelia-session.age;
+
+  sonarr-api-key = ./sonarr-api-key.age;
+  radarr-api-key = ./radarr-api-key.age;
+  jellyfin-api-key = ./jellyfin-api-key.age;
 }

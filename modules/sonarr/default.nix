@@ -79,6 +79,10 @@ in {
         "${cfg.configDir}:/config"
         #"${cfg.mediaDir}:/data"
       ];
+
+      extraOptions = [
+        "--network=internal"
+      ];
       
       labels = {
         "autoheal" = "true";
@@ -87,6 +91,15 @@ in {
         # "traefik.http.routers.sonarr.middlewares" = "chain-authelia@file";        
         "traefik.http.routers.sonarr.tls.certresolver" = "resolver-dns";
         "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString cfg.port}";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Sonarr";
+        "homepage.icon" = "sonarr.svg";
+        "homepage.href" = "https://${cfg.hostName}";
+        "homepage.description" = "TV show tracker";
+        "homepage.widget.type" = "sonarr";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_SONARR_KEY}}";
+        "homepage.widget.url" = "http://sonarr:8989";
       };
     };
 

@@ -12,14 +12,41 @@ in {
 
   config = mkIf cfg.enable {
 
-    # Enable Docker and set to backend (over podman default)
-    virtualisation = {
-      docker.enable = true;
-      docker.storageDriver = "overlay2";
-      docker.autoPrune.enable = true;
-      docker.autoPrune.dates = "quarterly";
+    virtualisation = {     
+
       oci-containers.backend = "docker";
+      docker = {
+        enable = true;
+        # daemon.settings = {
+        #   features = { buildkit = true; };
+        # };
+        storageDriver = "overlay2";
+        autoPrune.enable = true;
+        autoPrune.dates = "quarterly";
+      };
+
+      # oci-containers.backend = lib.mkForce "podman";
+      # podman = {
+      #   enable = true;
+      #   dockerSocket.enable = true;
+      #   dockerCompat = true;
+      #   defaultNetwork.settings.dns_enabled = true;
+      # };
+      # containers.registries.search = [
+      #   "docker.io" "gcr.io" "quay.io"
+      # ];
+      # containers.storage.settings = {
+      #   storage = {
+      #     driver = "overlay2";
+      #     graphroot = "/var/lib/containers/storage";
+      #     runroot = "/run/containers/storage";
+      #   };
+      # };
     };
+
+    system.activationScripts.mkCoderNet = ''
+    ${pkgs.docker}/bin/docker network create internal &2>/dev/null || true
+  '';
 
     # Docker proxy for read-only container information
     virtualisation.oci-containers.containers."dockerproxy" = {
@@ -32,6 +59,7 @@ in {
       };
       volumes = [
         "/var/run/docker.sock:/var/run/docker.sock:ro"
+        # "/run/podman/podman.sock:/var/run/docker.sock:rw"
       ];
       ports = [
         "2375:2375/tcp"
@@ -66,6 +94,15 @@ in {
     #     "podman-compose-infra-root.target"
     #   ];
     # };    
+
+    # systemd.services.containers-network = with config.virtualisation.oci-containers; {
+    #   serviceConfig.Type = "oneshot";
+    #   wantedBy = [ "${backend}-traefik.service" "${backend}-homepage.service" "${backend}-portainer.service" "${backend}-vaultwarden.service" "${backend}-syncthing.service" ];
+    #   script = ''
+    #     ${pkgs.docker}/bin/${backend} network exists containers-network || \
+    #     ${pkgs.docker}/bin/${backend} network create containers-network
+    #     '';
+    # };
 
   };
 

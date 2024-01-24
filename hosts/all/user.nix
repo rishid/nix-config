@@ -29,7 +29,7 @@ in {
     shell = pkgs.fish;
     hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
     password = mkIf (!secrets.enable) "${user}";
-    extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "docker" "media" "photos" ]);
+    extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "podman" "docker" "media" "photos" ]);
     # openssh.authorizedKeys.keys = keys;
     openssh.authorizedKeys.keys = config.modules.secrets.keys.users."${user}";
   }); 

@@ -41,6 +41,16 @@ in {
     #   ];
     # };
 
+    # "-l=homepage.group=Media"
+    #       "-l=homepage.name=Jellyfin"
+    #       "-l=homepage.icon=jellyfin.svg"
+    #       "-l=homepage.href=https://jellyfin.${vars.domainName}"
+    #       "-l=homepage.description=Media player"
+    #       "-l=homepage.widget.type=jellyfin"
+    #       "-l=homepage.widget.key={{HOMEPAGE_FILE_JELLYFIN_KEY}}"
+    #       "-l=homepage.widget.url=http://jellyfin:8096"
+    #       "-l=homepage.widget.enableBlocks=true"
+
     # for hardware acceleration
     users.users.${config.services.jellyfin.user}.extraGroups = [ "video" "render" ];
     

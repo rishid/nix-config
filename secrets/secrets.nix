@@ -52,4 +52,9 @@ with (import ./keys); {
   "files/authelia-jwt.age".publicKeys = all;
   "files/authelia-storage.age".publicKeys = all;
   "files/authelia-session.age".publicKeys = all;
+
+  # *arr secrets
+  "files/sonarr-api-key.age".publicKeys = all;
+  "files/radarr-api-key.age".publicKeys = all;
+  "files/jellyfin-api-key.age".publicKeys = all;
 }

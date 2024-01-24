@@ -82,6 +82,12 @@ in {
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
         #"${cfg.mediaDir}:/data"
+        # "${vars.mainArray}/Media/Downloads:/downloads"
+        #     "${vars.mainArray}/Media/Movies:/movies"
+      ];
+
+      extraOptions = [
+        "--network=internal"
       ];
       
       labels = {
@@ -91,6 +97,15 @@ in {
         # "traefik.http.routers.radarr.middlewares" = "chain-authelia@file";        
         "traefik.http.routers.radarr.tls.certresolver" = "resolver-dns";
         "traefik.http.services.radarr.loadbalancer.server.port" = "${toString cfg.port}";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Radarr";
+        "homepage.icon" = "radarr.svg";
+        "homepage.href" = "https://${cfg.hostName}";
+        "homepage.description" = "Movie tracker";
+        "homepage.widget.type" = "radarr";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_RADARR_KEY}}";
+        "homepage.widget.url" = "http://radarr:7878";
       };
     };
 

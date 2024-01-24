@@ -61,6 +61,12 @@ in {
       services.vaultwarden.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString port}"; }];
     };
 
+    # "-l=homepage.group=Services"
+    #       "-l=homepage.name=Vaultwarden"
+    #       "-l=homepage.icon=bitwarden.svg"
+    #       "-l=homepage.href=https://pass.${vars.domainName}"
+    #       "-l=homepage.description=Password manager"
+
     # services.caddy.virtualHosts."vault.snakepi.xyz" = {
     #   logFormat = "output stdout";
     #   extraConfig = ''
