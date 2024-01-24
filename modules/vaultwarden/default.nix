@@ -54,8 +54,8 @@ in {
       routers.vaultwarden = {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "letsencrypt";
-        # middlewares = "local@file";
+        # tls.certresolver = "letsencrypt";
+        middlewares = "authelia@file";
         service = "vaultwarden";
       };
       services.vaultwarden.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString port}"; }];

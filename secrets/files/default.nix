@@ -15,6 +15,9 @@
   authelia-storage = ./authelia-storage.age;
   authelia-session = ./authelia-session.age;
 
+  lldap-jwt-secret = ./lldap-jwt-secret.age;
+  lldap-user-password = ./lldap-user-password.age;
+
   sonarr-api-key = ./sonarr-api-key.age;
   radarr-api-key = ./radarr-api-key.age;
   jellyfin-api-key = ./jellyfin-api-key.age;

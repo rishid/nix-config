@@ -70,6 +70,13 @@ in {
         # Run everything on 443
         entryPoints.websecure = {
           address = ":444";
+          http = {
+            tls = {
+              certresolver = "letsencrypt";
+              domains.main = "${config.networking.domain}";
+              domains.sans = "*.${config.networking.domain}";
+            };
+          };
           # http.tls.certresolver = "letsencrypt";
           http3 = { };
         };
@@ -149,7 +156,7 @@ in {
 
         middlewares.compress.compress = { };
         tls.options.default = {
-          minVersion = "VersionTLS12";
+          minVersion = "VersionTLS13";
           sniStrict = true;
         };
 

@@ -52,6 +52,8 @@ with (import ./keys); {
   "files/authelia-jwt.age".publicKeys = all;
   "files/authelia-storage.age".publicKeys = all;
   "files/authelia-session.age".publicKeys = all;
+  "files/lldap-jwt-secret.age".publicKeys = all;
+  "files/lldap-user-password.age".publicKeys = all;
 
   # *arr secrets
   "files/sonarr-api-key.age".publicKeys = all;

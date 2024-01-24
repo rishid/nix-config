@@ -8,7 +8,7 @@ let
   # inherit (lib.strings) toInt;
   inherit (this.lib) extraGroups ls;
   
-  domain = "auth.dhupar.xyz";
+  domain = "auth.${config.networking.domain}";
   port = 9092; #default 9091 is being used by transmissions
   ldapHost = "localhost";
   ldapPort = config.services.lldap.settings.ldap_port;
@@ -62,8 +62,10 @@ in {
     usersConfig = "${stateDirectory}/users.yaml";
     clientsConfig = "${stateDirectory}/clients.yaml";
   in {
+
     services.authelia.instances.main = {
       enable = true;
+
       secrets = {
         jwtSecretFile = config.age.secrets.authelia-jwt.path;
         storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
@@ -71,61 +73,86 @@ in {
         # oidcHmacSecretFile = config.age.secrets.authelia-oidc-hmac.path;
         # oidcIssuerPrivateKeyFile = config.age.secrets.authelia-oidc-issuer.path;
       };
-      # environmentVariables = {
-      #   AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
-      #     config.age.secrets.lldap-password.path;
+      environmentVariables = {
+        AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = toString config.age.secrets.lldap-user-password.path;
       #   AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE = config.age.secrets.smtp.path;
-      # };
+      };
       settings = {
         theme = "auto";
+        log.level = "debug";
+
         server = {
           host = "0.0.0.0";
           inherit port;
         };
-        default_2fa_method = "webauthn";
-        default_redirection_url = "https://${domain}";
-        log.level = "debug";
+
+        # default_2fa_method = "totp";
+        # default_redirection_url = "https://${domain}";
+
         authentication_backend = {
           # reference: https://github.com/lldap/lldap/blob/main/example_configs/authelia_config.yml
           password_reset.disable = false;
-          refresh_interval = "1m";
+          refresh_interval = "5m";
           ldap = {
             implementation = "custom";
             url = "ldap://${ldapHost}:${toString ldapPort}";
-            timeout = "5m";
+            timeout = "5s";
             start_tls = false;
             base_dn = "dc=dhupar,dc=xyz";
             username_attribute = "uid";
             additional_users_dn = "ou=people";
-            users_filter =
-              "(&({username_attribute}={input})(objectClass=person))";
+            # Sign in with username or email.
+            users_filter = "(&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))";
+            # users_filter =
+            #   "(&({username_attribute}={input})(objectClass=person))";
             additional_groups_dn = "ou=groups";
             groups_filter = "(member={dn})";
             group_name_attribute = "cn";
             mail_attribute = "mail";
             display_name_attribute = "displayName";
             user = "uid=admin,ou=people,dc=dhupar,dc=xyz";
-            password = "password";
+            # password = "password";
           };
         };
+        # totp = {
+        #   disable = false;
+        #   issuer = "auth.dhupar.xyz:444";          
+        #   algorithm = "sha1";
+        #   digits = 6;
+        #   period = 30;
+        #   skew = 1;
+        #   secret_size = 32;
+        # };
+        regulation = {
+          max_retries = 3;
+          find_time = "5m";
+          ban_time = "15m";
+        };
+
         access_control = {
           default_policy = "deny";
-          rules = [{
-            domain = [ "*.dhupar.xyz" ];
-            policy = "two_factor";
-          }];
+          rules = [
+            {
+              domain = [ "whoami.dhupar.xyz" ];
+              policy = "bypass";
+            }
+            {
+              domain = [ "*.dhupar.xyz" ];
+              policy = "one_factor";
+            }
+          ];
         };
         session = {
           domain = "dhupar.xyz";
+          # expiration = 3600;
+          # inactivity = 300;
           redis = {
             host = redis.unixSocket;
             port = 0;
           };
         };
-        regulation = {
-          max_retries = 3;
-          find_time = "5m";
-          ban_time = "15m";
+        notifier.filesystem = {
+          filename = "/var/lib/authelia-main/notif.txt";
         };
         storage.local = {
           path = "/var/lib/authelia-main/db.sqlite3";
@@ -138,7 +165,7 @@ in {
         #   # password not used since it uses peer auth
         #   password = "dummy";
         # };
-        notifier.filesystem.filename = "/var/lib/authelia-main/notifications.txt";
+
         # notifier.smtp = {
         #   inherit (smtpAccount) host port;
         #   username = smtpAccount.user;

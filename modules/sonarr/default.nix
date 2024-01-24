@@ -84,19 +84,19 @@ in {
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
-        "traefik.http.routers.sonarr.rule" = "Host(`${cfg.hostName}`)";
-        "traefik.http.routers.sonarr.middlewares" = "authelia@file";        
-        "traefik.http.routers.sonarr.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.sonarr.entrypoints" = "websecure";
+        # "traefik.http.routers.sonarr.rule" = "Host(`${cfg.hostName}`)";
+        "traefik.http.routers.sonarr.middlewares" = "authelia@file";
         "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString port}";
 
         "homepage.group" = "Arr";
         "homepage.name" = "Sonarr";
         "homepage.icon" = "sonarr.svg";
         "homepage.href" = "https://${cfg.hostName}:444";
-        "homepage.description" = "TV show tracker";
+        "homepage.description" = "Smart PVR";
         "homepage.widget.type" = "sonarr";
         "homepage.widget.key" = "{{HOMEPAGE_FILE_SONARR_KEY}}";
-        "homepage.widget.url" = "http://sonarr:8989";
+        "homepage.widget.url" = "http://sonarr:${toString port}";
       };
     };
 
