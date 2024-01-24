@@ -100,7 +100,7 @@ in
     #   routers.homepage = {
     #     entrypoints = "websecure";
     #     rule = "Host(`home.dhupar.xyz`)";
-    #     tls.certresolver = "resolver-dns";
+    #     tls.certresolver = "letsencrypt";
     #     # middlewares = "local@file";
     #     service = "homepage";
     #   };
@@ -138,7 +138,7 @@ in
         "traefik.enable" = "true";
         "traefik.http.routers.homepage.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.homepage.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.homepage.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.homepage.tls.certresolver" = "letsencrypt";
         "traefik.http.services.homepage.loadbalancer.server.port" = "3000";
       };
 

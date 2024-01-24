@@ -207,7 +207,7 @@ in {
       routers.authelia = {
         entrypoints = "websecure";
         rule = "Host(`${domain}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         # middlewares = "local@file";
         service = "authelia";
       };

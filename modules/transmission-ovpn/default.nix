@@ -180,7 +180,7 @@ in {
         #"traefik.http.routers.transmission.rule" = "Host(`${cfg.hostName}`) && PathPrefix(`/transmission`)";
         "traefik.http.routers.transmission.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.transmission.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.transmission.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.transmission.tls.certresolver" = "letsencrypt";
         "traefik.http.services.transmission.loadbalancer.server.port" = "${toString port}";
       };
 

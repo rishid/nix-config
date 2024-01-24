@@ -82,7 +82,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.silverbullet.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.silverbullet.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.silverbullet.tls.certresolver=letsencrypt"
         "--label=traefik.http.routers.silverbullet.middlewares=local@file"
       ];
 

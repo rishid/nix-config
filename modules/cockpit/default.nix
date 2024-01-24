@@ -50,7 +50,7 @@ in {
     services.traefik.dynamicConfigOptions.http = {
       routers.cockpit = {
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         # middlewares = [ "local@file" ];
         service = "cockpit";
       };

@@ -54,7 +54,7 @@ in {
       routers.vaultwarden = {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         # middlewares = "local@file";
         service = "vaultwarden";
       };

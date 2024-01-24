@@ -76,7 +76,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.ocis.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.ocis.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.ocis.tls.certresolver=letsencrypt"
         "--label=traefik.http.routers.ocis.middlewares=local@file"
       ];
 

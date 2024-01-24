@@ -16,7 +16,7 @@ in {
       routers.unifi-gateway = {
         rule = "Host(`${hostName}`)";
         # middlewares = "local@file";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         service = "unifi-gateway";
       };
       services.unifi-gateway.loadBalancer.servers = [{ url = "https://${ip}:443"; }];

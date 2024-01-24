@@ -5,6 +5,7 @@ let
 
   image = "ghcr.io/onedr0p/sonarr";
   version = "rolling";
+  port = 8989;
 
   cfg = config.modules.sonarr;
   inherit (lib) mkIf mkBefore mkOption options types;
@@ -19,10 +20,6 @@ in {
       type = types.str; 
       default = "sonarr.${config.networking.domain}";
       description = "FQDN for the sonarr instance";
-    };
-    port = mkOption {
-      type = types.port;
-      default = 8989; 
     };
     configDir= mkOption {
       type = types.str; 
@@ -88,14 +85,14 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.sonarr.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.sonarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.sonarr.tls.certresolver" = "resolver-dns";
-        "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString cfg.port}";
+        "traefik.http.routers.sonarr.middlewares" = "authelia@file";        
+        "traefik.http.routers.sonarr.tls.certresolver" = "letsencrypt";
+        "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString port}";
 
         "homepage.group" = "Arr";
         "homepage.name" = "Sonarr";
         "homepage.icon" = "sonarr.svg";
-        "homepage.href" = "https://${cfg.hostName}";
+        "homepage.href" = "https://${cfg.hostName}:444";
         "homepage.description" = "TV show tracker";
         "homepage.widget.type" = "sonarr";
         "homepage.widget.key" = "{{HOMEPAGE_FILE_SONARR_KEY}}";

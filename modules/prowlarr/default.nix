@@ -93,7 +93,7 @@ in {
         "traefik.enable" = "true";
         "traefik.http.routers.prowlarr.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.prowlarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.prowlarr.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.prowlarr.tls.certresolver" = "letsencrypt";
         "traefik.http.services.prowlarr.loadbalancer.server.port" = "${toString cfg.port}";
 
         "homepage.group" = "Arr";

@@ -39,7 +39,7 @@ in {
       routers.ombi = {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         middlewares = "local@file";
         service = "ombi";
       };

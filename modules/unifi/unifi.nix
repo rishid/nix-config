@@ -24,7 +24,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.unifi.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.unifi.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.unifi.tls.certresolver=letsencrypt"
         "--label=traefik.http.routers.unifi.middlewares=local@file"
         "--label=traefik.http.services.unifi.loadbalancer.server.port=8443"
         "--label=traefik.http.services.unifi.loadbalancer.server.scheme=https"

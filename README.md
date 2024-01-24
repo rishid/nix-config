@@ -15,7 +15,9 @@ TODO:
 - [ ] Homepage
 - [ ] MergerFS
 - [ ] SMART tools monitoring and notifications
+
 - [x] Authelia
+- [ ] Create more users
 - [ ] Enable Auth on all endpoints
 - [ ] Look into OIDC w/ Jellyfin
 - [ ] Do we need to do basic-auth and forward anywhere?

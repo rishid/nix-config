@@ -33,7 +33,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.whoogle.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.whoogle.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.whoogle.tls.certresolver=letsencrypt"
         "--label=traefik.http.routers.whoogle.middlewares=local@file"
       ];
     };

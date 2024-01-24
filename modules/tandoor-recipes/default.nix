@@ -50,7 +50,7 @@ in {
       routers.tandoor = {
         entrypoints = "websecure";
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         # tls.domains = mkIf (isPublic) [{ main = "${cfg.hostName}"; sans = "*.${cfg.hostName}"; }];
         # middlewares = [ "tandoor@file" ] ++ ( if isPublic then [] else [ "local@file" ] );
         service = "tandoor";

@@ -83,7 +83,7 @@ in {
         "traefik.enable" = "true";
         "traefik.http.routers.filebrowser.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.filebrowser.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.filebrowser.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.filebrowser.tls.certresolver" = "letsencrypt";
         "traefik.http.services.filebrowser.loadbalancer.server.port" = "80";
       };
     };

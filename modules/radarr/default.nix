@@ -94,8 +94,8 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.radarr.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.radarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.radarr.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.radarr.middlewares" = "authelia@file";        
+        "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
         "traefik.http.services.radarr.loadbalancer.server.port" = "${toString cfg.port}";
 
         "homepage.group" = "Arr";

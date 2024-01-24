@@ -19,7 +19,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.zwave.rule=Host(`${cfg.zwaveHostName}`)"
-        "--label=traefik.http.routers.zwave.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.zwave.tls.certresolver=letsencrypt"
         # "--label=traefik.http.routers.zwave.middlewares=local@file"
         "--label=traefik.http.services.zwave.loadbalancer.server.port=8091"
         "--label=traefik.http.services.zwave.loadbalancer.server.scheme=http"

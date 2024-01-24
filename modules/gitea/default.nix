@@ -74,7 +74,7 @@ in {
     services.traefik.dynamicConfigOptions.http = {
       routers.gitea = {
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         middlewares = [ "local@file" ];
         service = "gitea";
       };

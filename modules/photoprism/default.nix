@@ -101,7 +101,7 @@ in {
     services.traefik.dynamicConfigOptions.http = {
       routers.photoprism = {
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         middlewares = [ "local@file" ];
         service = "photoprism";
       };

@@ -55,8 +55,10 @@ in {
         # Watch docker events and discover services
         providers.docker = {
           # endpoint = "unix:///var/run/docker.sock";
-          endpoint = "tcp://localhost:2375";
+          endpoint = "tcp://127.0.0.1:2375";
           exposedByDefault = false;
+          defaultRule = "Host(`{{ normalize .Name }}.${config.networking.domain}`)";
+          # network = "proxy";
         };
 
         # Listen on port 80 and redirect to port 443
@@ -68,7 +70,7 @@ in {
         # Run everything on 443
         entryPoints.websecure = {
           address = ":444";
-          # http.tls.certresolver = "resolver-dns";
+          # http.tls.certresolver = "letsencrypt";
           http3 = { };
         };
 
@@ -88,7 +90,7 @@ in {
         # };
 
         # Let's Encrypt will check CloudFlare's DNS
-        certificatesResolvers.resolver-dns.acme = {
+        certificatesResolvers.letsencrypt.acme = {
           dnsChallenge.provider = "cloudflare";
           email = "${hostName}@${domain}";
           keyType = "EC256";
@@ -156,7 +158,7 @@ in {
           traefik = {
             entrypoints = "websecure";
             rule = "Host(`traefik.${domain}`)";
-            tls.certresolver = "resolver-dns";
+            tls.certresolver = "letsencrypt";
             tls.domains = [{
               main = "${domain}"; 
               sans = "*.${domain}"; 

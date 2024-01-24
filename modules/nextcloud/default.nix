@@ -75,7 +75,7 @@ in {
     services.traefik.dynamicConfigOptions.http = {
       routers.nextcloud = {
         rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         middlewares = [ "local@file" "nextcloud@file" ];
         service = "nextcloud";
       };

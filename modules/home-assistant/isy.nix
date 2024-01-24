@@ -16,7 +16,7 @@ in {
       routers.isy = {
         rule = "Host(`${cfg.isyHostName}`)";
         # middlewares = [ "local@file" "isy@file" ];
-        tls.certresolver = "resolver-dns";
+        tls.certresolver = "letsencrypt";
         service = "isy";
       };
       services.isy.loadBalancer.servers = [{ url = "http://${cfg.isy}:80"; }];

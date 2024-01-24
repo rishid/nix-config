@@ -88,7 +88,7 @@ in {
          "--pull=always"
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.overseerr.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.overseerr.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.overseerr.tls.certresolver=letsencrypt"
         # "--label=traefik.http.routers.overseerr.middlewares=local@file"
         "--label=traefik.http.services.overseerr.loadbalancer.server.port=5055"
       ];

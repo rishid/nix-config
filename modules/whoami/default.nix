@@ -32,7 +32,7 @@ in {
         "traefik.enable" = "true";
         "traefik.http.routers.whoami.rule" = "Host(`${cfg.hostName}`)";
         "traefik.http.routers.whoami.middlewares" = "authelia@file";        
-        "traefik.http.routers.whoami.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.whoami.tls.certresolver" = "letsencrypt";
       };
     };
 

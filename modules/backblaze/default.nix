@@ -45,7 +45,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.backblaze.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.backblaze.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.backblaze.tls.certresolver=letsencrypt"
         "--label=traefik.http.routers.backblaze.middlewares=local@file"
 
       # Additional flags

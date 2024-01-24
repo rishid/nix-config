@@ -31,7 +31,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.lunasea.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.lunasea.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.lunasea.tls.certresolver=letsencrypt"
         # "--label=traefik.http.routers.lunasea.middlewares=local@file"
       ];
     };

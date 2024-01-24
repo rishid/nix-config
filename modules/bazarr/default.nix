@@ -94,7 +94,7 @@ in {
         "traefik.enable" = "true";
         "traefik.http.routers.bazarr.rule" = "Host(`${cfg.hostName}`)";
         # "traefik.http.routers.bazarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.bazarr.tls.certresolver" = "resolver-dns";
+        "traefik.http.routers.bazarr.tls.certresolver" = "letsencrypt";
         "traefik.http.services.bazarr.loadbalancer.server.port" = "${toString cfg.port}";
       };
     };

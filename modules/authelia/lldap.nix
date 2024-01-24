@@ -61,7 +61,7 @@ in {
       routers.lldap = {
         entrypoints = "websecure";
         rule = "Host(`lldap.dhupar.xyz`)";
-        tls.certresolver = "resolver-dns";        
+        tls.certresolver = "letsencrypt";        
         # middlewares = [ "tailscale-ips" ];
         service = "lldap";
       };

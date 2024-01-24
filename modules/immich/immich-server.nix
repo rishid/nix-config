@@ -40,7 +40,7 @@ in {
       extraOptions = [
         "--label=traefik.enable=true"
         "--label=traefik.http.routers.immich.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.immich.tls.certresolver=resolver-dns"
+        "--label=traefik.http.routers.immich.tls.certresolver=letsencrypt"
         # "--label=traefik.http.routers.immich.middlewares=local@file"
 
       # Networking for docker containers
