@@ -42,26 +42,12 @@ in {
       };
 
       environment = {
-        # LLDAP_JWT_SECRET_FILE = "%d/jwt-secret";
-        # LLDAP_LDAP_USER_PASS_FILE = "%d/user-pass";
-        # LLDAP_JWT_SECRET = "MJ-d@2c1c1m6anA%p3X;MA6V'7j6QW/J"; # TODO: replace with age
-        # LLDAP_LDAP_USER_PASS = "notused"; # TODO: fix me
-
         LLDAP_JWT_SECRET_FILE = toString config.age.secrets.lldap-jwt-secret.path;
         LLDAP_LDAP_USER_PASS_FILE = toString config.age.secrets.lldap-user-password.path;
 
         # RUST_LOG = "debug";
       };
     };
-
-    # systemd.services.lldap = {
-    #   serviceConfig = {
-    #     LoadCredential = [
-    #       "jwt-secret:${config.age.secrets.lldap-jwt-secret.path}"
-    #       "user-pass:${config.age.secrets.lldap-user-password.path}"
-    #     ];
-    #   };
-    # };
 
     # LLDAP_DATABASE_URL = "postgresql:///lldap?host=/run/postgresql";
     # services.postgresql = {
