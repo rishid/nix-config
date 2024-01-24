@@ -14,6 +14,7 @@ TODO:
 - [] Uptime Kuma
 - [] Homepage
 - [] MergerFS
+- [] SMART tools monitoring and notifications
 - [x] Authelia
 - [] Enable Auth on all endpoints
 - [] Look into OIDC w/ Jellyfin
