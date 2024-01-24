@@ -96,16 +96,16 @@ in
       # services.homepage.port = homepage.listenPort;
     };
 
-    services.traefik.dynamicConfigOptions.http = {
-      routers.homepage = {
-        entrypoints = "websecure";
-        rule = "Host(`home.dhupar.xyz`)";
-        tls.certresolver = "resolver-dns";
-        # middlewares = "local@file";
-        service = "homepage";
-      };
-      services.homepage.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString homepage.listenPort}"; }];
-    };
+    # services.traefik.dynamicConfigOptions.http = {
+    #   routers.homepage = {
+    #     entrypoints = "websecure";
+    #     rule = "Host(`home.dhupar.xyz`)";
+    #     tls.certresolver = "resolver-dns";
+    #     # middlewares = "local@file";
+    #     service = "homepage";
+    #   };
+    #   services.homepage.loadBalancer.servers = [{ url = "http://127.0.0.1:${toString homepage.listenPort}"; }];
+    # };
 
     virtualisation.oci-containers.containers.homepage = {
       image = "ghcr.io/gethomepage/homepage:v0.8.0";
