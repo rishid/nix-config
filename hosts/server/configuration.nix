@@ -124,6 +124,7 @@
 
   modules.homepage.enable = true;
   modules.whoami.enable = true;
+  modules.smartd.enable = true;
   
   modules.plex.enable = true;
   modules.jellyfin.enable = true;
