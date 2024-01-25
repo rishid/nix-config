@@ -70,8 +70,8 @@ in {
         jwtSecretFile = config.age.secrets.authelia-jwt.path;
         storageEncryptionKeyFile = config.age.secrets.authelia-storage.path;
         sessionSecretFile = config.age.secrets.authelia-session.path;
-        # oidcHmacSecretFile = config.age.secrets.authelia-oidc-hmac.path;
-        # oidcIssuerPrivateKeyFile = config.age.secrets.authelia-oidc-issuer.path;
+        oidcHmacSecretFile = config.age.secrets.authelia-oidc-hmac.path;
+        oidcIssuerPrivateKeyFile = config.age.secrets.authelia-oidc-issuer.path;
       };
       environmentVariables = {
         AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE = toString config.age.secrets.lldap-user-password.path;
@@ -114,15 +114,15 @@ in {
             # password = "password";
           };
         };
-        # totp = {
-        #   disable = false;
-        #   issuer = "auth.dhupar.xyz:444";          
-        #   algorithm = "sha1";
-        #   digits = 6;
-        #   period = 30;
-        #   skew = 1;
-        #   secret_size = 32;
-        # };
+        totp = {
+          disable = false;
+          issuer = "auth.dhupar.xyz:444";          
+          algorithm = "sha1";
+          digits = 6;
+          period = 30;
+          skew = 1;
+          secret_size = 32;
+        };
         regulation = {
           max_retries = 3;
           find_time = "5m";
@@ -131,10 +131,23 @@ in {
 
         access_control = {
           default_policy = "deny";
+          networks = [
+            {
+              name = "internal";
+              networks = [ "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/18" ];
+            }
+          ];
           rules = [
             {
               domain = [ "whoami.dhupar.xyz" ];
               policy = "bypass";
+            }
+            {
+              domain = [ "auth.dhupar.xyz" ];
+              policy = "bypass";
+              resources = [
+                "^/api/.*"
+              ];
             }
             {
               domain = [ "*.dhupar.xyz" ];
@@ -144,15 +157,10 @@ in {
         };
         session = {
           domain = "dhupar.xyz";
-          # expiration = 3600;
-          # inactivity = 300;
           redis = {
             host = redis.unixSocket;
             port = 0;
           };
-        };
-        notifier.filesystem = {
-          filename = "/var/lib/authelia-main/notif.txt";
         };
         storage.local = {
           path = "/var/lib/authelia-main/db.sqlite3";
@@ -166,12 +174,33 @@ in {
         #   password = "dummy";
         # };
 
+        notifier.filesystem = {
+          filename = "/var/lib/authelia-main/notif.txt";
+        };
         # notifier.smtp = {
         #   inherit (smtpAccount) host port;
         #   username = smtpAccount.user;
         #   sender = smtpAccount.from;
         # };
-        # identity_providers.oidc.clients = [
+        identity_providers.oidc.clients = [
+          {
+            id = "Immich";
+            description = "High performance self-hosted photo and video backup solution";
+            authorization_policy = "one_factor";
+            redirect_uris = [
+              "app.immich:/"
+              "https://immich.dhupar.xyz:444/api/oauth/mobile-redirect"
+              "http://immich.dhupar.xyz:444/auth/login"
+              "http://immich.dhupar.xyz:444/user-settings"
+              "https://immich.dhupar.xyz:444/auth/login"
+              "https://immich.dhupar.xyz:444/user-settings"
+              "http://localhost:2283/auth/login"
+              "http://localhost:2283/user-settings"
+              "http://192.168.0.200:2283/auth/login"
+              "http://192.168.0.200:2283/user-settings"
+            ];
+            secret = "$argon2id$v=19$m=65536,t=3,p=4$/zOkCrAwcIxAs9JeVynhuA$QGdKXHogOWnzIa1gKqvj8V3p5jBRdwtXMp9sEx3lihE";
+          }
         #   {
         #     id = "miniflux";
         #     description = "Miniflux RSS";
@@ -198,7 +227,7 @@ in {
         #       [ "https://media.felschr.com/sso/OID/redirect/Authelia" ];
         #     scopes = [ "openid" "email" "profile" ];
         #   }
-        # ];
+        ];
       };
     };
 

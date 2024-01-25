@@ -14,6 +14,8 @@
   authelia-jwt = ./authelia-jwt.age;
   authelia-storage = ./authelia-storage.age;
   authelia-session = ./authelia-session.age;
+  authelia-oidc-hmac = ./authelia-oidc-hmac.age;
+  authelia-oidc-issuer = ./authelia-oidc-issuer.age;
 
   lldap-jwt-secret = ./lldap-jwt-secret.age;
   lldap-user-password = ./lldap-user-password.age;

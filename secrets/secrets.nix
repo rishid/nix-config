@@ -48,10 +48,12 @@ with (import ./keys); {
   # Vaultwarden private environment variables
   "files/vaultwarden-env.age".publicKeys = all;
 
-  # Authelia
+  # Authelia and LDAP
   "files/authelia-jwt.age".publicKeys = all;
   "files/authelia-storage.age".publicKeys = all;
   "files/authelia-session.age".publicKeys = all;
+  "files/authelia-oidc-hmac.age".publicKeys = all;
+  "files/authelia-oidc-issuer.age".publicKeys = all;
   "files/lldap-jwt-secret.age".publicKeys = all;
   "files/lldap-user-password.age".publicKeys = all;
 
