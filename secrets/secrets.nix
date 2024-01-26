@@ -41,9 +41,11 @@ with (import ./keys); {
   # ---------------------------------------------------------------------------
   "files/transmission-ovpn.age".publicKeys = all;
   
-  # Restic password
+  # Restic
   # Plain text password generated using Restic
   "files/restic-password.age".publicKeys = all;
+  # BorgBase.com URL
+  "files/restic-borgbase-env.age".publicKeys = all;
 
   # Vaultwarden private environment variables
   "files/vaultwarden-env.age".publicKeys = all;

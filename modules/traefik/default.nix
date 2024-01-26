@@ -152,6 +152,17 @@ in {
                 ];
               };
             };
+            # auth-headers = {
+            #   browserXssFilter = true;
+            #   contentTypeNosniff = true;
+            #   forceSTSHeader = true;
+            #   frameDeny = true;
+            #   sslHost = domain;
+            #   sslRedirect = true;
+            #   stsIncludeSubdomains = true;
+            #   stsPreload = true;
+            #   stsSeconds = 315360000;
+            # };
         };
 
         middlewares.compress.compress = { };
@@ -199,3 +210,7 @@ in {
   };
 
 }
+
+# references:
+# fn ideas: https://github.com/Helyosis/nix-config/blob/7a1a6b110930a9274ff46467ade0da26e28db2f2/hosts/server/traefik.nix#L46
+# more fn: https://github.com/nikitawootten/infra/blob/8f827d78ea1cd02c73e10c521b4ad34d303f9176/hosts/hades/lab/infra/traefik.nix#L59

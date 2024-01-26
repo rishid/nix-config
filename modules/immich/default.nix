@@ -233,3 +233,7 @@ in {
 
 
   }; }
+
+# references:
+# docker-compose model: 
+# https://github.com/Helyosis/nix-config/blob/master/hosts/server/immich/default.nix

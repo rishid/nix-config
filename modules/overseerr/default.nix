@@ -13,7 +13,6 @@ let
   inherit (builtins) toString;
   inherit (this.lib) extraGroups;
 
-
 in {
 
   options.modules.overseerr = {
@@ -78,22 +77,32 @@ in {
 
     virtualisation.oci-containers.containers.overseerr = {
       image = "${image}:${version}";
-      autoStart = true;
-
-      # Run as overseerr user
       user = with config.ids; "${toString uids.overseerr}:${toString gids.overseerr}";
 
-      # Traefik labels
-      extraOptions = [
-         "--pull=always"
-        "--label=traefik.enable=true"
-        "--label=traefik.http.routers.overseerr.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.overseerr.tls.certresolver=letsencrypt"
-        # "--label=traefik.http.routers.overseerr.middlewares=local@file"
-        "--label=traefik.http.services.overseerr.loadbalancer.server.port=5055"
-      ];
-
       volumes = [ "${cfg.configDir}:/app/config" ];
+
+      extraOptions = [
+        "--pull=always"
+        "--network=internal"
+      ];
+      
+      labels = {
+        "autoheal" = "true";
+        "traefik.enable" = "true";
+        "traefik.http.routers.overseerr.entrypoints" = "websecure";
+        "traefik.http.routers.overseerr.rule" = "Host(`${cfg.hostName}`)";
+        "traefik.http.routers.overseerr.middlewares" = "authelia@file";
+        "traefik.http.services.overseerr.loadbalancer.server.port" = "5055";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Overseerr";
+        "homepage.icon" = "overseerr.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Service to request movies and TV shows";
+        "homepage.widget.type" = "overseerr";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_OVERSEERR_KEY}}";
+        "homepage.widget.url" = "http://overseerr:5055";
+      };
 
     };
 

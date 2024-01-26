@@ -8,6 +8,7 @@
   transmission-ovpn = ./transmission-ovpn.age;
 
   restic-password = ./restic-password.age;
+  restic-borgbase-env = ./restic-borgbase-env.age;
 
   vaultwarden-env = ./vaultwarden-env.age;
 

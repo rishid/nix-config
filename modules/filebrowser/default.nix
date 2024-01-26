@@ -81,12 +81,20 @@ in {
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
+        "traefik.http.routers.filebrowser.entrypoints" = "websecure";
         "traefik.http.routers.filebrowser.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.filebrowser.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.filebrowser.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.filebrowser.middlewares" = "authelia@file";
         "traefik.http.services.filebrowser.loadbalancer.server.port" = "80";
+
+        "homepage.group" = "Utils";
+        "homepage.name" = "File Explorer";
+        "homepage.description" = "Filebrowser";
+        "homepage.icon" = "filebrowser.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
       };
     };
+
+    
 
   };
 

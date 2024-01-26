@@ -146,6 +146,8 @@ in {
     #     RandomizedDelaySec = cfg.timerConfig.RandomizedDelaySec;
     #   };
 
+    # users.users.restic.extraGroups = [ "secrets" ]; 
+
     services.restic.backups = 
       let
         restic-ignore-file = pkgs.writeTextFile {
@@ -177,6 +179,35 @@ in {
             "-vv"
           ];
         };
+
+        # BorgBase supports restic, 10 GB free
+        borgbase = { 
+          repositoryFile = config.age.secrets.restic-borgbase-env.path;      
+          passwordFile = cfg.passwordFile;
+          initialize = true;
+          createWrapper = true;
+
+          paths = cfg.localPaths; # TODO: change to remote paths at some point
+
+          timerConfig = lib.mkDefault {
+            OnCalendar = "03:00:00";
+            Persistent = true;
+          };
+          pruneOpts = [
+            "--keep-daily 3"
+            "--keep-weekly 2"
+          ];
+
+          backupCleanupCommand = script-post config.networking.hostName "BorgBase";
+
+          extraBackupArgs = [
+            "--exclude-file=${restic-ignore-file}"
+            "--one-file-system"
+            # "--dry-run"
+            "-vv"
+          ];
+        };
+
       };
   });
 }

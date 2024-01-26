@@ -1,3 +1,14 @@
+- Media:
+    - Jellyfin:
+        icon: jellyfin.svg
+        href: https://jellyfin.dhupar.xyz:444
+        description: "Media player"
+        widget:
+          type: jellyfin
+          key: "{{HOMEPAGE_FILE_JELLYFIN_KEY}}"
+          url: http://127.0.0.1:8096
+          enableBlocks: true
+          enableNowPlaying: true
 - Monitoring:
     - Network:
         widget:
