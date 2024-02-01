@@ -20,11 +20,15 @@ in {
       # Map volumes to host
       volumes = [ 
         "immich-machine-learning:/cache"
+        "/dev/bus/usb:/dev/bus/usb"
       ];
 
       # Networking for docker containers
       extraOptions = [
         "--network=immich"
+        # https://github.com/immich-app/immich/blob/main/docker/hwaccel.ml.yml
+        "--device-cgroup-rule=c 189:* rmw"
+        "--device=/dev/dri:/dev/dri"
       ];
 
     };

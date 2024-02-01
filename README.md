@@ -18,6 +18,7 @@ Ordered by Priority:
 - [ ] PlexTraktSync
     https://github.com/Taxel/PlexTraktSync
 - [ ] Test Jellyfin on Roku
+- [ ] Make lldap available via local network and tailscale only
 
 Low Priority
 - [ ] Backup on external disk
@@ -33,3 +34,9 @@ Low Priority
 - [ ] Homepage
 
 - [ ] Mailrise
+
+
+HOWTO
+
+rsync from Synology to new server
+rsync --rsync-path=/usr/bin/rsync @192.168.1.111:... .

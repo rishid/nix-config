@@ -46,6 +46,9 @@ in {
       # Networking for docker containers
       ] ++ [
         "--network=immich"
+        # https://github.com/immich-app/immich/blob/main/docker/hwaccel.yml
+        "--group-add=303"
+        "--device=/dev/dri:/dev/dri" 
       ];
 
     };

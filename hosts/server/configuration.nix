@@ -145,8 +145,8 @@
   # modules.unpackerr.enable = true
   modules.immich = {
     enable = true;
-    photosDir = "/data/photos/immich";
-    externalDir = "/data/photos/collections";
+    photosDir = "/mnt/pool/photos/immich";
+    externalDir = "/mnt/pool/photos/Years";
   };
   
   # TODO:
@@ -191,11 +191,30 @@
 
   # modules.services.docker.enable = true;
 
+  #nixpkgs.config.packageOverrides = pkgs: {
+  #  vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  #};
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vaapiIntel         # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      vaapiVdpau
+      libvdpau-va-gl
+      intel-compute-runtime
+    ];
+  };
+
+
+
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
   environment.systemPackages = with pkgs; [
     age
+    bc
+    jellyfin-ffmpeg
     fio  
+    intel-gpu-tools
     lm_sensors
     nfs-utils
     quickemu
@@ -203,7 +222,8 @@
     patchelf    
     powertop    
     stdenv    
-    stdenv.cc    
+    stdenv.cc
+    exiftool
   ];
 
   systemd = {

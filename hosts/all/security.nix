@@ -28,16 +28,36 @@ in {
 
   };
 
+  # users.extraUsers.photo-upload = {
+  #   description = "SFTP photo upload user";
+  #   # uid = config.ids.uids.nix-ssh;
+  #   useDefaultShell = true;
+  # };
+
   services.openssh = {
     enable = true;
+    allowSFTP = true;
+    sftpServerExecutable = "internal-sftp";
 
     # Harden
+    settings.KbdInteractiveAuthentication = false;
     settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "no";
 
     # Automatically remove stale sockets
     extraConfig = ''
       StreamLocalBindUnlink yes
+
+      Match User photo-upload
+        ChrootDirectory %h
+        ForceCommand internal-sftp
+        AllowAgentForwarding no
+        AllowTcpForwarding no
+        PermitTTY no
+        PermitTunnel no
+        X11Forwarding no
+        PasswordAuthentication yes
+      Match All
     '';
 
     # Allow forwarding ports to everywhere

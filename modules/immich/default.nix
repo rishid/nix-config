@@ -4,7 +4,7 @@
 let
 
   # https://github.com/immich-app/immich/releases
-  version = "1.92.1";
+  version = "1.94.1";
 
   cfg = config.modules.immich;
 
@@ -13,46 +13,45 @@ let
   inherit (lib.strings) toInt;
   inherit (this.lib) extraGroups ls;
 
-  dbuser = "immich";
-  dbname = "immich";
-  dbPasswordFile = config.age.secrets.immich-db-password.path;
-  containersHost = "localhost";
+  # dbuser = "immich";
+  # dbname = "immich";
+  # dbPasswordFile = config.age.secrets.immich-db-password.path;
+  # containersHost = "localhost";
 
   inherit (config.users.users.immich) uid;
   inherit (config.users.groups.immich) gid;
 
-  immichBase = {
-    user = "${toString uid}:${toString gid}";
-    environment = {
-      PUID = toString uid;
-      PGID = toString gid;
-      NODE_ENV = "production";
-      DB_HOSTNAME = containersHost;
-      DB_PORT = toString config.services.postgresql.port;
-      DB_USERNAME = dbuser;
-      DB_DATABASE_NAME = dbname;
-      REDIS_HOSTNAME = containersHost;
-      REDIS_PORT = toString config.services.redis.servers.immich.port;
-      TYPESENSE_HOST = "immich-typesense";
-    };
-    # only secrets need to be included, e.g. DB_PASSWORD, JWT_SECRET, MAPBOX_KEY
-    environmentFiles = [
-      config.age.secrets.immich-env.path
-      config.age.secrets.immich-typesense-env.path
-    ];
-    extraOptions = [
-      "--uidmap=0:65534:1"
-      "--gidmap=0:65534:1"
-      "--uidmap=${toString uid}:${toString uid}:1"
-      "--gidmap=${toString gid}:${toString gid}:1"
-      "--network=host"
-      "--add-host=immich-server:127.0.0.1"
-      "--add-host=immich-microservices:127.0.0.1"
-      "--add-host=immich-machine-learning:127.0.0.1"
-      "--add-host=immich-typesense:127.0.0.1"
-      "--label=io.containers.autoupdate=registry"
-    ];
-  };
+  # immichBase = {
+  #   user = "${toString uid}:${toString gid}";
+  #   environment = {
+  #     PUID = toString uid;
+  #     PGID = toString gid;
+  #     NODE_ENV = "production";
+  #     DB_HOSTNAME = containersHost;
+  #     DB_PORT = toString config.services.postgresql.port;
+  #     DB_USERNAME = dbuser;
+  #     DB_DATABASE_NAME = dbname;
+  #     DB_PASSWORD="postgres";
+  #     REDIS_HOSTNAME = containersHost;
+  #     REDIS_PORT = toString config.services.redis.servers.immich.port;
+  #     UPLOAD_LOCATION= "./library";
+  #   };
+  #   # only secrets need to be included, e.g. DB_PASSWORD, JWT_SECRET, MAPBOX_KEY
+  #   environmentFiles = [
+  #     config.age.secrets.immich-env.path
+  #   ];
+  #   extraOptions = [
+  #     "--uidmap=0:65534:1"
+  #     "--gidmap=0:65534:1"
+  #     "--uidmap=${toString uid}:${toString uid}:1"
+  #     "--gidmap=${toString gid}:${toString gid}:1"
+  #     "--network=host"
+  #     "--add-host=immich-server:127.0.0.1"
+  #     "--add-host=immich-microservices:127.0.0.1"
+  #     "--add-host=immich-machine-learning:127.0.0.1"
+  #     "--label=io.containers.autoupdate=registry"
+  #   ];
+  # };
 
 in {
 
@@ -98,6 +97,7 @@ in {
       description = "Shared environment across Immich services";
       type = types.anything; 
       default = {
+        FOO="BAR";
         PUID = toString config.ids.uids.immich;
         PGID = toString config.ids.gids.immich;
         DB_URL = "socket://immich:@/run/postgresql?db=immich";
@@ -135,6 +135,7 @@ in {
         immich = {
           isSystemUser = true;
           group = "photos";
+	  extraGroups = [ "photos" "video" "render" ];
           description = "Immich daemon user";
           home = cfg.dataDir;
           uid = config.ids.uids.immich;
@@ -179,7 +180,7 @@ in {
 
       # Allow connections from any docker IP addresses
       # format: type database DBuser origin-address auth-method
-      authentication = mkBefore "host immich immich 172.16.0.0/12 md5";
+      # authentication = mkBefore "host immich immich 172.16.0.0/12 md5";
 
       # Postgres extension pgvecto.rs required since Immich 1.91.0
       extraPlugins = [
@@ -198,7 +199,6 @@ in {
       $PSQL -d immich -tAc 'CREATE EXTENSION IF NOT EXISTS earthdistance;'
       $PSQL -d immich -tAc 'CREATE EXTENSION IF NOT EXISTS vectors;'
     '';
-
 
     # Init service
     systemd.services.immich = let service = config.systemd.services.immich; in {
