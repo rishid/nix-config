@@ -77,6 +77,11 @@ in {
         "/root:/srv"
         #"${cfg.mediaDir}:/srv"
       ];
+
+      environment = {
+        FB_LOG = "stdout";
+        FB_NOAUTH = "true";
+      }; 
       
       labels = {
         "autoheal" = "true";
