@@ -10,9 +10,9 @@ Ordered by Priority:
 - [x] Authelia
 - [x] SMART tools monitoring and notifications
 - [x] Prowlarr
-- [ ] Transmission
-- [ ] Sonarr
-- [ ] Radarr
+- [x] Transmission
+- [x] Sonarr
+- [x] Radarr
 - [ ] Immich photo backup / test it is working
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
