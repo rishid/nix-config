@@ -50,7 +50,7 @@ in {
         "--group-add=303"
         "--device=/dev/dri:/dev/dri" 
       ];
-
+ 
     };
 
     # Extend systemd service

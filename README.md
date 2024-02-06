@@ -15,12 +15,15 @@ Ordered by Priority:
 - [ ] Enable Auth on all endpoints
 - [ ] Look into OIDC w/ Jellyfin
 - [ ] Do we need to do basic-auth and forward anywhere?
+- [ ] Move sftpjail out of security.nix
 - [ ] PlexTraktSync
     https://github.com/Taxel/PlexTraktSync
 - [ ] Test Jellyfin on Roku
 - [ ] Make lldap available via local network and tailscale only
 
 Low Priority
+- [ ] Enable fail2ban
+- [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
 - [ ] Backup on external disk
 - [ ] Disable login to FileBrowser
 - [ ] add a mkMediaUser fn in lib

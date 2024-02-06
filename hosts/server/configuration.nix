@@ -213,17 +213,20 @@
     age
     bc
     jellyfin-ffmpeg
-    fio  
+    exiftool
+    fio
+    iftop
     intel-gpu-tools
     lm_sensors
     nfs-utils
     quickemu
     parted
     patchelf    
-    powertop    
+    powertop
+    rclone
     stdenv    
     stdenv.cc
-    exiftool
+    tcpdump
   ];
 
   systemd = {
