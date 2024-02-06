@@ -8,7 +8,7 @@ let
   port = 7878;
 
   cfg = config.modules.radarr;
-  inherit (lib) mkIf mkBefore mkOption options types;
+  inherit (lib) mkIf mkOption options types;
   inherit (builtins) toString;
   inherit (this.lib) extraGroups;
 

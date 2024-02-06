@@ -122,6 +122,7 @@ in
         # "${homepageCustomCss}:/app/custom.css"
         "/var/run/docker.sock:/var/run/docker.sock:ro"
         # "/run/podman/podman.sock:/var/run/docker.sock"
+        "${config.age.secrets.bazarr-api-key.path}:/app/config/bazarr.key"
         "${config.age.secrets.sonarr-api-key.path}:/app/config/sonarr.key"
         "${config.age.secrets.radarr-api-key.path}:/app/config/radarr.key"
         "${config.age.secrets.jellyfin-api-key.path}:/app/config/jellyfin.key"
@@ -145,6 +146,7 @@ in
       environment = {
         # TZ = vars.timeZone;
         LOG_LEVEL = "debug";
+        HOMEPAGE_FILE_BAZARR_KEY = "/app/config/bazarr.key";
         HOMEPAGE_FILE_SONARR_KEY = "/app/config/sonarr.key";
         HOMEPAGE_FILE_RADARR_KEY = "/app/config/radarr.key";
         HOMEPAGE_FILE_JELLYFIN_KEY = "/app/config/jellyfin.key";

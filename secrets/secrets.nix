@@ -60,6 +60,7 @@ with (import ./keys); {
   "files/lldap-user-password.age".publicKeys = all;
 
   # *arr secrets
+  "files/bazarr-api-key.age".publicKeys = all;
   "files/sonarr-api-key.age".publicKeys = all;
   "files/radarr-api-key.age".publicKeys = all;
   "files/jellyfin-api-key.age".publicKeys = all;

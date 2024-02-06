@@ -5,6 +5,7 @@ let
    
   image = "ghcr.io/onedr0p/bazarr";
   version = "rolling";
+  port = 6767;
 
   cfg = config.modules.bazarr;
   inherit (lib) mkIf mkOption options types;
@@ -20,15 +21,11 @@ in {
       default = "bazarr.${config.networking.domain}";
       description = "FQDN for the bazarr instance";
     };
-    port = mkOption {
-      type = types.port;
-      default = 6767; 
-    };
     configDir = mkOption {
       type = types.path;
       default = "/var/lib/bazarr";
     };
-  };
+  }; 
 
   config = mkIf cfg.enable {
 
@@ -40,12 +37,13 @@ in {
     users = {
       users = {
 
-        # Add user to the bazarr group
         bazarr = {
           isSystemUser = true;
           group = "bazarr";
           description = "bazarr daemon user";
           home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
           uid = config.ids.uids.bazarr;
         };
 
@@ -57,13 +55,8 @@ in {
         gid = config.ids.gids.bazarr;
       };
 
-    };
+      groups.media.members = [ "bazarr" ];
 
-    # Ensure data directory exists
-    file."${cfg.configDir}" = {
-      type = "dir"; mode = 0755; 
-      user = config.ids.uids.bazarr; 
-      group = config.ids.gids.bazarr;
     };
 
     backup.localPaths = [
@@ -84,18 +77,26 @@ in {
         #"${cfg.mediaDir}:/data"
       ];
 
-      environment = {
-        PUID = "${toString config.ids.uids.bazarr}";
-        PGID = "${toString config.ids.gids.bazarr}";
-      };
+      extraOptions = [
+        "--pull=always"
+        "--network=internal"
+      ];
       
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
-        "traefik.http.routers.bazarr.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.bazarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.bazarr.tls.certresolver" = "letsencrypt";
-        "traefik.http.services.bazarr.loadbalancer.server.port" = "${toString cfg.port}";
+        "traefik.http.routers.bazarr.entrypoints" = "websecure";
+        "traefik.http.routers.bazarr.middlewares" = "authelia@file";
+        "traefik.http.services.bazarr.loadbalancer.server.port" = "${toString port}";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Bazarr";
+        "homepage.icon" = "bazarr.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Subtitles";
+        "homepage.widget.type" = "bazarr";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_BAZARR_KEY}}";
+        "homepage.widget.url" = "http://bazarr:${toString port}";
       };
     };
 

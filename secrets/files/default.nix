@@ -21,6 +21,7 @@
   lldap-jwt-secret = ./lldap-jwt-secret.age;
   lldap-user-password = ./lldap-user-password.age;
 
+  bazarr-api-key = ./bazarr-api-key.age;
   sonarr-api-key = ./sonarr-api-key.age;
   radarr-api-key = ./radarr-api-key.age;
   jellyfin-api-key = ./jellyfin-api-key.age;
