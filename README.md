@@ -9,6 +9,10 @@ TODO:
 Ordered by Priority:
 - [x] Authelia
 - [x] SMART tools monitoring and notifications
+- [x] Prowlarr
+- [ ] Transmission
+- [ ] Sonarr
+- [ ] Radarr
 - [ ] Immich photo backup / test it is working
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
@@ -24,7 +28,7 @@ Ordered by Priority:
 Low Priority
 - [ ] Enable fail2ban
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
-- [ ] Backup on external disk
+- [ ] Setup backup on external disk
 - [ ] Disable login to FileBrowser
 - [ ] add a mkMediaUser fn in lib
 - [ ] add homepage-dashboard
@@ -33,7 +37,7 @@ Low Priority
 - [x] Docker socket proxy
 - [x] Jellyfin
 - [ ] Fix server power light
-- [ ] Uptime Kuma
+- [ ] Uptime Kuma / statping
 - [ ] Homepage
 
 - [ ] Mailrise

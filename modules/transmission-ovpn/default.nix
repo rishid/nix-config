@@ -136,8 +136,8 @@ in {
         #TRANSMISSION_RENAME_PARTIAL_FILES= "true";
         #TRANSMISSION_RPC_AUTHENTICATION_REQUIRED= "false";
         #TRANSMISSION_RPC_BIND_ADDRESS= "0.0.0.0";
-        #TRANSMISSION_RPC_ENABLED= "true";
-        TRANSMISSION_RPC_PASSWORD= "password";
+        TRANSMISSION_RPC_ENABLED= "true";
+        # TRANSMISSION_RPC_PASSWORD= "password";
         #TRANSMISSION_RPC_PORT= "9091";
         TRANSMISSION_RPC_URL= "/transmission/";
         #TRANSMISSION_RPC_USERNAME= "username";
@@ -165,23 +165,36 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.dataDir}:/data"
+      #   - ${TDOWNLOADS}:/data
+      # - ${ETC}/transmission_unrar.sh:/etc/transmission_unrar.sh:ro    
         # "/mnt/media:/storage:rw"
         # "/var/volumes/transmission/config:/config:rw"
         # "/var/volumes/transmission/scripts:/scripts:rw"
       #   "${config.lib.lab.mkConfigDir "transmission-ovpn"}/:/config"
       #   "${config.personal.lab.media.media-dir}/torrents/:/data"
       ];
-      ports = [
-        "9091:9091/tcp"
-      ];
+      # ports = [
+      #   "9091:9091/tcp"
+      # ];
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
         #"traefik.http.routers.transmission.rule" = "Host(`${cfg.hostName}`) && PathPrefix(`/transmission`)";
+        "traefik.http.routers.transmission.entrypoints" = "websecure";        
         "traefik.http.routers.transmission.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.transmission.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.transmission.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.transmission.middlewares" = "authelia@file";
         "traefik.http.services.transmission.loadbalancer.server.port" = "${toString port}";
+
+        "homepage.group" = "Arr";
+        "homepage.name" = "Transmission";
+        "homepage.icon" = "transmission.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Torrent downloader";
+        "homepage.widget.type" = "transmission";
+        "homepage.widget.username" = "username";
+        "homepage.widget.password" = "password";
+        "homepage.widget.rpcUrl" = "/transmission/";
+        "homepage.widget.url" = "http://transmission-ovpn:${toString port}";
       };
 
       # Traefik labels
@@ -190,6 +203,7 @@ in {
       # https://github.com/nikitawootten/infra/blob/c56abade2ee7edfe96e8b50ed5d963bc6f43e928/hosts/hades/lab/infra/traefik.nix#L95
       extraOptions = [
         "--pull=always"
+        "--network=internal"
         "--cap-add=NET_ADMIN"
         "--device=/dev/net/tun:/dev/net/tun"
         "--dns=1.1.1.1"
@@ -203,15 +217,6 @@ in {
 
     # TODO: I think transmission requires, something to review
     networking.enableIPv6 = false;
-
-    # Extend systemd service
-    # systemd.services.docker-silverbullet = {
-    #   after = [ "traefik.service" ];
-    #   requires = [ "traefik.service" ];
-    #   preStart = with config.virtualisation.oci-containers.containers; ''
-    #     docker pull ${silverbullet.image};
-    #   '';
-    # };
 
   };
 
