@@ -7,7 +7,9 @@ let
   version = "latest";
 
   cfg = config.modules.unpackerr;
-  inherit (lib) mkIf mkBefore mkOption options types;
+  secrets = config.age.secrets;
+
+  inherit (lib) mkIf options;
   inherit (builtins) toString;
   inherit (this.lib) extraGroups;
 
@@ -97,7 +99,7 @@ in {
       extraOptions = [
         "--pull=always"
         "--network=internal"
-        "--security_opt=no-new-privileges"
+        "--security-opt=no-new-privileges"
       ];
     };
 
