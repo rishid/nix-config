@@ -78,6 +78,7 @@ in {
       ];
 
       extraOptions = [
+        "--pull=always"
         "--network=internal"
       ];
       
@@ -85,7 +86,6 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.sonarr.entrypoints" = "websecure";
-        # "traefik.http.routers.sonarr.rule" = "Host(`${cfg.hostName}`)";
         "traefik.http.routers.sonarr.middlewares" = "authelia@file";
         "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString port}";
 

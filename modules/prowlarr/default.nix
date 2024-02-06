@@ -5,6 +5,7 @@ let
    
   image = "ghcr.io/onedr0p/prowlarr-develop";
   version = "rolling";
+  port = 9696;
 
   cfg = config.modules.prowlarr;
   inherit (lib) mkIf mkOption options types;
@@ -19,10 +20,6 @@ in {
       type = types.str; 
       default = "prowlarr.${config.networking.domain}";
       description = "FQDN for the Prowlarr instance";
-    };
-    port = mkOption {
-      type = types.port;
-      default = 9696; 
     };
     configDir = mkOption {
       type = types.path;
@@ -83,18 +80,17 @@ in {
         "${cfg.configDir}:/config"
       ];
 
-      environment = {
-        PUID = "${toString config.ids.uids.prowlarr}";
-        PGID = "${toString config.ids.gids.prowlarr}";
-      };
+      extraOptions = [
+        "--pull=always"
+        "--network=internal"
+      ];
       
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
-        "traefik.http.routers.prowlarr.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.prowlarr.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.prowlarr.tls.certresolver" = "letsencrypt";
-        "traefik.http.services.prowlarr.loadbalancer.server.port" = "${toString cfg.port}";
+        "traefik.http.routers.prowlarr.entrypoints" = "websecure";
+        "traefik.http.routers.prowlarr.middlewares" = "authelia@file";
+        "traefik.http.services.prowlarr.loadbalancer.server.port" = "${toString port}";
 
         "homepage.group" = "Arr";
         "homepage.name" = "Prowlarr";
