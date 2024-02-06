@@ -5,6 +5,7 @@ let
 
   image = "ghcr.io/onedr0p/radarr";
   version = "rolling";
+  port = 7878;
 
   cfg = config.modules.radarr;
   inherit (lib) mkIf mkBefore mkOption options types;
@@ -18,10 +19,7 @@ in {
     hostName = mkOption {
       type = types.str; 
       default = "radarr.${config.networking.domain}";
-    };
-    port = mkOption {
-      type = types.port;
-      default = 7878; 
+      description = "FQDN for the radarr instance";
     };
     configDir = mkOption {
       type = types.str; 
@@ -44,6 +42,8 @@ in {
           group = "radarr";
           description = "radarr daemon user";
           home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
           uid = config.ids.uids.radarr;
         };
 
@@ -57,13 +57,6 @@ in {
 
       groups.media.members = [ "radarr" ];
 
-    };
-
-    # Ensure data directory exists
-    file."${cfg.configDir}" = {
-      type = "dir"; mode = 0755; 
-      user = config.ids.uids.radarr; 
-      group = config.ids.gids.radarr;
     };
 
     backup.localPaths = [
@@ -87,25 +80,25 @@ in {
       ];
 
       extraOptions = [
+        "--pull=always"
         "--network=internal"
       ];
       
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
-        "traefik.http.routers.radarr.rule" = "Host(`${cfg.hostName}`)";
-        "traefik.http.routers.radarr.middlewares" = "authelia@file";        
-        "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
-        "traefik.http.services.radarr.loadbalancer.server.port" = "${toString cfg.port}";
+        "traefik.http.routers.radarr.entrypoints" = "websecure";
+        "traefik.http.routers.radarr.middlewares" = "authelia@file";
+        "traefik.http.services.radarr.loadbalancer.server.port" = "${toString port}";
 
         "homepage.group" = "Arr";
         "homepage.name" = "Radarr";
         "homepage.icon" = "radarr.svg";
-        "homepage.href" = "https://${cfg.hostName}";
-        "homepage.description" = "Movie tracker";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Movie PVR";
         "homepage.widget.type" = "radarr";
         "homepage.widget.key" = "{{HOMEPAGE_FILE_RADARR_KEY}}";
-        "homepage.widget.url" = "http://radarr:7878";
+        "homepage.widget.url" = "http://radarr:${toString port}";
       };
     };
 
