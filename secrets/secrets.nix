@@ -63,5 +63,6 @@ with (import ./keys); {
   "files/bazarr-api-key.age".publicKeys = all;
   "files/sonarr-api-key.age".publicKeys = all;
   "files/radarr-api-key.age".publicKeys = all;
+  "files/unpackerr-env.age".publicKeys = all;
   "files/jellyfin-api-key.age".publicKeys = all;
 }

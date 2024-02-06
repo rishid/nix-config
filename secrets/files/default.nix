@@ -24,5 +24,6 @@
   bazarr-api-key = ./bazarr-api-key.age;
   sonarr-api-key = ./sonarr-api-key.age;
   radarr-api-key = ./radarr-api-key.age;
+  unpackerr-env-key = ./unpackerr-env-key.age;
   jellyfin-api-key = ./jellyfin-api-key.age;
 }

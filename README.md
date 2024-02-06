@@ -13,10 +13,16 @@ Ordered by Priority:
 - [x] Transmission
 - [x] Sonarr
 - [x] Radarr
-- [ ] Immich photo backup / test it is working
+- [ ] Bazarr restore
+- [ ] Jellyseerr
+- [ ] Unpackerr
+- [ ] Watchtower?
+- [ ] Speedtest
+- [ ] Cloudflare-ddns
+- [x] Immich photo backup / test it is working
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
-- [ ] Enable Auth on all endpoints
+- [x] Enable Auth on all endpoints
 - [ ] Look into OIDC w/ Jellyfin
 - [ ] Do we need to do basic-auth and forward anywhere?
 - [ ] Move sftpjail out of security.nix
