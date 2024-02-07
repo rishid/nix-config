@@ -130,7 +130,7 @@ in {
               forwardAuth = {
                 # address = cfg.autheliaUrl;
                 address = "http://localhost:9092/api/verify?rd=https://auth.dhupar.xyz:444/";
-              trustForwardHeader = true;
+                trustForwardHeader = true;
                 authResponseHeaders = [
                   "Remote-User"
                   "Remote-Name"
@@ -181,7 +181,7 @@ in {
               main = "${domain}"; 
               sans = "*.${domain}"; 
             }];
-            # middlewares = "local@file";
+            middlewares = "authelia@file";
             service = "api@internal";
           };
           

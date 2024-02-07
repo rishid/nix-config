@@ -2,7 +2,9 @@
 { config, lib, pkgs, this, ... }:
 
 let
-  inherit (this.lib) extraGroups;
+  image = "ghcr.io/gethomepage/homepage";      
+  version = "latest";
+  port = 3000;
 
   cfg = config.modules.homepage;
   homepage = config.services.homepage-dashboard;
@@ -22,6 +24,8 @@ let
       text = builtins.readFile ./widgets.yaml;
     };
   };
+
+  inherit (this.lib) extraGroups;
 in
 {
   options.modules.homepage = with lib; {
@@ -108,7 +112,7 @@ in
     # };
 
     virtualisation.oci-containers.containers.homepage = {
-      image = "ghcr.io/gethomepage/homepage:v0.8.0";
+      image = "${image}:${version}";
       # user = "${toString config.ids.uids.homepage}:${toString config.ids.gids.homepage}";
 
       volumes = [
@@ -127,20 +131,19 @@ in
         "${config.age.secrets.radarr-api-key.path}:/app/config/radarr.key"
         "${config.age.secrets.jellyfin-api-key.path}:/app/config/jellyfin.key"
       ];
-      
-      ports = [ "3000:3000" ];
 
       extraOptions = [
+        "--pull=always"
         "--network=internal"
       ];
 
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
-        "traefik.http.routers.homepage.rule" = "Host(`${cfg.hostName}`)";
-        # "traefik.http.routers.homepage.middlewares" = "chain-authelia@file";        
-        "traefik.http.routers.homepage.tls.certresolver" = "letsencrypt";
-        "traefik.http.services.homepage.loadbalancer.server.port" = "3000";
+        "traefik.http.routers.homepage.entrypoints" = "websecure";        
+        "traefik.http.routers.homepage.rule" = "Host(`${cfg.hostName}`, `dhupar.xyz`, `www.dhupar.xyz`)";
+        "traefik.http.routers.homepage.middlewares" = "authelia@file";
+        "traefik.http.services.homepage.loadbalancer.server.port" = "${toString port}";
       };
 
       environment = {

@@ -17,7 +17,7 @@ Ordered by Priority:
 - [ ] Jellyseerr
 - [x] Unpackerr
 - [ ] Watchtower?
-- [ ] Cloudflare-ddns
+- [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
@@ -31,6 +31,7 @@ Ordered by Priority:
 - [ ] Make lldap available via local network and tailscale only
 
 Low Priority
+- [X] Get apex domain working and loading homepage-dashboard
 - [ ] Speedtest
 - [ ] Enable fail2ban
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)

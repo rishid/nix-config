@@ -150,7 +150,7 @@ in {
               ];
             }
             {
-              domain = [ "*.dhupar.xyz" ];
+              domain = [ "*.dhupar.xyz" "dhupar.xyz" ];
               policy = "one_factor";
             }
           ];
