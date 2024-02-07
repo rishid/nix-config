@@ -15,9 +15,8 @@ Ordered by Priority:
 - [x] Radarr
 - [ ] Bazarr restore
 - [ ] Jellyseerr
-- [ ] Unpackerr
+- [x] Unpackerr
 - [ ] Watchtower?
-- [ ] Speedtest
 - [ ] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
 - [ ] Auth: Create more users
@@ -32,6 +31,7 @@ Ordered by Priority:
 - [ ] Make lldap available via local network and tailscale only
 
 Low Priority
+- [ ] Speedtest
 - [ ] Enable fail2ban
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
 - [ ] Setup backup on external disk

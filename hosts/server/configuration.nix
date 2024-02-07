@@ -115,7 +115,7 @@
 
   # Network
   modules.tailscale.enable = true;
-  # modules.ddns.enable = true; # if doesn't work, another option is to use  ddns-go
+  modules.ddns.enable = true; # if doesn't work, another option is to use  ddns-go
   modules.vaultwarden = {
     enable = true;
     hostName = "pass.${config.networking.domain}";
@@ -217,6 +217,7 @@
     exiftool
     fio
     iftop
+    httpie
     intel-gpu-tools
     lm_sensors
     nfs-utils

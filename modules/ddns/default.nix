@@ -23,10 +23,9 @@ in {
         EnvironmentFile = secrets.cloudflare-env.path;
       };
       environment = with config.networking; {
-        HOSTNAME = hostName;
-        DOMAIN = domain;
+        FQDN = "*.dhupar.xyz";
       };
-      path = with pkgs; [ coreutils curl dig gawk jq ];
+      path = with pkgs; [ coreutils httpie dig jq ];
       script = builtins.readFile ./ddns.sh;
     };
 
