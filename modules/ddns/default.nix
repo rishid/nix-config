@@ -23,13 +23,12 @@ in {
         EnvironmentFile = secrets.cloudflare-env.path;
       };
       environment = with config.networking; {
-        FQDN = "*.dhupar.xyz";
+        FQDNS = "dhupar.xyz;*.dhupar.xyz";
       };
-      path = with pkgs; [ coreutils httpie dig jq ];
+      path = with pkgs; [ coreutils dig httpie inetutils jq ];
       script = builtins.readFile ./ddns.sh;
     };
 
-    # Run this script every 15 minutes
     systemd.timers."ddns" = {
       wantedBy = [ "timers.target" ];
       partOf = [ "ddns.service" ];

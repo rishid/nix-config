@@ -14,9 +14,7 @@ CACHE_FILE="/tmp/cf-ddns-wan-ip.txt"
 function main {
   # Required env variables
   [ -z ${TOKEN+x} ] && echo "Error: missing TOKEN" && return 1
-  [ -z ${FQDN+x} ] && echo "Error: missing FQDN" && return 1
-
-  DOMAIN=$(hostname -d "$FQDN")
+  [ -z ${FQDNS+x} ] && echo "Error: missing FQDNS" && return 1
 
   # Get public IP address from Cloudflare
   ip="$(dig +short txt ch whoami.cloudflare @1.0.0.1 | tr -d \")"
@@ -38,38 +36,47 @@ function update_dns_records {
   local type="A"
   local cfzone_id
   local cfrecord_id
-  cfzone_id=$(http --check-status -A bearer -a $TOKEN \
+  local domain
+
+  IFS=';' read -ra FQDN_ARRAY <<< "$FQDNS"
+
+  # Loop through each FQDN
+  for fqdn in "${FQDN_ARRAY[@]}"; do
+    domain=$(hostname -d "$fqdn")
+    echo "Processing FQDN: $fqdn"
+
+    cfzone_id=$(http --check-status -A bearer -a $TOKEN \
       GET "$API/zones" \
-      "name==$DOMAIN" | jq -r '.result[0].id' )
+      "name==$domain" | jq -r '.result[0].id' )
+    cfrecord_id=$(http --check-status -A bearer -a $TOKEN \
+      GET "$API/zones/$cfzone_id/dns_records" \
+      "type==$type" "name==$fqdn" | jq -r '.result[0].id')
 
-  cfrecord_id=$(http --check-status -A bearer -a $TOKEN \
-    GET "$API/zones/$cfzone_id/dns_records" \
-    "type==$type" "name==$FQDN" | jq -r '.result[0].id')
+    # Record doesn't yet exist
+    if [ "$cfrecord_id" = "null" ]; then
+      # Create new record
+      http -v --ignore-stdin --check-status -A bearer -a $TOKEN \
+        POST "$API/zones/$cfzone_id/dns_records" \
+        type="$type" \
+        name="$fqdn" \
+        content="$contents" \
+        ttl:=1 \
+        proxied:=false \
+        comment="ddns"
 
-  # Record doesn't yet exist
-  if [ "$cfrecord_id" = "null" ]; then
-    # Create new record
-    http -q --check-status -A bearer -a $TOKEN \
-      POST "$API/zones/$cfzone_id/dns_records" \
-      type="$type" \
-      name="$FQDN" \
-      content="$contents" \
-      ttl:=1 \
-      proxied:=false \
-      comment="ddns"
-
-  # Record already exists
-  else
-    # Update existing record
-    http -q --check-status -A bearer -a $TOKEN \
-      PATCH "$API/zones/$cfzone_id/dns_records/$cfrecord_id" \
-      type="$type" \
-      name="$FQDN" \
-      content="$contents" \
-      ttl:=1 \
-      proxied:=false \
-      comment="ddns"
-  fi
+    # Record already exists
+    else
+      # Update existing record
+      http -v --ignore-stdin --check-status -A bearer -a $TOKEN \
+        PATCH "$API/zones/$cfzone_id/dns_records/$cfrecord_id" \
+        type="$type" \
+        name="$fqdn" \
+        content="$contents" \
+        ttl:=1 \
+        proxied:=false \
+        comment="ddns"
+    fi
+  done
 }
 
 main 
