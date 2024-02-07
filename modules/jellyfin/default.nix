@@ -1,11 +1,16 @@
 # modules.jellyfin.enable = true;
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, this, ... }:
 
 let
 
-  cfg = config.modules.jellyfin;
-  port = "8096"; 
+  image = "jellyfin/jellyfin";
+  version = "latest";
+  port = 8096;
+
+  cfg = config.modules.jellyfin;  
   inherit (lib) mkIf mkOption types;
+  inherit (builtins) toString;
+  inherit (this.lib) extraGroups;
 
 in {
 
@@ -16,16 +21,46 @@ in {
       default = "jellyfin.${config.networking.domain}";
       description = "FQDN for the Jellyfin instance";
     };
+    configDir= mkOption {
+      type = types.str; 
+      default = "/var/lib/jellyfin"; 
+    };
   };
 
   config = lib.mkIf cfg.enable {
 
-    services.jellyfin = {
-      enable = true;
-      # openFirewall = true;
+    # Unused uid/gid snagged from this list:
+    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/misc/ids.nix
+    ids.uids.jellyfin = lib.mkForce 924;
+    ids.gids.jellyfin = lib.mkForce 924;
+
+    users = {
+      users = {
+
+        jellyfin = {
+          isSystemUser = true;
+          group = "jellyfin";
+          extraGroups = [ "media" "video" "render" ];
+          description = "jellyfin daemon user";
+          home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
+          uid = config.ids.uids.jellyfin;
+        };
+
+      # Add admins to the jellyfin group
+      } // extraGroups this.admins [ "jellyfin" ];
+
+      # Create group
+      groups.jellyfin = {
+        gid = config.ids.gids.jellyfin;
+      };
+
     };
 
-    users.groups.media.members = [ config.services.jellyfin.user ];
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
 
     # Enable vaapi on OS-level
     # nixpkgs.config.packageOverrides = pkgs: {
@@ -50,26 +85,50 @@ in {
     #       "-l=homepage.widget.key={{HOMEPAGE_FILE_JELLYFIN_KEY}}"
     #       "-l=homepage.widget.url=http://jellyfin:8096"
     #       "-l=homepage.widget.enableBlocks=true"
-
-    # for hardware acceleration
-    users.users.${config.services.jellyfin.user}.extraGroups = [ "video" "render" ];
     
     # Override default hardening measure from NixOS
-    systemd.services.jellyfin.serviceConfig.PrivateDevices = lib.mkForce false;
-    systemd.services.jellyfin.serviceConfig.DeviceAllow = lib.mkForce ["/dev/dri/renderD128"];
+    # systemd.services.jellyfin.serviceConfig.PrivateDevices = lib.mkForce false;
+    # systemd.services.jellyfin.serviceConfig.DeviceAllow = lib.mkForce ["/dev/dri/renderD128"];
 
     # Enable reverse proxy
     modules.traefik.enable = true;
 
-    services.traefik.dynamicConfigOptions.http = {
-      routers.jellyfin = {
-        entrypoints = "websecure";
-        rule = "Host(`${cfg.hostName}`)";
-        tls.certresolver = "letsencrypt";
-        # middlewares = "local@file";
-        service = "jellyfin";
+    virtualisation.oci-containers.containers.jellyfin = {
+      image = "${image}:${version}";
+      user = "${toString config.ids.uids.jellyfin}:${toString config.ids.gids.jellyfin}";
+
+      volumes = [
+        "/etc/localtime:/etc/localtime:ro"
+        "${cfg.configDir}:/config"
+        #"${cfg.mediaDir}:/data/media"
+        "/dev/shm:/data/transcode"
+      ];
+
+      extraOptions = [
+        "--pull=always"
+        "--network=internal"
+        "--group-add=303"
+        "--device=/dev/dri:/dev/dri" 
+      ];
+      
+      labels = {
+        "autoheal" = "true";
+        "traefik.enable" = "true";
+        "traefik.http.routers.jellyfin.entrypoints" = "websecure";
+        # "traefik.http.routers.jellyfin.middlewares" = "authelia@file";
+        "traefik.http.services.jellyfin.loadbalancer.server.port" = "${toString port}";
+
+        "homepage.group" = "Media";
+        "homepage.name" = "Jellyfin";
+        "homepage.icon" = "jellyfin.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Media player";
+        "homepage.widget.type" = "jellyfin";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_JELLYFIN_KEY}}";
+        "homepage.widget.url" = "http://jellyfin:${toString port}";
+        "homepage.widget.enableBlocks" = "true";
+        "homepage.widget.enableNowPlaying" = "true";
       };
-      services.jellyfin.loadBalancer.servers = [{ url = "http://127.0.0.1:${port}"; }];
     };
 
   };
