@@ -103,8 +103,6 @@ in {
             additional_users_dn = "ou=people";
             # Sign in with username or email.
             users_filter = "(&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))";
-            # users_filter =
-            #   "(&({username_attribute}={input})(objectClass=person))";
             additional_groups_dn = "ou=groups";
             groups_filter = "(member={dn})";
             group_name_attribute = "cn";
@@ -231,7 +229,6 @@ in {
       };
     };
 
-    # Allow gitea user to read password file
     users.users.authelia-main.extraGroups = [ "secrets" ]; 
 
     # systemd.services.authelia.requires = [ "postgresql.service" "lldap.service" ];

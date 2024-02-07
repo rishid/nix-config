@@ -108,8 +108,11 @@ in {
         "--pull=always"
         "--network=internal"
         "--group-add=303"
-        "--device=/dev/dri:/dev/dri" 
+        "--device=/dev/dri:/dev/dri"
+        # "--add-host=host.docker.internal:host-gateway"
       ];
+
+      # ports = ["3890:3890"];
       
       labels = {
         "autoheal" = "true";

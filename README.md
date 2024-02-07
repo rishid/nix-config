@@ -16,13 +16,13 @@ Ordered by Priority:
 - [ ] Bazarr restore
 - [ ] Jellyseerr
 - [x] Unpackerr
+- [x] Jellyfin
 - [ ] Watchtower?
 - [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
 - [x] Enable Auth on all endpoints
-- [ ] Look into OIDC w/ Jellyfin
 - [ ] Do we need to do basic-auth and forward anywhere?
 - [ ] Move sftpjail out of security.nix
 - [ ] PlexTraktSync
@@ -31,6 +31,7 @@ Ordered by Priority:
 - [ ] Make lldap available via local network and tailscale only
 
 Low Priority
+- [ ] Look into OIDC w/ Jellyfin
 - [X] Get apex domain working and loading homepage-dashboard
 - [ ] Speedtest
 - [ ] Enable fail2ban
