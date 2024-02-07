@@ -26,4 +26,6 @@
   radarr-api-key = ./radarr-api-key.age;
   unpackerr-env = ./unpackerr-env.age;
   jellyfin-api-key = ./jellyfin-api-key.age;
+
+  immich-api-key = ./immich-api-key.age;
 }

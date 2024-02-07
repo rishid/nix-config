@@ -130,6 +130,7 @@ in
         "${config.age.secrets.sonarr-api-key.path}:/app/config/sonarr.key"
         "${config.age.secrets.radarr-api-key.path}:/app/config/radarr.key"
         "${config.age.secrets.jellyfin-api-key.path}:/app/config/jellyfin.key"
+        "${config.age.secrets.immich-api-key.path}:/app/config/immich.key"
       ];
 
       extraOptions = [
@@ -153,6 +154,7 @@ in
         HOMEPAGE_FILE_SONARR_KEY = "/app/config/sonarr.key";
         HOMEPAGE_FILE_RADARR_KEY = "/app/config/radarr.key";
         HOMEPAGE_FILE_JELLYFIN_KEY = "/app/config/jellyfin.key";
+        HOMEPAGE_FILE_IMMICH_KEY = "/app/config/immich.key";
       };
         # environmentFiles = [
         #   config.age.secrets.paperless.path

@@ -36,15 +36,25 @@ in {
         "${cfg.externalDir}:/external:ro" 
       ]);
 
-      # Traefik labels
-      extraOptions = [
-        "--label=traefik.enable=true"
-        "--label=traefik.http.routers.immich.rule=Host(`${cfg.hostName}`)"
-        "--label=traefik.http.routers.immich.tls.certresolver=letsencrypt"
-        # "--label=traefik.http.routers.immich.middlewares=local@file"
+      labels = {
+        "autoheal" = "true";
+        "traefik.enable" = "true";
+        "traefik.http.routers.immich.entrypoints" = "websecure";
+        "traefik.http.routers.immich.rule" = "Host(`${cfg.hostName}`)";
+        "traefik.http.routers.immich.middlewares" = "authelia@file";
+        # "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString port}";
 
-      # Networking for docker containers
-      ] ++ [
+        "homepage.group" = "Media";
+        "homepage.name" = "Immich";
+        "homepage.icon" = "immich.svg";
+        "homepage.href" = "https://${cfg.hostName}:444";
+        "homepage.description" = "Photos";
+        "homepage.widget.type" = "immich";
+        "homepage.widget.key" = "{{HOMEPAGE_FILE_IMMICH_KEY}}";
+        "homepage.widget.url" = "http://immich:3001";
+      };
+
+      extraOptions = [
         "--network=immich"
         # https://github.com/immich-app/immich/blob/main/docker/hwaccel.yml
         "--group-add=303"

@@ -13,7 +13,7 @@ Ordered by Priority:
 - [x] Transmission
 - [x] Sonarr
 - [x] Radarr
-- [ ] Bazarr restore
+- [x] Bazarr restore
 - [ ] Jellyseerr
 - [x] Unpackerr
 - [x] Jellyfin
@@ -23,7 +23,7 @@ Ordered by Priority:
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
 - [x] Enable Auth on all endpoints
-- [ ] Do we need to do basic-auth and forward anywhere?
+- [x] Do we need to do basic-auth and forward anywhere?
 - [ ] Move sftpjail out of security.nix
 - [ ] PlexTraktSync
     https://github.com/Taxel/PlexTraktSync
@@ -37,7 +37,7 @@ Low Priority
 - [ ] Enable fail2ban
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
 - [ ] Setup backup on external disk
-- [ ] Disable login to FileBrowser
+- [x] Disable login to FileBrowser
 - [ ] add a mkMediaUser fn in lib
 - [ ] add homepage-dashboard
     ref: https://github.com/LongerHV/nixos-configuration/blob/424d51e746951244369c21a45acf79d050244f8c/modules/nixos/homelab/homepage.nix#L3
