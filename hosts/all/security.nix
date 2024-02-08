@@ -4,8 +4,6 @@ let
 
   inherit (lib) filterAttrs listToAttrs attrNames mkIf;
 
-  # jailPath = "/srv/sftp";
-
 in {
 
   security = {
@@ -30,51 +28,13 @@ in {
 
   };
 
-  # users.users.photo-backup = {
-  #   home = "/home/photo-backup";
-  #   isNormalUser = false;
-  #   isSystemUser = true;
-  #   extraGroups = [ "sftpusers" ];
-  #   group = "sftpusers";
-  #   description = "SFTP photo backup user";
-  #   hashedPassword = "$6$724VXnPPfIErLv$vecsMarKL72/wSKMmM7kXCpPGeqmwzy2GkgFzzD8n2sodHb7kbNtQlAoEOGkoxwJlZVpJFQi61RP8ySmK5UqQ.";
-  #   shell = null;
-  # };
-
-  # users.groups.sftpusers = { };
-
-  # # create the directories for each user
-  # systemd.tmpfiles.rules = [
-  #   "d ${jailPath} 0755 root root - -"
-  #   "z ${jailPath} 0755 root root - -"
-  #   "d ${jailPath}/photo-backup 0700 photo-backup nogroup - -"
-  #   "z ${jailPath}/photo-backup 0700 photo-backup nogroup - -"
-  # ];
-
   services.openssh = {
     enable = true;
-    # allowSFTP = true;
-    # sftpServerExecutable = "internal-sftp";
 
     # Harden
     settings.KbdInteractiveAuthentication = false;
     settings.PasswordAuthentication = true;
     settings.PermitRootLogin = "no";
-
-    # Automatically remove stale sockets
-    # extraConfig = ''
-    #   StreamLocalBindUnlink yes
-
-    #   Match Group sftpusers
-    #     ChrootDirectory ${jailPath}
-    #     ForceCommand internal-sftp
-    #     AllowAgentForwarding no
-    #     AllowTcpForwarding no
-    #     # PermitTTY no
-    #     # PermitTunnel no
-    #     X11Forwarding no
-    #     PasswordAuthentication yes
-    # '';
 
     # Allow forwarding ports to everywhere
     settings.GatewayPorts = "clientspecified";
