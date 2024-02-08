@@ -25,7 +25,7 @@ in {
 
       # Networking for docker containers
       extraOptions = [
-        "--network=immich"
+        "--network=internal"
         # https://github.com/immich-app/immich/blob/main/docker/hwaccel.ml.yml
         "--device-cgroup-rule=c 189:* rmw"
         "--device=/dev/dri:/dev/dri"

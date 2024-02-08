@@ -51,17 +51,19 @@ in {
         "homepage.description" = "Photos";
         "homepage.widget.type" = "immich";
         "homepage.widget.key" = "{{HOMEPAGE_FILE_IMMICH_KEY}}";
-        "homepage.widget.url" = "http://immich:3001";
+        "homepage.widget.url" = "http://immich-server:3001";
       };
 
       extraOptions = [
-        "--network=immich"
+        "--network=internal"
         # https://github.com/immich-app/immich/blob/main/docker/hwaccel.yml
         "--group-add=303"
         "--device=/dev/dri:/dev/dri" 
       ];
  
     };
+
+    # ITSCGjl4bcfToAD6Ejs8ljetQ3u7vLc0WzX0iAiHk
 
     # Extend systemd service
     systemd.services.docker-immich-server = {
