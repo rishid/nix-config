@@ -1,11 +1,12 @@
 {
-headerStyle = "clean";
-statusStyle = "dot";
-hideVersion = false;
-layout = {
-  Arr = {};
-  Media = {};
-  Monitoring = {};
-  Services = {};
-};
+  headerStyle = "clean";
+  statusStyle = "dot";
+  hideVersion = false;
+  showStats = true;
+  layout = {
+    Arr = {};
+    Media = {};
+    Monitoring = {};
+    Services = {};
+  };
 }

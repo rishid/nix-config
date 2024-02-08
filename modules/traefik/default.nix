@@ -108,23 +108,16 @@ in {
       # Dynamic configuration
       dynamicConfigOptions = {
 
-        # http.middlewares = {
-
-        #   # Basic Authentication is available. User/passwords are encrypted by agenix.
-        #   # login.basicAuth.usersFile = secrets.basic-auth.path;
-
-        #   # Whitelist local network and VPN addresses
-        #   local.ipWhiteList.sourceRange = [ 
-        #     "127.0.0.1/32"   # local host
-        #     "192.168.0.0/16" # local network
-        #     "10.0.0.0/8"     # local network
-        #     "172.16.0.0/12"  # docker network
-        #     "100.64.0.0/10"  # vpn network
-        #   ];
-
-        # };
-
         http.middlewares = {
+            # Whitelist local network and VPN addresses
+            local-only.ipWhiteList.sourceRange = [ 
+              "127.0.0.1/32"   # localhost
+              "192.168.0.0/16" # RFC1918
+              "10.0.0.0/8"     # RFC1918
+              "172.16.0.0/12"  # RFC1918 (docker network)
+              "100.64.0.0/10"  # Tailscale network
+            ];
+
             authelia = {
               # Forward requests w/ middlewares=authelia@file to authelia.
               forwardAuth = {

@@ -149,6 +149,7 @@
     photosDir = "/mnt/pool/photos/immich";
     externalDir = "/mnt/pool/photos/Years";
   };
+  modules.sftp-server.enable = true;
   
   # TODO:
   # oauth/authelia

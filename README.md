@@ -17,9 +17,10 @@ Ordered by Priority:
 - [ ] Jellyseerr
 - [x] Unpackerr
 - [x] Jellyfin
-- [ ] Watchtower?
+- [x] Watchtower?
 - [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
+- [ ] Add media path configs and create the directories
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
 - [x] Enable Auth on all endpoints
@@ -31,6 +32,8 @@ Ordered by Priority:
 - [ ] Make lldap available via local network and tailscale only
 
 Low Priority
+- [ ] container updates
+- [ ] systemd notify on failure
 - [ ] Look into OIDC w/ Jellyfin
 - [X] Get apex domain working and loading homepage-dashboard
 - [ ] Speedtest
@@ -39,14 +42,14 @@ Low Priority
 - [ ] Setup backup on external disk
 - [x] Disable login to FileBrowser
 - [ ] add a mkMediaUser fn in lib
-- [ ] add homepage-dashboard
+- [x] add homepage-dashboard
     ref: https://github.com/LongerHV/nixos-configuration/blob/424d51e746951244369c21a45acf79d050244f8c/modules/nixos/homelab/homepage.nix#L3
 - [ ] MergerFS
 - [x] Docker socket proxy
 - [x] Jellyfin
 - [ ] Fix server power light
 - [ ] Uptime Kuma / statping
-- [ ] Homepage
+- [x] Homepage
 
 - [ ] Mailrise
 
