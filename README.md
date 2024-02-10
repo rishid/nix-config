@@ -6,6 +6,15 @@ nixos-rebuild switch --flake .#server
 
 TODO:
 
+References to review:
+- make shares: https://github.com/notthebee/nix-config/blob/3d3b66c63098afde4c7bca60054c1fe56da206be/machines/nixos/emily/shares/default.nix#L36
+- make media dirs https://github.com/notthebee/nix-config/blob/3d3b66c63098afde4c7bca60054c1fe56da206be/services/arr/default.nix#L37
+- HA config: https://github.com/notthebee/nix-config/blob/3d3b66c63098afde4c7bca60054c1fe56da206be/services/smarthome/homeassistant.nix#L8
+- paperless: https://www.reddit.com/r/selfhosted/comments/10eiy4n/paperlessngx_for_ios/
+- paperless: https://www.reddit.com/r/selfhosted/comments/171rd8n/a_deep_dive_into_paperlessngx/
+- recipes: https://github.com/mealie-recipes/mealie
+- restic review: https://github.com/NobbZ/nixos-config/blob/1868cda7a1a02d9772978663a0d7cb1fa5e5208f/home/modules/services/restic/default.nix#L79
+
 Ordered by Priority:
 - [x] Authelia
 - [x] SMART tools monitoring and notifications
@@ -33,11 +42,13 @@ Ordered by Priority:
 
 Low Priority
 - [ ] container updates
+- [ ] airprint
 - [ ] systemd notify on failure
 - [ ] Look into OIDC w/ Jellyfin
 - [X] Get apex domain working and loading homepage-dashboard
 - [ ] Speedtest
 - [ ] Enable fail2ban
+- [ ] auto camera copy: https://github.com/stonfute/BashUSBCopy
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
 - [ ] Setup backup on external disk
 - [x] Disable login to FileBrowser
