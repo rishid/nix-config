@@ -14,8 +14,8 @@ References to review:
 - paperless: https://www.reddit.com/r/selfhosted/comments/171rd8n/a_deep_dive_into_paperlessngx/
 - recipes: https://github.com/mealie-recipes/mealie
 - restic review: https://github.com/NobbZ/nixos-config/blob/1868cda7a1a02d9772978663a0d7cb1fa5e5208f/home/modules/services/restic/default.nix#L79
-- youtube dl https://github.com/jmbannon/ytdl-sub
-
+- youtube dl https://github.com/jmbannon/ytdl-sub https://github.com/alexta69/metube https://github.com/meeb/tubesync
+ 
 Ordered by Priority:
 - [x] Authelia
 - [x] SMART tools monitoring and notifications
