@@ -52,6 +52,7 @@ Low Priority
 - [ ] auto camera copy: https://github.com/stonfute/BashUSBCopy
 - [ ] See if any app can provide terminal in event ssh goes down (or screw up config)
 - [ ] Setup backup on external disk
+- [ ] Rclone google drive backup
 - [x] Disable login to FileBrowser
 - [ ] add a mkMediaUser fn in lib
 - [x] add homepage-dashboard
