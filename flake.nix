@@ -164,7 +164,7 @@
       host: mkConfiguration (this // import ./hosts/${host} // { 
         users = mkUsers host;
         admins = mkUsers host;
-        # Once secret management is added, can go back to using this method
+        # TODO: Once secret management is added, can go back to using this method
         # admins = mkAdmins host;
         modules = mkModules host;
       })

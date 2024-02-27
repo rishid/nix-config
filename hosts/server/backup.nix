@@ -20,7 +20,6 @@
   #     };
   #   };
   # };
-  asd
 
 modules.restic.local = {
   enable = true;

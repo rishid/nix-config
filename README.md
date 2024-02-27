@@ -31,20 +31,32 @@ Ordered by Priority:
 - [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
 - [ ] Add media path configs and create the directories
+- [ ] Change all the paths in all the services to new location
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
+- [ ] power: check usage and optimize
 - [x] Enable Auth on all endpoints
 - [x] Do we need to do basic-auth and forward anywhere?
-- [ ] Move sftpjail out of security.nix
+- [x] Move sftpjail out of security.nix
 - [ ] PlexTraktSync
     https://github.com/Taxel/PlexTraktSync
 - [ ] Test Jellyfin on Roku
 - [ ] Make lldap available via local network and tailscale only
 
+Transition
+- [ ] Move one hard drive
+- [ ] Format and add to Nix
+- [ ] rsync syncology to new server
+- [ ] Setup backup on external disk
+- [ ] change over port forwarding
+- [ ] rsync again
+
 Low Priority
 - [ ] container updates
 - [ ] airprint
 - [ ] systemd notify on failure
+- [ ] auto container updates
+- [ ] systemd notify on failure, general handler. can use ntfy.sh
 - [ ] Look into OIDC w/ Jellyfin
 - [X] Get apex domain working and loading homepage-dashboard
 - [ ] Speedtest

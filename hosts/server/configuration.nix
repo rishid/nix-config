@@ -115,45 +115,49 @@
 
   # Network
   modules.tailscale.enable = true;
-  modules.ddns.enable = true; # if doesn't work, another option is to use  ddns-go
+  modules.ddns.enable = true;
+  modules.sftp-server.enable = true;
+
+  # Security
   modules.vaultwarden = {
     enable = true;
     hostName = "pass.${config.networking.domain}";
   };
   modules.authelia.enable = true;
 
+
   modules.homepage.enable = true;
   modules.whoami.enable = true;
   modules.smartd.enable = true;
   
+  # Media management
   modules.plex.enable = true;
   modules.jellyfin.enable = true;
-
-  modules.transmission-ovpn.enable = true;
-  modules.radarr.enable = true;
-  modules.sonarr.enable = true;
-  modules.overseerr = {
-    enable = true;
-    hostName = "requests.${config.networking.domain}";
-  };
-  modules.bazarr.enable = true;
-  modules.prowlarr.enable = true;
-  modules.unpackerr.enable = true;
-  modules.filebrowser = {
-    enable = true;
-    hostName = "files.${config.networking.domain}";
-  };
-  # modules.unpackerr.enable = true
   modules.immich = {
     enable = true;
     photosDir = "/mnt/pool/photos/immich";
     externalDir = "/mnt/pool/photos/Years";
   };
-  modules.sftp-server.enable = true;
+
+  # Content getters
+  modules.bazarr.enable = true;  
+  modules.overseerr = {
+    enable = true;
+    hostName = "requests.${config.networking.domain}";
+  };
+  modules.prowlarr.enable = true;
+  modules.radarr.enable = true;
+  modules.sonarr.enable = true;
+  modules.transmission-ovpn.enable = true;    
+  modules.unpackerr.enable = true;
+
+  # Utils
+  modules.filebrowser = {
+    enable = true;
+    hostName = "files.${config.networking.domain}";
+  };
   
   # TODO:
-  # oauth/authelia
-  # file manager
   # usb backup
   # camera auto download
 
@@ -188,10 +192,7 @@
   
   programs.ssh.startAgent = true;
 
-  services.openssh.enable = true;
   # services.tailscale.extraUpFlags = ["--ssh" ];
-
-  # modules.services.docker.enable = true;
 
   #nixpkgs.config.packageOverrides = pkgs: {
   #  vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
@@ -206,9 +207,7 @@
       intel-compute-runtime
     ];
   };
-
-
-
+  
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
   environment.systemPackages = with pkgs; [
