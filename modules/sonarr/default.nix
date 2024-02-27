@@ -21,7 +21,7 @@ in {
       default = "sonarr.${config.networking.domain}";
       description = "FQDN for the sonarr instance";
     };
-    configDir= mkOption {
+    configDir = mkOption {
       type = types.str; 
       default = "/var/lib/sonarr"; 
     };
@@ -74,6 +74,7 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
+        "${config.paths.media}:/data"
         #"${cfg.mediaDir}:/data"
       ];
 

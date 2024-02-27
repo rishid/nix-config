@@ -2,9 +2,9 @@
 
 {
   imports = [
-    # disko.nixosModules.disko
+    ./paths.nix
     ./hardware-configuration.nix
-    ./disko-config.nix	
+    ./disko-config.nix    
   ];
 
   # Use the systemd-boot EFI boot loader.

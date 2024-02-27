@@ -24,7 +24,19 @@ in {
   programs.fish.enable = true;
 
   # Add all users found in configurations/*/home/*
-  users.users = mkAttrs this.users (user: { 
+  users.users = ({
+    # Create shared system users
+    media = {
+      isSystemUser = true;
+      group = "media";
+      uid = config.ids.uids.media;
+    };
+    photos = {
+      isSystemUser = true;
+      group = "photos";
+      uid = config.ids.uids.photos;
+    };
+   } // mkAttrs this.users (user: { 
     isNormalUser = true;
     shell = pkgs.fish;
     hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
@@ -32,9 +44,7 @@ in {
     extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "podman" "docker" "media" "photos" "render" "video" ]);
     # openssh.authorizedKeys.keys = keys;
     openssh.authorizedKeys.keys = config.modules.secrets.keys.users."${user}";
-  }); 
-
-
+  })); 
 
   # GIDs 900-909 are custom shared groups in my flake                                                                                                                                   
   # UID/GIDs 910-999 are custom system users/groups in my flake                                                                                                                         
@@ -43,11 +53,13 @@ in {
   ids.gids.secrets = 900;
   users.groups.secrets.gid = config.ids.gids.secrets;
                                                                                                                                                                                         
-  # Create media group                                                                                                                                                                  
+  # Create media user and group                                                                                                                                                                 
+  ids.uids.media = 901;
   ids.gids.media = 901;                                                                                                                                                                 
-  users.groups.media.gid = config.ids.gids.media;                                                                                                                                       
+  users.groups.media.gid = config.ids.gids.media;                                                                                                                                
                                                                                                                                                                                         
-  # Create photos group                                                                                                                                                                 
+  # Create photos group      
+  ids.uids.photos = 902;                                                                                                                                                              
   ids.gids.photos = 902;                                                                                                                                                                
   users.groups.photos.gid = config.ids.gids.photos;
 
