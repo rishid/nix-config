@@ -125,7 +125,6 @@
   };
   modules.authelia.enable = true;
 
-
   modules.homepage.enable = true;
   modules.whoami.enable = true;
   modules.smartd.enable = true;
@@ -144,6 +143,10 @@
   modules.overseerr = {
     enable = true;
     hostName = "requests.${config.networking.domain}";
+  };
+  modules.jellyseerr = {
+    enable = true;
+    hostName = "jrequests.${config.networking.domain}";
   };
   modules.prowlarr.enable = true;
   modules.radarr.enable = true;

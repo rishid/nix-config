@@ -66,7 +66,6 @@ in {
     # Enable reverse proxy
     modules.traefik.enable = true;
 
-    # NixOS jellyseerr version is v3
     virtualisation.oci-containers.containers.jellyseerr = {
       image = "${image}:${version}";
       user = "${toString config.ids.uids.jellyseerr}:${toString config.ids.gids.jellyseerr}";
@@ -85,6 +84,7 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.jellyseerr.entrypoints" = "websecure";
+        "traefik.http.routers.overseerr.rule" = "Host(`${cfg.hostName}`)";
         "traefik.http.routers.jellyseerr.middlewares" = "authelia@file";
         "traefik.http.services.jellyseerr.loadbalancer.server.port" = "${toString port}";
 

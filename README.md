@@ -30,7 +30,7 @@ Ordered by Priority:
 - [x] Watchtower?
 - [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
-- [ ] Add media path configs and create the directories
+- [x] Add media path configs and create the directories
 - [ ] Change all the paths in all the services to new location
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?

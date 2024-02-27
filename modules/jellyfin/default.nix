@@ -100,7 +100,8 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
-        #"${cfg.mediaDir}:/data/media"
+        "${config.paths.media}/Movies:/data/movies"
+        "${config.paths.media}/Media/TV:/data/tv"
         "/dev/shm:/data/transcode"
       ];
 
