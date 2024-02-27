@@ -84,7 +84,7 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.jellyseerr.entrypoints" = "websecure";
-        "traefik.http.routers.overseerr.rule" = "Host(`${cfg.hostName}`)";
+        "traefik.http.routers.jellyseerr.rule" = "Host(`${cfg.hostName}`)";
         "traefik.http.routers.jellyseerr.middlewares" = "authelia@file";
         "traefik.http.services.jellyseerr.loadbalancer.server.port" = "${toString port}";
 
