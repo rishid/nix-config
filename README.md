@@ -52,6 +52,7 @@ Transition
 - [ ] rsync again
 
 Low Priority
+- [ ] smart raid alt: https://github.com/AnalogJ/scrutiny
 - [ ] container updates
 - [ ] airprint
 - [ ] systemd notify on failure
