@@ -27,7 +27,7 @@ in {
       description = "FQDN for the Transmission instance";
     };
 
-    dataDir = mkOption {
+    configDir = mkOption {
       type = types.path;
       default = "/var/lib/transmission-ovpn";
     };
@@ -52,7 +52,9 @@ in {
           isSystemUser = true;
           group = "transmission";
           description = "transmission daemon user";
-          home = cfg.dataDir;
+          home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
           uid = config.ids.uids.transmission;
         };
 
@@ -64,14 +66,13 @@ in {
         gid = config.ids.gids.transmission;
       };
 
+      groups.media.members = [ "transmission" ];
+
     };
 
-    # Ensure data directory exists
-    file."${cfg.dataDir}" = {
-      type = "dir"; mode = 775; 
-      user = config.ids.uids.transmission; 
-      group = config.ids.gids.transmission;
-    };
+    backup.localPaths = [
+      "${cfg.configDir}"
+    ];
 
     # Enable reverse proxy
     modules.traefik.enable = true;
@@ -81,7 +82,7 @@ in {
       hostname = "transmission-ovpn";
 
       # Run as transmission user
-      # user = with config.ids; "${toString uids.transmission}:${toString gids.transmission}";
+      user = with config.ids; "${toString uids.transmission}:${toString gids.transmission}";
 
       environmentFiles = [ secrets.transmission-ovpn.path ];
 
@@ -164,18 +165,15 @@ in {
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
-        "${cfg.dataDir}:/data"
-      #   - ${TDOWNLOADS}:/data
-      # - ${ETC}/transmission_unrar.sh:/etc/transmission_unrar.sh:ro    
+        "${config.paths.downloads}:/data"
+        # ${ETC}/transmission_unrar.sh:/etc/transmission_unrar.sh:ro    
         # "/mnt/media:/storage:rw"
         # "/var/volumes/transmission/config:/config:rw"
         # "/var/volumes/transmission/scripts:/scripts:rw"
       #   "${config.lib.lab.mkConfigDir "transmission-ovpn"}/:/config"
       #   "${config.personal.lab.media.media-dir}/torrents/:/data"
       ];
-      # ports = [
-      #   "9091:9091/tcp"
-      # ];
+      
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";
@@ -192,15 +190,11 @@ in {
         "homepage.description" = "Torrent downloader";
         "homepage.widget.type" = "transmission";
         "homepage.widget.username" = "username";
-        "homepage.widget.password" = "password";
-        "homepage.widget.rpcUrl" = "/transmission/";
+        "homepage.widget.password" = "password";        
         "homepage.widget.url" = "http://transmission-ovpn:${toString port}";
+        "homepage.widget.rpcUrl" = "/transmission/";
       };
 
-      # Traefik labels
-      # TODO: should switch to `labels` format
-      # consider creating mkTraefikLabels
-      # https://github.com/nikitawootten/infra/blob/c56abade2ee7edfe96e8b50ed5d963bc6f43e928/hosts/hades/lab/infra/traefik.nix#L95
       extraOptions = [
         "--pull=always"
         "--network=internal"

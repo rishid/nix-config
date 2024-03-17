@@ -74,9 +74,8 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
-        #"${cfg.mediaDir}:/data"
-        # "${vars.mainArray}/Media/Downloads:/downloads"
-        #     "${vars.mainArray}/Media/Movies:/movies"
+        "${config.paths.downloads}:/downloads"
+        "${config.paths.media}/movies:/movies"
       ];
 
       extraOptions = [

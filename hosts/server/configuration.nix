@@ -140,13 +140,13 @@
 
   # Content getters
   modules.bazarr.enable = true;  
-  modules.overseerr = {
-    enable = true;
-    hostName = "requests.${config.networking.domain}";
-  };
+  # modules.overseerr = {
+  #   enable = true;
+  #   hostName = "requests.${config.networking.domain}";
+  # };
   modules.jellyseerr = {
     enable = true;
-    hostName = "jrequests.${config.networking.domain}";
+    hostName = "requests.${config.networking.domain}";
   };
   modules.prowlarr.enable = true;
   modules.radarr.enable = true;

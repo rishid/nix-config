@@ -19,6 +19,7 @@ in {
       applications = "${storage}/applications";
       backup = "${storage}/backup";
       documents = "${storage}/documents";
+      downloads = "/srv/downloads";
       media = "${storage}/media";
       photos = "${storage}/photos";
     };
@@ -29,6 +30,11 @@ in {
       "${cfg.applications}" = { type = "dir"; mode = 755; };
       "${cfg.backup}" = { type = "dir"; mode = 755; };
       "${cfg.documents}" = { type = "dir"; mode = 755; };
+      "${cfg.downloads}" = { 
+        type = "dir"; mode = 775;
+        user = config.users.users.media.uid; 
+        group = config.users.groups.media.gid;
+      };
       "${cfg.media}" = { 
         type = "dir"; mode = 775;
         user = config.users.users.media.uid; 

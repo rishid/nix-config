@@ -12,6 +12,41 @@ in {
 
   config = mkIf cfg.enable {
 
+    lib.mkTraefikLabels = options: (
+      let
+        name = options.name;
+        subdomain = if builtins.hasAttr "subdomain" options then options.subdomain else options.name;
+        # created if port is specified
+        service = if builtins.hasAttr "service" options then options.service else options.name;
+        host = if (builtins.hasAttr "root" options && options.root)
+          then "${config.personal.lab.domain}"
+          else config.lib.lab.mkServiceSubdomain subdomain;
+        forwardAuth = (builtins.hasAttr "forwardAuth" options && options.forwardAuth);
+      in
+      {
+        "traefik.enable" = "true";
+        "traefik.http.routers.${name}.rule" = "Host(`${host}`)";
+        "traefik.http.routers.${name}.entrypoints" = "web,websecure";
+        # TODO http -> https middleware redirect
+      } // lib.attrsets.optionalAttrs (builtins.hasAttr "port" options) {
+        "traefik.http.routers.${name}.service" = service;
+        "traefik.http.services.${service}.loadbalancer.server.port" = "${options.port}";
+      } // lib.attrsets.optionalAttrs (builtins.hasAttr "scheme" options) {
+        "traefik.http.routers.${name}.service" = service;
+        "traefik.http.services.${service}.loadbalancer.server.scheme" = "${options.scheme}";
+      } // lib.attrsets.optionalAttrs (builtins.hasAttr "service" options) {
+        "traefik.http.routers.${name}.service" = service;
+      } // lib.attrsets.optionalAttrs (builtins.hasAttr "middleware" options) {
+        "traefik.http.routers.${name}.middlewares" = "${options.middleware}";
+      } // lib.attrsets.optionalAttrs forwardAuth {
+        "traefik.http.routers.${name}.middlewares" = "authentik@file";
+        # "traefik.http.routers.${name}.middlewares" = "oauth-auth-redirect@file";
+        # "traefik.http.routers.${name}-auth-redirect.rule" = "Host(`${host}`) && PathPrefix(`/oauth2/`)";
+        # "traefik.http.routers.${name}-auth-redirect.middlewares" = "auth-headers@file";
+        # # TODO can the name be determed a bit more reliably?
+        # "traefik.http.routers.${name}-auth-redirect.service" = "oauth2-proxy-lab";
+      });
+
     # agenix
     users.users.traefik.extraGroups = [ "secrets" ]; 
 
@@ -77,7 +112,6 @@ in {
               domains.sans = "*.${config.networking.domain}";
             };
           };
-          # http.tls.certresolver = "letsencrypt";
           http3 = { };
         };
 
@@ -133,7 +167,7 @@ in {
               };
             };
             authelia-basic = {
-              # Forward requests w/ middlewares=authelia@file to authelia.
+              # Forward requests w/ middlewares=authelia-basic@file to authelia.
               forwardAuth = {
                 address = "http://localhost:9092/api/verify?auth=basic";
                 trustForwardHeader = true;
@@ -145,6 +179,7 @@ in {
                 ];
               };
             };
+            # https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview/#forwardauth-with-static-upstreams-configuration
             # auth-headers = {
             #   browserXssFilter = true;
             #   contentTypeNosniff = true;
@@ -193,7 +228,15 @@ in {
     #    frequency = "daily";
     #    keep = 16;
     #  };
-    #};    
+    #};
+
+    modules.homepage.infrastructure-services = [{
+      Traefik = {
+        icon = "traefik.svg";
+        description = "Reverse proxy";
+        href = "https://traefik.dhupar.xyz:444";
+      };
+    }];
 
     # Open up the firewall for http and https
     networking.firewall.allowedTCPPorts = [ 80 81 443 444 ];

@@ -33,7 +33,7 @@ in {
       wantedBy = [ "timers.target" ];
       partOf = [ "ddns.service" ];
       timerConfig = {
-        OnCalendar = "*:0/15";
+        OnCalendar = "hourly";
         Unit = "ddns.service";
       };
     };

@@ -74,8 +74,8 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
-        "${config.paths.media}:/data"
-        #"${cfg.mediaDir}:/data"
+        "${config.paths.downloads}:/downloads"
+        "${config.paths.media}/tv:/tv"
       ];
 
       extraOptions = [
@@ -87,6 +87,7 @@ in {
         "autoheal" = "true";
         "traefik.enable" = "true";
         "traefik.http.routers.sonarr.entrypoints" = "websecure";
+        "traefik.http.routers.sonarr.rule" = "Host(`${cfg.hostName}`)";
         "traefik.http.routers.sonarr.middlewares" = "authelia@file";
         "traefik.http.services.sonarr.loadbalancer.server.port" = "${toString port}";
 

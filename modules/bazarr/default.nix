@@ -55,7 +55,7 @@ in {
         gid = config.ids.gids.bazarr;
       };
 
-      groups.media.members = [ "bazarr" ];
+      # groups.media.members = [ "bazarr" ];
 
     };
 
@@ -74,7 +74,6 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
-        #"${cfg.mediaDir}:/data"
       ];
 
       extraOptions = [

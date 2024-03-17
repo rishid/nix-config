@@ -75,16 +75,6 @@ in {
     #     pkgs.libvdpau-va-gl
     #   ];
     # };
-
-    # "-l=homepage.group=Media"
-    #       "-l=homepage.name=Jellyfin"
-    #       "-l=homepage.icon=jellyfin.svg"
-    #       "-l=homepage.href=https://jellyfin.${vars.domainName}"
-    #       "-l=homepage.description=Media player"
-    #       "-l=homepage.widget.type=jellyfin"
-    #       "-l=homepage.widget.key={{HOMEPAGE_FILE_JELLYFIN_KEY}}"
-    #       "-l=homepage.widget.url=http://jellyfin:8096"
-    #       "-l=homepage.widget.enableBlocks=true"
     
     # Override default hardening measure from NixOS
     # systemd.services.jellyfin.serviceConfig.PrivateDevices = lib.mkForce false;
@@ -101,7 +91,7 @@ in {
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
         "${config.paths.media}/Movies:/data/movies"
-        "${config.paths.media}/Media/TV:/data/tv"
+        "${config.paths.media}/TV:/data/tv"
         "/dev/shm:/data/transcode"
       ];
 
@@ -112,9 +102,7 @@ in {
         "--device=/dev/dri:/dev/dri"
         # "--add-host=host.docker.internal:host-gateway"
       ];
-
-      # ports = ["3890:3890"];
-      
+    
       labels = {
         "autoheal" = "true";
         "traefik.enable" = "true";

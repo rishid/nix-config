@@ -24,14 +24,14 @@ Ordered by Priority:
 - [x] Sonarr
 - [x] Radarr
 - [x] Bazarr restore
-- [ ] Jellyseerr
+- [x] Jellyseerr
 - [x] Unpackerr
 - [x] Jellyfin
 - [x] Watchtower?
 - [x] Cloudflare-ddns
 - [x] Immich photo backup / test it is working
 - [x] Add media path configs and create the directories
-- [ ] Change all the paths in all the services to new location
+- [x] Change all the paths in all the services to new location
 - [ ] Auth: Create more users
 - [ ] Auth: can user change password?
 - [ ] power: check usage and optimize
@@ -76,6 +76,7 @@ Low Priority
 - [ ] Fix server power light
 - [ ] Uptime Kuma / statping
 - [x] Homepage
+- [ ] https://github.com/AnalogJ/scrutiny
 
 - [ ] Mailrise
 
