@@ -130,7 +130,7 @@
   modules.smartd.enable = true;
   
   # Media management
-  modules.plex.enable = true;
+  # modules.plex.enable = true;
   modules.jellyfin.enable = true;
   modules.immich = {
     enable = true;

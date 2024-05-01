@@ -41,12 +41,12 @@ Ordered by Priority:
 - [ ] PlexTraktSync
     https://github.com/Taxel/PlexTraktSync
 - [ ] Test Jellyfin on Roku
-- [ ] Make lldap available via local network and tailscale only
+- [x] Make lldap available via local network and tailscale only
 
 Transition
 - [ ] Move one hard drive
 - [ ] Format and add to Nix
-- [ ] rsync syncology to new server
+- [ ] rsync synology to new server
 - [ ] Setup backup on external disk
 - [ ] change over port forwarding
 - [ ] rsync again

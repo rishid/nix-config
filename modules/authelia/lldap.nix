@@ -68,7 +68,7 @@ in {
       routers.lldap = {
         entrypoints = "websecure";
         rule = "Host(`lldap.${config.networking.domain}`)";
-        # middlewares = [ "authelia" ];
+        middlewares = [ "local-only" ];
         service = "lldap";
       };
       services.lldap.loadBalancer.servers = [{ url = "http://127.0.0.1:17170"; }];
