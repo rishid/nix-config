@@ -39,8 +39,8 @@ in {
    } // mkAttrs this.users (user: { 
     isNormalUser = true;
     shell = pkgs.fish;
-    hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
-    password = mkIf (!secrets.enable) "${user}";
+    # hashedPasswordFile = mkIf (secrets.enable) secrets.password-hash.path;
+    password = "${user}";
     extraGroups = ifAdmin user ([ "wheel" ] ++ ifTheyExist [ "networkmanager" "podman" "docker" "media" "photos" "render" "video" ]);
     # openssh.authorizedKeys.keys = keys;
     openssh.authorizedKeys.keys = config.modules.secrets.keys.users."${user}";
