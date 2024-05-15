@@ -11,7 +11,7 @@ rec {
   ];
   users.all = builtins.concatLists [ users.rishi users.github ];
 
-  systems.server = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE64OSHAUT4xG55JCpsKgNfH/G+OXPou3PLEQCkbW1W8";
+  systems.server = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC5k7LPUo5oybVHVkVLu1flZkDtM609rznLuomaYSr6P root@nixos";
   systems.all = [ systems.server ];
 
   all = users.all ++ systems.all;
