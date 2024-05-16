@@ -33,7 +33,7 @@ in {
         enable = true;
         defaults.monitored = "-a -o on -S on -n standby,q -s (S/../.././01|L/../01/./03) -W 4,35,40 -M exec ${smartdNotify}";
         notifications = {
-          # test = true;
+          test = true;
           wall.enable = true;
         };
       };

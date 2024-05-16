@@ -211,6 +211,35 @@
       intel-compute-runtime
     ];
   };
+
+  # services.hddfancontrol = {
+  #   enable = true;
+  #   disks = [
+  #     "/dev/disk/by-partlabel/disk0"
+  #     "/dev/disk/by-partlabel/disk1"
+  #     # "/dev/disk/by-label/Parity1"
+  #   ];
+  #   pwmPaths = [
+  #     "/sys/class/hwmon/hwmon0/pwm2"
+  #   ];
+  #   extraArgs = [
+  #     "--pwm-start-value=100"
+  #     "--pwm-stop-value=50"
+  #     "--smartctl"
+  #     "--min-fan-speed-prct 10"
+  #     "-i 30"
+  #     "--spin-down-time=1800"
+  #   ];
+  # };
+
+  # systemd.services.hd-idle = {
+  #   description = "HD spin down daemon";
+  #   wantedBy = [ "multi-user.target" ];
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     ExecStart = "${pkgs.hd-idle}/bin/hd-idle -i 900";
+  #   };
+  # };
   
   # # List packages installed in system profile. To search, run:
   # # $ nix search wget
@@ -224,7 +253,6 @@
     httpie
     intel-gpu-tools
     lm_sensors
-    mergerfs
     nfs-utils
     quickemu
     parted

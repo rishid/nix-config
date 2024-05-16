@@ -1,36 +1,47 @@
-{ lib, ... }:
+{ config, pkgs, ... }:
 
 {
+  programs.fuse.userAllowOther = true;
+
   environment.systemPackages = with pkgs; [
     gptfdisk
-    xfsprogs
     parted
     snapraid
     mergerfs
     mergerfs-tools
   ];
 
-  fileSystems."/mnt/storage/disk1" = {
+  fileSystems."/mnt/disks/disk1" = {
     device = "/dev/sda1";
     fsType = "ext4";
-    options = [ "defaults" "largefile" ];
+    options = [ "defaults" "noatime" ];
   };
 
-  fileSystems."/mnt/storage/disk2" = {
+  fileSystems."/mnt/disks/disk2" = {
     device = "/dev/sdb1";
     fsType = "ext4";
-    options = [ "defaults" "largefile" ];
+    options = [ "defaults" "noatime" ];
   };
 
-  fileSystems."/mnt/storage" = {
+  fileSystems.${config.paths.storage} = {
     device = "/mnt/disks/*";
     fsType = "fuse.mergerfs";
-    options = [ "defaults" "allow_other" "category.create=mfs" "moveonenospc=true" "minfreespace=5G" ];
+    options = [ 
+        "defaults"
+        # partial cache required for mmap support for qbittorrent
+        # ref: https://github.com/trapexit/mergerfs#you-need-mmap-used-by-rtorrent-and-many-sqlite3-base-software
+        "cache.files=partial"
+        "dropcacheonclose=true"
+        "category.create=mfs"
+        "minfreespace=5G" 
+      ];
   };
 
-  # fileSystems."/storage" = {
-  #   fsType = "fuse.mergerfs";
-  #   device = "/mnt/disks/*";
-  #   options = ["cache.files=partial" "dropcacheonclose=true" "category.create=mfs"];
-  # };
+  # fileSystems."/mnt/parity1" = {
+  #     device = "/dev/disk/by-id/usb-WDC_WD40_EFPX-68C6CN0_152D00539000-0:0-part1";
+  #     # https://www.snapraid.it/faq#fs
+  #     # mkfs.ext4 -m 0 -T largefile4 DEVICE
+  #     fsType = "ext4";
+  #     options = ["defaults" "noatime"];
+  #   };
 }
