@@ -85,3 +85,55 @@ HOWTO
 
 rsync from Synology to new server
 rsync --rsync-path=/usr/bin/rsync @192.168.1.111:... .
+
+
+## Adding a Raw Hard Drive to a NixOS System and Formatting it with ext4 (largefile option)
+
+### Step 1: Identify the New Hard Drive
+ * Open a terminal and run `lsblk` to list all disks and their device paths (e.g., `/dev/sda`).
+ * Note the device path of the raw hard drive you want to add.
+
+```bash
+lsblk
+```
+### Step 2: Partition the Hard Drive
+
+Create a New GPT Partition Table with sgdisk
+
+Note: all commands must be run with root privileges 
+
+#### Step 1: Verify the Device is Empty
+* Run `sgdisk -v /dev/device` to verify the device is empty and has no existing partition table.
+
+#### Step 2: Create a New GPT Partition Table
+* Run `sgdisk --clear /dev/device` to create a new GPT partition table. The `-o` option will clear the existing partition table and create a new one.
+
+#### Step 3: Create a Single Partition for Storage
+* Run `sgdisk --new 1:0:0 --change-name 1:"Storage" /dev/device` to create a single partition spanning the entire device. The options used are:
+	+ `-n 1:0:0` to create a new partition with the following attributes:
+		- `1` is the partition number
+		- `0` is the starting sector (default is 2048)
+		- `0` is the ending sector (default is the last sector on the device)
+	+ `-c 1:"Storage"` to set the partition name to "Storage"
+
+#### Step 4: Verify the Partition Table
+* Run `sgdisk -p /dev/device` to verify the partition table and ensure the new partition has been created correctly.
+
+#### Step 3: Format the Hard Drive with ext4 and largefile Option
+* Format each partition with ext4 and the largefile option by running:
+```bash
+sudo mkfs.ext4 -T largefile /dev/device
+```
+
+#### Step 4: Update nix config
+To make the mount persistent across reboots, you need to add an entry to your NixOS configuration. Open /etc/nixos/configuration.nix in your preferred text editor and add the following under the fileSystems attribute:
+
+```bash
+{
+  fileSystems."/mnt/mynewdrive" = {
+    device = "/dev/sda1";
+    fsType = "ext4";
+    options = [ "defaults" "largefile" ];
+  };
+}
+```

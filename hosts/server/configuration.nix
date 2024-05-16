@@ -4,6 +4,7 @@
   imports = [
     ./paths.nix
     ./hardware-configuration.nix
+    ./mounts.nix
     ./disko-config.nix    
   ];
 
@@ -223,12 +224,14 @@
     httpie
     intel-gpu-tools
     lm_sensors
+    mergerfs
     nfs-utils
     quickemu
     parted
     patchelf    
     powertop
     rclone
+    snapraid
     stdenv    
     stdenv.cc
     tcpdump
