@@ -258,8 +258,7 @@
     parted
     patchelf    
     powertop
-    rclone
-    snapraid
+    rclone    
     stdenv    
     stdenv.cc
     tcpdump

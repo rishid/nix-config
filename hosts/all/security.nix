@@ -73,6 +73,7 @@ in {
       memory.swap_pos = "beside";
       filesystems = {
         root = "/";
+        storage = "/mnt/storage";
       };
       # docker = {};
       # fail2_ban = {};
