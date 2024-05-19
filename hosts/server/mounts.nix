@@ -11,17 +11,18 @@
     mergerfs-tools
   ];
 
-  fileSystems."/mnt/disks/disk1" = {
-    device = "/dev/sda1";
+  # mkfs.ext4 -L disk-00 -T largefile DEVICE
+  fileSystems."/mnt/disks/00" = {
+    device = "/dev/disk/by-id/ata-HUH721212ALE601_8DHEBDUH-part1";
     fsType = "ext4";
-    options = [ "defaults" "noatime" ];
+    options = [ "defaults" "nofail" "noatime" ];
   };
 
-  fileSystems."/mnt/disks/disk2" = {
-    device = "/dev/sdb1";
-    fsType = "ext4";
-    options = [ "defaults" "noatime" ];
-  };
+  # fileSystems."/mnt/disks/0" = {
+  #   device = "/dev/sdb1";
+  #   fsType = "ext4";
+  #   options = [ "defaults" "noatime" ];
+  # };
 
   fileSystems.${config.paths.storage} = {
     device = "/mnt/disks/*";
@@ -37,11 +38,74 @@
       ];
   };
 
-  # fileSystems."/mnt/parity1" = {
-  #     device = "/dev/disk/by-id/usb-WDC_WD40_EFPX-68C6CN0_152D00539000-0:0-part1";
-  #     # https://www.snapraid.it/faq#fs
-  #     # mkfs.ext4 -m 0 -T largefile4 DEVICE
-  #     fsType = "ext4";
-  #     options = ["defaults" "noatime"];
+  ## Snapraid
+  
+  fileSystems."/mnt/parity/00" = {
+    device = "/dev/disk/by-id/ata-HUH721212ALE601_8HKV7H3H-part1";
+    # https://www.snapraid.it/faq#fs
+    # mkfs.ext4 -m 0 -L DEVICE -T largefile4 DEVICE
+    fsType = "ext4";
+    options = ["defaults" "nofail" "noatime"];
+  };
+
+  snapraid = {
+    enable = true;
+    sync = {
+      interval = "daily"; 
+    };
+    scrub = {
+      interval = "weekly";
+      olderThan = 10; # Number of days since data was last scrubbed before it can be scrubbed again.
+      plan = 8; # Percentage to scrub
+    };
+    dataDisks = {
+      d1 = "/mnt/disks/00";
+    };
+    contentFiles = [
+      "/mnt/disks/00/.snapraid.content"
+      "/var/snapraid/snapraid.content"
+    ];
+    parityFiles = [
+      "/mnt/parity/00/snapraid.parity"
+    ];
+    exclude = [
+      "*.unrecoverable"
+      "/tmp/"
+      "/lost+found/"
+      "/media/"
+    ];
+    extraConfig = ''
+      autosave 500
+    '';
+  };
+
+  # systemd.services.snapraid-sync = {
+  #   serviceConfig = {
+  #     RestrictNamespaces = lib.mkForce false;
+  #     RestrictAddressFamilies = lib.mkForce "";
   #   };
+  #   postStop = ''
+  #   if [[ $SERVICE_RESULT =~ "success" ]]; then
+  #     message=""
+  #   else
+  #     message=$(journalctl --unit=snapraid-sync.service -n 20 --no-pager)
+  #   fi
+  #   /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Snapraid Sync" -m "$message"
+  #   '';
+  # };
+
+  # systemd.services.snapraid-scrub = {
+  #   serviceConfig = {
+  #     RestrictAddressFamilies = lib.mkForce "";
+  #   };
+  #   postStop = ''
+  #   if [[ $SERVICE_RESULT =~ "success" ]]; then
+  #     message=""
+  #   else
+  #     message=$(journalctl --unit=snapraid-scrub.service -n 20 --no-pager)
+  #   fi
+  #   /run/current-system/sw/bin/notify -s "$SERVICE_RESULT" -t "Snapraid Scrub" -m "$message"
+  #   '';
+  # };
+
 }
