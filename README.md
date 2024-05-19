@@ -44,12 +44,20 @@ Ordered by Priority:
 - [x] Make lldap available via local network and tailscale only
 
 Transition
-- [ ] Move one hard drive
-- [ ] Format and add to Nix
-- [ ] rsync synology to new server
-- [ ] Setup backup on external disk
+- [x] Confirm USB backup is up-to-date
+- [ ] server: remove both hard drives
+- [ ] syno: remove one HD and install in server
+  - [ ] server: partition and add to nix as data drive in mergerfs
+- [ ] server: rsync synology to data drive
+- [ ] syno: insert enterprise drive and force rebuild
+- [ ] syno: remove other HD and install in server
+  - [ ] server: partition and add to nix as snapraid
+  - [ ] server: trigger snapraid sync
+- [ ] syno: insert enterprise drive and force rebuild
+- [ ] server: rsync (again) synology to data drive
 - [ ] change over port forwarding
-- [ ] rsync again
+- [ ] server: wait till server is running smoothly, then move external drive over
+- [ ] server: add a daily rsync from server to synology
 
 Low Priority
 - [ ] smart raid alt: https://github.com/AnalogJ/scrutiny
@@ -85,6 +93,24 @@ HOWTO
 
 rsync from Synology to new server
 rsync --rsync-path=/usr/bin/rsync @192.168.1.111:... .
+
+## Rsync data from Synology to new server
+
+```bash
+sudo bash
+RSYNC_ARGS="--rsync-path=/usr/bin/rsync -avh --exclude '@eaDir/'"
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/applications/ /mnt/storage/applications
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/backup/ /mnt/storage/backup
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/data/ /mnt/storage/media
+rsync $RSYNC_ARGS \
+  --exclude 'home-gallery/' \
+  --exclude 'oveerseerr/cache/' \
+  --exclude 'plex/Library/Application Support/Plex Media Server/Cache/' \
+  rishi@192.168.1.111:/volume1/docker /mnt/storage/backup
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/documents/ /mnt/storage/documents
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/etc /mnt/storage/backup
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/photo/ /mnt/storage/photos
+```
 
 
 ## Adding a Raw Hard Drive to a NixOS System and Formatting it with ext4 (largefile option)
