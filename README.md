@@ -45,11 +45,11 @@ Ordered by Priority:
 
 Transition
 - [x] Confirm USB backup is up-to-date
-- [ ] server: remove both hard drives
-- [ ] syno: remove one HD and install in server
-  - [ ] server: partition and add to nix as data drive in mergerfs
-- [ ] server: rsync synology to data drive
-- [ ] syno: insert enterprise drive and force rebuild
+- [x] server: remove both hard drives
+- [x] syno: remove one HD and install in server
+  - [x] server: partition and add to nix as data drive in mergerfs
+- [x] server: rsync synology to data drive
+- [x] syno: insert enterprise drive and force rebuild
 - [ ] syno: remove other HD and install in server
   - [ ] server: partition and add to nix as snapraid
   - [ ] server: trigger snapraid sync
@@ -78,7 +78,7 @@ Low Priority
 - [ ] add a mkMediaUser fn in lib
 - [x] add homepage-dashboard
     ref: https://github.com/LongerHV/nixos-configuration/blob/424d51e746951244369c21a45acf79d050244f8c/modules/nixos/homelab/homepage.nix#L3
-- [ ] MergerFS
+- [x] MergerFS
 - [x] Docker socket proxy
 - [x] Jellyfin
 - [ ] Fix server power light
@@ -88,29 +88,45 @@ Low Priority
 
 - [ ] Mailrise
 
-
-HOWTO
-
-rsync from Synology to new server
-rsync --rsync-path=/usr/bin/rsync @192.168.1.111:... .
-
 ## Rsync data from Synology to new server
 
+--delete --delete-excluded
+
 ```bash
+keychain ~/.ssh/id25519
 sudo bash
-RSYNC_ARGS="--rsync-path=/usr/bin/rsync -avh --exclude '@eaDir/'"
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/applications/ /mnt/storage/applications
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/backup/ /mnt/storage/backup
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/data/ /mnt/storage/media
+RSYNC_ARGS="--rsync-path=/usr/bin/rsync -ahP --exclude @eaDir/"
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/applications/ /mnt/pool/applications
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/backup/ /mnt/pool/backup
+rsync $RSYNC_ARGS \
+  -og --chown media:media \
+  rishi@192.168.1.111:/volume1/data/ /mnt/pool/media
 rsync $RSYNC_ARGS \
   --exclude 'home-gallery/' \
   --exclude 'oveerseerr/cache/' \
   --exclude 'plex/Library/Application Support/Plex Media Server/Cache/' \
-  rishi@192.168.1.111:/volume1/docker /mnt/storage/backup
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/documents/ /mnt/storage/documents
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/etc /mnt/storage/backup
-rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/photo/ /mnt/storage/photos
+  rishi@192.168.1.111:/volume1/docker /mnt/pool/backup
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/documents/ /mnt/pool/documents
+rsync $RSYNC_ARGS rishi@192.168.1.111:/volume1/etc /mnt/pool/backup
+rsync $RSYNC_ARGS \
+  -og --chown photos:photos \
+  rishi@192.168.1.111:/volume1/photo/ /mnt/pool/photos
 ```
+
+rclone copy syno_sftp:/data /mnt/pool/media \
+  --sftp-path-override /volume1/data \
+  --multi-thread-streams=32 -v
+
+rclone copy syno_sftp:/photo /mnt/pool/photos \
+  --sftp-path-override /volume1/photo \
+  --multi-thread-streams=32
+
+If needed:
+find /mnt/user -name @eaDir -exec rm '{}' \;
+
+sudo chown -R media:media /path/to/directory
+find /path/to/directory -type f -exec chmod 640 {} \;
+find /path/to/directory -type d -exec chmod 750 {} \;
 
 
 ## Adding a Raw Hard Drive to a NixOS System and Formatting it with ext4 (largefile option)
@@ -132,7 +148,7 @@ Note: all commands must be run with root privileges
 * Run `sgdisk -v /dev/device` to verify the device is empty and has no existing partition table.
 
 #### Step 2: Create a New GPT Partition Table
-* Run `sgdisk --clear /dev/device` to create a new GPT partition table. The `-o` option will clear the existing partition table and create a new one.
+* Run `sgdisk --clear /dev/device` to create a new GPT partition table. The `--clear` option will clear the existing partition table and create a new one.
 
 #### Step 3: Create a Single Partition for Storage
 * Run `sgdisk --new 1:0:0 --change-name 1:"Storage" /dev/device` to create a single partition spanning the entire device. The options used are:
@@ -148,7 +164,7 @@ Note: all commands must be run with root privileges
 #### Step 3: Format the Hard Drive with ext4 and largefile Option
 * Format each partition with ext4 and the largefile option by running:
 ```bash
-sudo mkfs.ext4 -T largefile /dev/device
+sudo mkfs.ext4 -L <LABEL> -T largefile /dev/partition
 ```
 
 #### Step 4: Update nix config
@@ -163,3 +179,11 @@ To make the mount persistent across reboots, you need to add an entry to your Ni
   };
 }
 ```
+
+
+/mnt/disks/
+/mnt/parity/
+
+/mnt/flash
+/mnt/depot   
+/mnt/pool    (combine of flash and depot)

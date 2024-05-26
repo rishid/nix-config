@@ -167,7 +167,7 @@ in {
         "/etc/localtime:/etc/localtime:ro"
         "${config.paths.downloads}:/data"
         # ${ETC}/transmission_unrar.sh:/etc/transmission_unrar.sh:ro    
-        # "/mnt/media:/storage:rw"
+        # "/mnt/media:/pool:rw"
         # "/var/volumes/transmission/config:/config:rw"
         # "/var/volumes/transmission/scripts:/scripts:rw"
       #   "${config.lib.lab.mkConfigDir "transmission-ovpn"}/:/config"

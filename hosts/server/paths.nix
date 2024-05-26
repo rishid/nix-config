@@ -14,18 +14,20 @@ in {
 
   config = {
     paths = rec {
-      storage = "/mnt/storage";
+      flashArray = "/mnt/flash";
+      slowArray = "/mnt/depot";
+      poolArray = "/mnt/pool";
 
-      applications = "${storage}/applications";
-      backup = "${storage}/backup";
-      documents = "${storage}/documents";
-      downloads = "/srv/downloads";
-      media = "${storage}/media";
-      photos = "${storage}/photos";
+      applications = "${slowArray}/applications";
+      backup = "${slowArray}/backup";
+      documents = "${poolArray}/documents";
+      downloads = "${flashArray}/downloads";
+      media = "${poolArray}/media";
+      photos = "${poolArray}/photos";
     };
 
     file = {
-      "${cfg.storage}" = { type = "dir"; mode = 775; };
+      "${cfg.poolArray}" = { type = "dir"; mode = 775; };
 
       "${cfg.applications}" = { type = "dir"; mode = 755; };
       "${cfg.backup}" = { type = "dir"; mode = 755; };

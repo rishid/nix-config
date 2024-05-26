@@ -74,7 +74,7 @@ in {
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}/filebrowser.db:/database.db"
         # "${cfg.configDir}/.filebrowser.json:/.filebrowser.json"
-        "${config.paths.storage}:/srv"
+        "${config.paths.poolArray}:/srv"
       ];
 
       environment = {

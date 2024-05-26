@@ -11,31 +11,55 @@
     mergerfs-tools
   ];
 
-  # mkfs.ext4 -L disk-00 -T largefile DEVICE
+  # mkfs.ext4 -L disk-00 -T largefile PARTITION
   fileSystems."/mnt/disks/00" = {
-    device = "/dev/disk/by-id/ata-HUH721212ALE601_8DHEBDUH-part1";
+    device = "/dev/disk/by-id/ata-WDC_WD120EMFZ-11A6JA0_9RGMXS7C-part1";
     fsType = "ext4";
     options = [ "defaults" "nofail" "noatime" ];
   };
 
-  # fileSystems."/mnt/disks/0" = {
-  #   device = "/dev/sdb1";
-  #   fsType = "ext4";
-  #   options = [ "defaults" "noatime" ];
-  # };
-
-  fileSystems.${config.paths.storage} = {
+  # Mechanical drives
+  fileSystems.${config.paths.slowArray} = {
     device = "/mnt/disks/*";
     fsType = "fuse.mergerfs";
     options = [ 
-        "defaults"
-        # partial cache required for mmap support for qbittorrent
-        # ref: https://github.com/trapexit/mergerfs#you-need-mmap-used-by-rtorrent-and-many-sqlite3-base-software
-        "cache.files=partial"
-        "dropcacheonclose=true"
-        "category.create=mfs"
-        "minfreespace=5G" 
-      ];
+      "defaults"
+      # partial cache required for mmap support for qbittorrent
+      # ref: https://github.com/trapexit/mergerfs#you-need-mmap-used-by-rtorrent-and-many-sqlite3-base-software
+      "cache.files=partial"
+      "dropcacheonclose=true"
+      "category.create=mfs"
+      "moveonenospc=1"
+      "minfreespace=1000G"
+      "func.getattr=newest"
+      "fsname=mergerfs_slow"
+      # "uid=994"
+      # "gid=993"
+      # "umask=002"
+      # "X-mount.mkdir"
+    ];
+  };
+
+  # Flash and mechanical drives
+  fileSystems.${config.paths.poolArray} = {
+    device = "${config.paths.flashArray}:${config.paths.slowArray}";
+    fsType = "fuse.mergerfs";
+    options = [
+      "category.create=epff"
+      "defaults"
+      # partial cache required for mmap support for qbittorrent
+      # ref: https://github.com/trapexit/mergerfs#you-need-mmap-used-by-rtorrent-and-many-sqlite3-base-software
+      "cache.files=partial"
+      "dropcacheonclose=true"
+      "moveonenospc=1"
+      "minfreespace=500G"
+      "func.getattr=newest"
+      "fsname=pool"
+      # "uid=994"
+      # "gid=993"
+      # "umask=002"
+      # "X-mount.mkdir"
+    ];
   };
 
   ## Snapraid

@@ -39,7 +39,7 @@ in {
         paths = ["/home"];
       };
       music = {
-        paths = ["/storage/music"];
+        paths = ["/pool/music"];
       };
     };
   };

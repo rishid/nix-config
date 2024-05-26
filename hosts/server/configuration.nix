@@ -164,6 +164,8 @@
   # TODO:
   # usb backup
   # camera auto download
+  # need to write or find a script that will run on udev USB plugin and grab
+  # all DSLR camera files
 
 
   # modules.tautulli.enable = true;
