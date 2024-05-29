@@ -43,6 +43,8 @@ in {
           group = "prowlarr";
           description = "prowlarr daemon user";
           home = cfg.configDir;
+          createHome = true;
+          homeMode = "0755";
           uid = config.ids.uids.prowlarr;
         };
 
@@ -54,13 +56,6 @@ in {
         gid = config.ids.gids.prowlarr;
       };
 
-    };
-
-    # Ensure data directory exists
-    file."${cfg.configDir}" = {
-      type = "dir"; mode = 0755; 
-      user = config.ids.uids.prowlarr; 
-      group = config.ids.gids.prowlarr;
     };
 
     backup.localPaths = [

@@ -40,6 +40,7 @@ in {
         sonarr = {
           isSystemUser = true;
           group = "sonarr";
+          extraGroups = [ "media" ];
           description = "sonarr daemon user";
           home = cfg.configDir;
           createHome = true;
@@ -55,8 +56,6 @@ in {
         gid = config.ids.gids.sonarr;
       };
 
-      groups.media.members = [ "sonarr" ];
-
     };
 
     backup.localPaths = [
@@ -69,7 +68,7 @@ in {
     # NixOS sonarr version is v3
     virtualisation.oci-containers.containers.sonarr = {
       image = "${image}:${version}";
-      user = "${toString config.ids.uids.sonarr}:${toString config.ids.gids.sonarr}";
+      user = "${toString config.ids.uids.sonarr}:${toString config.ids.gids.media}";
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"

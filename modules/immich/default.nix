@@ -135,7 +135,7 @@ in {
         immich = {
           isSystemUser = true;
           group = "photos";
-	  extraGroups = [ "photos" "video" "render" ];
+	        extraGroups = [ "photos" "video" "render" ];
           description = "Immich daemon user";
           home = cfg.dataDir;
           uid = config.ids.uids.immich;

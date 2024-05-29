@@ -22,7 +22,7 @@ in {
       description = "FQDN for the radarr instance";
     };
     configDir = mkOption {
-      type = types.str; 
+      type = types.path; 
       default = "/var/lib/radarr"; 
     };
   }; 
@@ -40,6 +40,7 @@ in {
         radarr = {
           isSystemUser = true;
           group = "radarr";
+          extraGroups = [ "media" ];
           description = "radarr daemon user";
           home = cfg.configDir;
           createHome = true;
@@ -55,8 +56,6 @@ in {
         gid = config.ids.gids.radarr;
       };
 
-      groups.media.members = [ "radarr" ];
-
     };
 
     backup.localPaths = [
@@ -66,10 +65,10 @@ in {
     # Enable reverse proxy
     modules.traefik.enable = true;
 
-    # NixOS radarr version is v3
+    # NixOS radarr version is v3 so use a container
     virtualisation.oci-containers.containers.radarr = {
       image = "${image}:${version}";
-      user = "${toString config.ids.uids.radarr}:${toString config.ids.gids.radarr}";
+      user = "${toString config.ids.uids.radarr}:${toString config.ids.gids.media}";
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"

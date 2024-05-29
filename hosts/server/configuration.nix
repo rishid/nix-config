@@ -152,7 +152,8 @@
   modules.prowlarr.enable = true;
   modules.radarr.enable = true;
   modules.sonarr.enable = true;
-  modules.transmission-ovpn.enable = true;    
+  # modules.transmission-ovpn.enable = true;    
+  modules.qbittorrent.enable = true;
   modules.unpackerr.enable = true;
 
   # Utils
@@ -260,7 +261,9 @@
     parted
     patchelf    
     powertop
+    python3
     rclone    
+    speedtest-cli
     stdenv    
     stdenv.cc
     tcpdump
