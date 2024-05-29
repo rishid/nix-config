@@ -79,7 +79,8 @@ in {
           # "8888:8888/tcp" # HTTP proxy
           # "8388:8388/tcp" # Shadowsocks
           # "8388:8388/udp" # Shadowsocks
-          "8090:8090" # QBT UI Port
+          # "8090:8090" # QBT UI Port
+          "8000:8000"
         ];
         environmentFiles = [ secrets.transmission-ovpn.path ];
         environment = {
@@ -90,6 +91,7 @@ in {
 
         extraOptions = [
           "--pull=always"
+          "--network=internal"
           "--cap-add=NET_ADMIN"
         ];
 
@@ -100,6 +102,14 @@ in {
           "traefik.http.routers.qbittorrent.rule" = "Host(`${cfg.hostName}`)";
           "traefik.http.routers.qbittorrent.middlewares" = "authelia@file";
           "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8090";
+
+          "homepage.group" = "Utils";
+          "homepage.name" = "Gluetun";
+          "homepage.icon" = "gluetun.svg";
+          "homepage.href" = "https://${cfg.hostName}:444";
+          "homepage.description" = "VPN killswitch";
+          "homepage.widget.type" = "gluetun";
+          "homepage.widget.url" = "http://gluetun:8000";
         };
         
       };
@@ -124,6 +134,20 @@ in {
           TZ = "America/New_York";
           QBITTORRENT__PORT = "8090";
           QBITTORRENT__BT_PORT = "50413";
+        };
+
+        labels = {
+          "autoheal" = "true";
+
+          "homepage.group" = "Arr";
+          "homepage.name" = "qBittorrent";
+          "homepage.icon" = "qbittorrent.svg";
+          "homepage.href" = "https://${cfg.hostName}:444";
+          "homepage.description" = "Torrent client";
+          "homepage.widget.type" = "qbittorrent";
+          "homepage.widget.url" = "http://gluetun:8090";
+          "homepage.widget.username" = "admin";
+          "homepage.widget.password" = "password";
         };
         
       };
