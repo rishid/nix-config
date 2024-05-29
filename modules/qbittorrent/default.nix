@@ -79,7 +79,7 @@ in {
           # "8888:8888/tcp" # HTTP proxy
           # "8388:8388/tcp" # Shadowsocks
           # "8388:8388/udp" # Shadowsocks
-          # "8090:8090" # QBT UI Port
+          # "8080:8080" # QBT UI Port
           "8000:8000"
         ];
         environmentFiles = [ secrets.transmission-ovpn.path ];
@@ -101,7 +101,7 @@ in {
           "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
           "traefik.http.routers.qbittorrent.rule" = "Host(`${cfg.hostName}`)";
           "traefik.http.routers.qbittorrent.middlewares" = "authelia@file";
-          "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8090";
+          "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8080";
 
           "homepage.group" = "Utils";
           "homepage.name" = "Gluetun";
@@ -132,8 +132,28 @@ in {
 
         environment = {
           TZ = "America/New_York";
-          QBITTORRENT__PORT = "8090";
+          QBITTORRENT__PORT = "8080";
           QBITTORRENT__BT_PORT = "50413";
+
+          QBT_BitTorrent__Session__AddExtensionToIncompleteFiles = "true";
+          QBT_BitTorrent__Session__IgnoreSlowTorrentsForQueueing = "true";
+          QBT_BitTorrent__Session__MaxActiveDownloads = "10";
+          QBT_BitTorrent__Session__MaxActiveTorrents = "25";
+          QBT_BitTorrent__Session__MaxActiveUploads = "10";
+          QBT_BitTorrent__Session__MaxConnections = "1000";
+          QBT_BitTorrent__Session__MaxConnectionsPerTorrent = "200";
+          QBT_BitTorrent__Session__MaxUploads = "50";
+          QBT_BitTorrent__Session__MaxUploadsPerTorrent = "10";
+          QBT_BitTorrent__Session__QueueingSystemEnabled = "true";
+          QBT_BitTorrent__Session__SlowTorrentsDownloadRate = "5";
+          QBT_BitTorrent__Session__SlowTorrentsUploadRate = "5";
+          
+          QBT_Preferences__Bittorrent__MaxUpload = "1000";
+          QBT_Preferences__Bittorrent__MaxUploadsPerTorrent = "10";
+          QBT_Preferences__Downloads__TempPath = "/downloads/incomplete/";
+
+          QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled = "true";
+          QBT_Preferences__WebUI__AuthSubnetWhitelist = "172.19.0.0/16";          
         };
 
         labels = {
@@ -145,7 +165,7 @@ in {
           "homepage.href" = "https://${cfg.hostName}:444";
           "homepage.description" = "Torrent client";
           "homepage.widget.type" = "qbittorrent";
-          "homepage.widget.url" = "http://gluetun:8090";
+          "homepage.widget.url" = "http://gluetun:8080";
           "homepage.widget.username" = "admin";
           "homepage.widget.password" = "password";
         };
