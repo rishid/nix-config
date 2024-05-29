@@ -21,7 +21,7 @@ in {
     enable = options.mkEnableOption "qbittorrent"; 
     hostName = mkOption {
       type = types.str;
-      default = "qbt.${config.networking.domain}";
+      default = "torrent.${config.networking.domain}";
       description = "FQDN for the qbittorrent instance";
     };
     configDir = mkOption {
