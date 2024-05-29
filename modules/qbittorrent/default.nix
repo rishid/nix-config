@@ -76,10 +76,10 @@ in {
       gluetun = {
         image = "${image}:${version}";
         ports = [
-          "8888:8888/tcp" # HTTP proxy
-          "8388:8388/tcp" # Shadowsocks
-          "8388:8388/udp" # Shadowsocks
-          "8090:8090" # port for qbittorrent
+          # "8888:8888/tcp" # HTTP proxy
+          # "8388:8388/tcp" # Shadowsocks
+          # "8388:8388/udp" # Shadowsocks
+          "8090:8090" # QBT UI Port
         ];
         environmentFiles = [ secrets.transmission-ovpn.path ];
         environment = {
@@ -92,6 +92,16 @@ in {
           "--pull=always"
           "--cap-add=NET_ADMIN"
         ];
+
+        labels = {
+          "autoheal" = "true";
+          "traefik.enable" = "true";
+          "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
+          "traefik.http.routers.qbittorrent.rule" = "Host(`${cfg.hostName}`)";
+          "traefik.http.routers.qbittorrent.middlewares" = "authelia@file";
+          "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8090";
+        };
+        
       };
 
       qbittorrent = {
@@ -112,7 +122,7 @@ in {
 
         environment = {
           TZ = "America/New_York";
-          QBITTORRENT__PORT = "8080";
+          QBITTORRENT__PORT = "8090";
           QBITTORRENT__BT_PORT = "50413";
         };
         
