@@ -136,6 +136,8 @@ in {
           QBITTORRENT__BT_PORT = "50413";
 
           QBT_BitTorrent__Session__AddExtensionToIncompleteFiles = "true";
+          QBT_BitTorrent__Session__BTProtocol = "TCP";
+          QBT_BitTorrent__Session__DisableAutoTMMByDefault = "false";          
           QBT_BitTorrent__Session__IgnoreSlowTorrentsForQueueing = "true";
           QBT_BitTorrent__Session__MaxActiveDownloads = "10";
           QBT_BitTorrent__Session__MaxActiveTorrents = "25";
@@ -144,9 +146,12 @@ in {
           QBT_BitTorrent__Session__MaxConnectionsPerTorrent = "200";
           QBT_BitTorrent__Session__MaxUploads = "50";
           QBT_BitTorrent__Session__MaxUploadsPerTorrent = "10";
+          QBT_BitTorrent__Session__Preallocation = "true";
           QBT_BitTorrent__Session__QueueingSystemEnabled = "true";
           QBT_BitTorrent__Session__SlowTorrentsDownloadRate = "5";
           QBT_BitTorrent__Session__SlowTorrentsUploadRate = "5";
+
+          QBT_Core__AutoDeleteAddedTorrentFile = "IfAdded";
           
           QBT_Preferences__Bittorrent__MaxUpload = "1000";
           QBT_Preferences__Bittorrent__MaxUploadsPerTorrent = "10";

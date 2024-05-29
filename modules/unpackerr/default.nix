@@ -53,7 +53,7 @@ in {
 
     virtualisation.oci-containers.containers.unpackerr = {
       image = "${image}:${version}";
-      user = "${toString config.ids.uids.unpackerr}:${toString config.ids.gids.unpackerr}";
+      user = "${toString config.ids.uids.unpackerr}:${toString config.ids.gids.media}";
 
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
@@ -78,7 +78,7 @@ in {
         # Sonarr Config
         "UN_SONARR_0_URL" = "http://sonarr:8989";
         # "UN_SONARR_0_API_KEY" = "";
-        "UN_SONARR_0_PATHS_0" = "/downloads/completed/tv";
+        "UN_SONARR_0_PATHS_0" = "/downloads/sonarr";
         "UN_SONARR_0_PROTOCOLS" = "torrent";
         "UN_SONARR_0_TIMEOUT" = "10s";
         "UN_SONARR_0_DELETE_ORIG" = "false";
@@ -86,7 +86,7 @@ in {
         # Radarr Config
         "UN_RADARR_0_URL" = "http://radarr:7878";
         # "UN_RADARR_0_API_KEY" = "";
-        "UN_RADARR_0_PATHS_0" = "/downloads/completed/movies";
+        "UN_RADARR_0_PATHS_0" = "/downloads/radarr";
         "UN_RADARR_0_PROTOCOLS" = "torrent";
         "UN_RADARR_0_TIMEOUT" = "10s";
         "UN_RADARR_0_DELETE_ORIG" = "false";
