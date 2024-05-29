@@ -81,7 +81,7 @@ in {
           "8388:8388/udp" # Shadowsocks
           "8090:8090" # port for qbittorrent
         ];
-        environmentFiles = [ secrets.transmission-opvn.path ];
+        environmentFiles = [ secrets.transmission-ovpn.path ];
         environment = {
           TZ = "America/New_York";
           VPN_SERVICE_PROVIDER = "private internet access";
@@ -107,6 +107,7 @@ in {
         extraOptions = [
           "--pull=always"
           "--network=container:gluetun"
+          "--device=/dev/net/tun:/dev/net/tun"
         ];
 
         environment = {
