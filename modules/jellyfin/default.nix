@@ -90,8 +90,8 @@ in {
       volumes = [
         "/etc/localtime:/etc/localtime:ro"
         "${cfg.configDir}:/config"
-        "${config.paths.media}/Movies:/data/movies"
-        "${config.paths.media}/TV:/data/tv"
+        "${config.paths.media}/movies:/data/movies"
+        "${config.paths.media}/tv:/data/tv"
         "/dev/shm:/data/transcode"
       ];
 
