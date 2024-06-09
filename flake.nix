@@ -105,7 +105,8 @@
         # Nix User Repositories 
         (final: prev: { nur = import inputs.nur { pkgs = final; nurpkgs = final; }; })
 
-        # Unstable nixpkgs channel
+        # When applied, the unstable nixpkgs set (declared in the flake inputs) will
+        # be accessible through 'pkgs.unstable'
         (final: prev: { unstable = import inputs.nixpkgs-unstable { inherit system config; }; })
 
       ];
