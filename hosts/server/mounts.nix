@@ -72,7 +72,7 @@
     options = ["defaults" "nofail" "noatime"];
   };
 
-  snapraid = {
+  services.snapraid = {
     enable = true;
     sync = {
       interval = "daily"; 

@@ -67,7 +67,7 @@ in {
     services.oidentd.enable = true;
 
     # Allow docker containers to connect
-    networking.firewall.allowedTCPPorts = [ config.services.postgresql.port ];
+    networking.firewall.allowedTCPPorts = [ config.services.postgresql.settings.port ];
 
   };
 
