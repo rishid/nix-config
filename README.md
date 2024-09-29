@@ -50,10 +50,10 @@ Transition
   - [x] server: partition and add to nix as data drive in mergerfs
 - [x] server: rsync synology to data drive
 - [x] syno: insert enterprise drive and force rebuild
-- [ ] syno: remove other HD and install in server
-  - [ ] server: partition and add to nix as snapraid
-  - [ ] server: trigger snapraid sync
-- [ ] syno: insert enterprise drive and force rebuild
+- [x] syno: remove other HD and install in server
+  - [x] server: partition and add to nix as snapraid
+  - [x] server: trigger snapraid sync
+- [x] syno: insert enterprise drive and force rebuild
 - [ ] server: rsync (again) synology to data drive
 - [ ] change over port forwarding
 - [ ] server: wait till server is running smoothly, then move external drive over
