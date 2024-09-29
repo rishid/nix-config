@@ -256,6 +256,7 @@
     httpie
     intel-gpu-tools
     lm_sensors
+    ncdu
     nfs-utils
     quickemu
     parted

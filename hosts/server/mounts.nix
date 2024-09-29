@@ -87,7 +87,7 @@
     };
     contentFiles = [
       "/mnt/disks/00/.snapraid.content"
-      "/var/snapraid/snapraid.content"
+      "/var/snapraid.content"
     ];
     parityFiles = [
       "/mnt/parity/00/snapraid.parity"
