@@ -194,7 +194,7 @@ in
           "autoheal" = "true";
           "traefik.enable" = "true";
           "traefik.http.routers.homepage.entrypoints" = "websecure";        
-          "traefik.http.routers.homepage.rule" = "Host(`${cfg.hostName}`, `dhupar.xyz`, `www.dhupar.xyz`)";
+          "traefik.http.routers.homepage.rule" = "Host(`${cfg.hostName}`) || Host(`dhupar.xyz`) || Host(`www.dhupar.xyz`)";
           "traefik.http.routers.homepage.middlewares" = "authelia@file";
           "traefik.http.services.homepage.loadbalancer.server.port" = "${toString port}";
         };
