@@ -73,9 +73,7 @@ in {
         };
 
         api.dashboard = true;
-        log.level = "DEBUG";
-
-        experimental.http3 = true;
+        log.level = "INFO";
 
         accessLog = {
           filePath = "/var/lib/traefik/access.json";
